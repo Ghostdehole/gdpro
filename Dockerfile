@@ -1,18 +1,15 @@
-FROM python:3.13-alpine
+FROM python:3.12-slim
 
-RUN adduser -D user
-USER user
+RUN useradd -m -u 1000 user
 
 WORKDIR /opt/rdgen
-
 COPY . .
-RUN pip install --no-cache-dir -r requirements.txt \
- && python manage.py migrate
 
-ENV PYTHONUNBUFFERED=1
+# 使用国内镜像源安装依赖（关键！）
+RUN pip install --no-cache-dir -i https://pypi.tuna.tsinghua.edu.cn/simple/ -r requirements.txt \
+    && python manage.py migrate
+
+USER user
 
 EXPOSE 8000
-
-HEALTHCHECK --interval=30s --timeout=5s --retries=3 CMD wget --spider 0.0.0.0:8000
-
-CMD ["/home/user/.local/bin/gunicorn", "-c", "gunicorn.conf.py", "rdgen.wsgi:application"]
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
