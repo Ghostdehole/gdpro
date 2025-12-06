@@ -170,16 +170,16 @@ jobs:
 
           if [ -f ".github/patches/cn.rs" ]; then
             cp .github/patches/cn.rs src/lang/cn.rs
-            echo "✅ Replaced src/lang/cn.rs"
+            echo " Replaced src/lang/cn.rs"
           else
-            echo "⚠️  .github/patches/cn.rs not found, skipping"
+            echo "  .github/patches/cn.rs not found, skipping"
           fi
 
           if [ -f ".github/patches/desktop_home_page.dart" ]; then
             cp .github/patches/desktop_home_page.dart flutter/lib/pages/desktop_home_page.dart
-            echo "✅ Replaced flutter/lib/pages/desktop_home_page.dart"
+            echo " Replaced flutter/lib/pages/desktop_home_page.dart"
           else
-            echo "⚠️  .github/patches/desktop_home_page.dart not found, skipping"
+            echo "  .github/patches/desktop_home_page.dart not found, skipping"
           fi
       - name: Install ImageMagick on Windows
         run: |
