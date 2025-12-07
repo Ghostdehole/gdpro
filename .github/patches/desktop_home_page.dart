@@ -91,6 +91,7 @@ class _DesktopHomePageState extends State<DesktopHomePage>
           buildTip(context),
           buildIDBoard(context),
           buildPasswordBoard(context),
+          const SizedBox(height: 25), //增加板块的间距
           buildPresetPasswordWarning(),
          ],
       FutureBuilder<Widget>(
