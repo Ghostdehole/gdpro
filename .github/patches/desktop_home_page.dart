@@ -196,10 +196,7 @@ class _DesktopHomePageState extends State<DesktopHomePage>
         crossAxisAlignment: CrossAxisAlignment.baseline,
         textBaseline: TextBaseline.alphabetic,
         children: [
-          Container(
-            width: 2,
-            decoration: const BoxDecoration(color: MyTheme.accent),
-          ).marginOnly(top: 5),
+//原内容是ID彩色竖条
           Expanded(
             child: Padding(
               padding: const EdgeInsets.only(left: 7),
@@ -208,23 +205,8 @@ class _DesktopHomePageState extends State<DesktopHomePage>
                 children: [
                   Container(
                     height: 25,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          translate("ID"),
-                          style: TextStyle(
-                              fontSize: 14,
-                              color: Theme.of(context)
-                                  .textTheme
-                                  .titleLarge
-                                  ?.color
-                                  ?.withOpacity(0.5)),
-                        ).marginOnly(top: 5),
-                        buildPopupMenu(context)
-                      ],
-                    ),
+                    
+//原来位置ID和三点菜单已被删除
                   ),
                   Flexible(
                     child: GestureDetector(
@@ -238,10 +220,11 @@ class _DesktopHomePageState extends State<DesktopHomePage>
                         readOnly: true,
                         decoration: InputDecoration(
                           border: InputBorder.none,
-                          contentPadding: EdgeInsets.only(top: 10, bottom: 10),
+                          contentPadding: EdgeInsets.only(top: 8, bottom: 8),
                         ),
                         style: TextStyle(
-                          fontSize: 22,
+                          fontSize: 28,//ID字体大小
+                          fontWeight: FontWeight.w500, // 可选：加粗更醒目
                         ),
                       ).workaroundFreezeLinuxMint(),
                     ),
@@ -551,21 +534,7 @@ class _DesktopHomePageState extends State<DesktopHomePage>
         );
       }
     }
-    if (bind.isIncomingOnly()) {
-      return Align(
-        alignment: Alignment.centerRight,
-        child: OutlinedButton(
-          onPressed: () {
-            SystemNavigator.pop(); // Close the application
-            // https://github.com/flutter/flutter/issues/66631
-            if (isWindows) {
-              exit(0);
-            }
-          },
-          child: Text(translate('Quit')),
-        ),
-      ).marginAll(14);
-    }
+//原内容退出按钮，已删除
     return Container();
   }
 
