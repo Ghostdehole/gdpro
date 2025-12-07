@@ -397,6 +397,7 @@ buildIDBoard(BuildContext context) {
               overflow: TextOverflow.clip,
                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
                     fontWeight: FontWeight.bold, //关键：加粗
+                    fontSize: 14.0,
                   ),
             ),
           if (isOutgoingOnly)
