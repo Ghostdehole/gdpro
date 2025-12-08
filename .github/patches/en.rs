@@ -36,7 +36,7 @@ pub static ref T: std::collections::HashMap<&'static str, &'static str> =
         ("Insert Lock", "Insert lock"),
         ("Set Password", "Set password"),
         ("OS Password", "OS password"),
-        ("install_tip", "Due to UAC, LnDesk can not work properly as the remote side in some cases. To avoid UAC, please click the button below to install LnDesk to the system."),
+        ("install_tip", "Due to system UAC and to prevent accidental deletion, please exit your antivirus software before clicking Install."),
         ("config_acc", "In order to control your DesYour device ktop remotely, you need to grant LnDesk \"Accessibility\" permissions."),
         ("config_screen", "In order to access Your device remotely, you need to grant LnDesk \"Screen Recording\" permissions."),
         ("Installation Path", "Installation path"),
