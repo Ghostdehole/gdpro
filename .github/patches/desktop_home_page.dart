@@ -94,7 +94,7 @@ class _DesktopHomePageState extends State<DesktopHomePage>
           buildPasswordBoard(context),
           const SizedBox(height: 20), //增加板块的间距
           buildPresetPasswordWarning(),
-          buildWeChatSupportBoard(BuildContext context),//微信支付
+          buildWeChatSupportBoard(context),//微信支付
           const SizedBox(height: 5), 
          ],
       FutureBuilder<Widget>(
