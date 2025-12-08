@@ -86,6 +86,7 @@ class _DesktopHomePageState extends State<DesktopHomePage>
          alignment: Alignment.center,
          child: loadLogo(),
            ),
+        Obx(() => buildHelpCards(stateGlobal.updateUrl.value)), //加入调用卡片的位置
       //移除部分是被控端的UI Powered，就是xxx支持部分
       if (!isOutgoingOnly)... [
           buildTip(context),
@@ -96,24 +97,7 @@ class _DesktopHomePageState extends State<DesktopHomePage>
           buildPresetPasswordWarning(),
           buildWeChatSupportBoard(context),//微信支付
          ],
-      FutureBuilder<Widget>(
-        future: Future.value(
-            Obx(() => buildHelpCards(stateGlobal.updateUrl.value))),
-        builder: (_, data) {
-          if (data.hasData) {
-            if (isIncomingOnly) {
-              if (isInHomePage()) {
-                Future.delayed(Duration(milliseconds: 300), () {
-                  _updateWindowSize();
-                });
-              }
-            }
-            return data.data!;
-          } else {
-            return const Offstage();
-          }
-        },
-      ),
+//原来帮助卡片FutureBuilder，已经删除
       buildPluginEntry(),
     ];
     if (isIncomingOnly) {
