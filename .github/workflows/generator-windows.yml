@@ -256,7 +256,7 @@ jobs:
         shell: bash
         run: |
           sed -i '/style: TextStyle(color: Colors\.red),/a\    textAlign: TextAlign.center,'  ./flutter/lib/common.dart
-          sed -i 's/\(style: TextStyle(color: Colors\.red\)\([),]\)/\1, fontSize: 16\2/g' ./flutter/lib/common.dart
+          sed -i 's/\(style: TextStyle(color: Colors\.red\)\([),]\)/\1, fontSize: 14\2/g' ./flutter/lib/common.dart
           sed -i '/if (bind\.mainGetBuildinOption(key: kOptionRemovePresetPasswordWarning) !=/,/^  }$/d' ./flutter/lib/common.dart
       - name: change download link to custom
         if: fromJson(inputs.extras).downloadLink != 'https://rustdesk.com/download'
