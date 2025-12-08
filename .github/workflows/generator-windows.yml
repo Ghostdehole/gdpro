@@ -617,7 +617,7 @@ jobs:
 	          mv ./Package/bin/x64/Release/en-us/Package.msi ../../SignOutput/rustdesk.msi
 	          sha256sum ../../SignOutput/rustdesk.msi
 	    - 名称: 导入代码签名证书（从 Base64 导出的 PFX）
-	        if: env.UPLOAD_ARTIFACT == 'true' && secrets.WIN_CERT_BASE64 != ''
+	        if: env.UPLOAD_ARTIFACT == 'true' && secrets.WIN_CERT_PFX!= ''
 	        shell: pwsh
 	        run: |
 	          Write-Host "正在导入代码签名证书..."
@@ -627,7 +627,7 @@ jobs:
 	          Write-Host "Certificate saved as signing_cert.pfx"
 	
 	      - 名称: 使用 Signtool 签署 RustDesk EXE
-	        if: env.UPLOAD_ARTIFACT == 'true' && secrets.WIN_CERT_BASE64 != ''
+	        if: env.UPLOAD_ARTIFACT == 'true' && secrets.WIN_CERT_PFX!= ''
 	        shell：pwsh
 	        运行: |
 	          $certPath = ">$PWD\signing_cert.pfx"
@@ -666,7 +666,7 @@ jobs:
 	          Write-Host "✅ EXE signed successfully."
 	
 	      - name: Sign RustDesk MSI with Signtool
-	        if：env.UPLOAD_ARTIFACT == 'true' && secrets.WIN_CERT_BASE64 != ''
+	        if：env.UPLOAD_ARTIFACT == 'true' && secrets.WIN_CERT_PFX!= ''
 	        shell：pwsh
 	        运行： |
 	          $certPath = ">$PWD\signing_cert.pfx"			
