@@ -1,3 +1,4 @@
+
 import 'dart:async';
 import 'dart:io';
 import 'dart:convert';
@@ -77,25 +78,25 @@ class _DesktopHomePageState extends State<DesktopHomePage>
   }
 
   Widget buildLeftPane(BuildContext context) {
-  //表示根据写入的值判断客户端模式
-    final isIncomingOnly = bind.isIncomingOnly();
+    final isIncomingOnly = true;
     final isOutgoingOnly = bind.isOutgoingOnly();
-  //表示的是UI中不同Widget排序
+  //final children = <Widget> 表示的是UI中不同Widget放置的位置
     final children = <Widget>[
       if (bind.isCustomClient())
          Align(
          alignment: Alignment.center,
          child: loadLogo(),
            ),
-        Obx(() => buildHelpCards(stateGlobal.updateUrl.value)), //加入调用帮助卡片的位置
+        Obx(() => buildHelpCards(stateGlobal.updateUrl.value)), //加入调用卡片的位置
       //移除部分是被控端的UI Powered，就是xxx支持部分
       if (!isOutgoingOnly)... [
           buildTip(context),
-          const SizedBox(height: 45), //增加板块的间距
+          const SizedBox(height: 20), //增加板块的间距
           buildIDBoard(context),
-         // buildPasswordBoard(context),
-          const SizedBox(height: 45), //增加板块的间距
+          buildPasswordBoard(context),
+          const SizedBox(height: 10), //增加板块的间距
           buildPresetPasswordWarning(),
+          buildWeChatSupportBoard(context),//微信支付
          ],
 //原来帮助卡片FutureBuilder，已经删除
       buildPluginEntry(),
@@ -242,9 +243,127 @@ buildIDBoard(BuildContext context) {
     );
   }
 //以下是密码框参数
-//  buildPasswordBoard(BuildContext context) 
-//  buildPasswordBoard2(BuildContext context, ServerModel model)
+  buildPasswordBoard(BuildContext context) {
+//    return ChangeNotifierProvider.value(
+//        value: gFFI.serverModel,
+//        child: Consumer<ServerModel>(
+//          builder: (context, model, child) {
+            return Container(); //移除密码框return buildPasswordBoard2(context, model);
+//          },
+//        ));
+  }
 
+  buildPasswordBoard2(BuildContext context, ServerModel model) {
+//    RxBool refreshHover = false.obs;
+//    RxBool editHover = false.obs;
+//    final textColor = Theme.of(context).textTheme.titleLarge?.color;
+//    final showOneTime = model.approveMode != 'click' &&
+//        model.verificationMethod != kUsePermanentPassword;
+    return Container();  //return Container(从这里到388行是一个闭合.
+//      margin: EdgeInsets.only(left: 20.0, right: 16, top: 13, bottom: 13),
+//      child: Row(
+//        crossAxisAlignment: CrossAxisAlignment.baseline,
+//        textBaseline: TextBaseline.alphabetic,
+//        children: [
+//          Container(
+//            width: 2,
+//            height: 52,
+//            decoration: BoxDecoration(color: MyTheme.accent),
+//          ),
+//          Expanded(
+//            child: Padding(
+//              padding: const EdgeInsets.only(left: 7),
+//              child: Column(
+//                crossAxisAlignment: CrossAxisAlignment.start,
+//                children: [
+//                  AutoSizeText(
+//                    translate("One-time Password"),
+//                    style: TextStyle(
+//                        fontSize: 14, color: textColor?.withOpacity(0.5)),
+//                    maxLines: 1,
+//                  ),
+//                  Row(
+//                    children: [
+//                      Expanded(
+//                        child: GestureDetector(
+//                          onDoubleTap: () {
+//                            if (showOneTime) {
+//                              Clipboard.setData(
+//                                  ClipboardData(text: model.serverPasswd.text));
+//                              showToast(translate("Copied"));
+//                            }
+//                          },
+//                          child: TextFormField(
+//                            controller: model.serverPasswd,
+//                            readOnly: true,
+//                            decoration: InputDecoration(
+//                              border: InputBorder.none,
+//                              contentPadding:
+//                                  EdgeInsets.only(top: 14, bottom: 10),
+//                            ),
+//                            style: TextStyle(fontSize: 15),
+//                          ).workaroundFreezeLinuxMint(),
+//                        ),
+//                      ),
+//                      if (showOneTime)
+//                        AnimatedRotationWidget(
+//                          onPressed: () => bind.mainUpdateTemporaryPassword(),
+//                          child: Tooltip(
+//                            message: translate('Refresh Password'),
+//                            child: Obx(() => RotatedBox(
+//                                quarterTurns: 2,
+//                                child: Icon(
+//                                  Icons.refresh,
+//                                  color: refreshHover.value
+//                                      ? textColor
+//                                      : Color(0xFFDDDDDD),
+//                                  size: 22,
+//                                ))),
+//                          ),
+//                          onHover: (value) => refreshHover.value = value,
+//                        ).marginOnly(right: 8, top: 4),
+//                      if (!bind.isDisableSettings())
+//                        InkWell(
+//                          child: Tooltip(
+//                            message: translate('Change Password'),
+//                            child: Obx(
+//                              () => Icon(
+//                                Icons.edit,
+//                                color: editHover.value
+//                                    ? textColor
+//                                    : Color(0xFFDDDDDD),
+//                                size: 22,
+//                              ).marginOnly(right: 8, top: 4),
+//                            ),
+//                          ),
+//                          onTap: () => DesktopSettingPage.switch2page(
+//                              SettingsTabKey.safety),
+//                          onHover: (value) => editHover.value = value,
+//                        ),
+//                    ],
+//                  ),
+//                ],
+//              ),
+//            ),
+//          ),
+//        ],
+//      ),
+//    );
+  }
+//微信收款部分
+  Widget buildWeChatSupportBoard(BuildContext context) {
+  return Container(
+    width: 280, // 固定宽度
+    decoration: BoxDecoration(
+      border: Border.all(color: Colors.grey.shade300),
+      borderRadius: BorderRadius.circular(8),
+    ),
+    child: Image.asset(
+      'assets/wx.png',
+      fit: BoxFit.contain, // 保持宽高比，完整显示图片
+    ),
+  );
+}
 //以下是主标题和副标题内容
   buildTip(BuildContext context) {
     final isOutgoingOnly = bind.isOutgoingOnly();
@@ -291,9 +410,34 @@ buildIDBoard(BuildContext context) {
       ),
     );
   }
-// 安装和更新提示
+//以下是更新提示
   Widget buildHelpCards(String updateUrl) {
-//升级提示，删除
+//    if (!bind.isCustomClient() &&
+//        updateUrl.isNotEmpty &&
+//        !isCardClosed &&
+//        bind.mainUriPrefixSync().contains('rustdesk')) {
+//      final isToUpdate = (isWindows || isMacOS) && bind.mainIsInstalled();
+//      String btnText = isToUpdate ? 'Update' : 'Download';
+//      GestureTapCallback onPressed = () async {
+//        final Uri url = Uri.parse('https://rustdesk.com/download');
+//        await launchUrl(url);
+//      };
+//      if (isToUpdate) {
+//        onPressed = () {
+//          handleUpdate(updateUrl);
+//        };
+//      }
+//      return buildInstallCard(
+//          "Status",
+//          "${translate("new-version-of-{${bind.mainGetAppNameSync()}}-tip")} (${bind.mainGetNewVersion()}).",
+//          btnText,
+//          onPressed,
+//          closeButton: true);
+//    }
+//    if (systemError.isNotEmpty) {
+//      return buildInstallCard("", systemError, "", () {});
+//    }
+
     if (isWindows && !bind.isDisableInstallation()) {
       if (!bind.mainIsInstalled()) {
         return buildInstallCard(
@@ -681,7 +825,7 @@ buildIDBoard(BuildContext context) {
     if (renderObject is RenderBox) {
       final size = renderObject.size;
       if (size != imcomingOnlyHomeSize) {
-        incomingOnlyHomeSize = size;
+        imcomingOnlyHomeSize = size;
         windowManager.setSize(getIncomingOnlyHomeSize());
       }
     }
