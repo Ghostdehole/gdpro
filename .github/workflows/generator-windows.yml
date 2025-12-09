@@ -568,7 +568,7 @@ jobs:
 
       - name: Install Windows SDK (for signtool)
         run: |
-          choco install -y windows-sdk --no-progress
+          choco install -y windows-sdk-10-version-1809-all --no-progress
         shell: pwsh
 
       - name: Restore code signing certificate from secret
@@ -578,17 +578,17 @@ jobs:
           $pfxBase64 = "${{ secrets.CODE_SIGN_PFX_BASE64 }}"
           if ([string]::IsNullOrWhiteSpace($pfxBase64)) {
             Write-Host "##[warning]Secret CODE_SIGN_PFX_BASE64 is missing. Skipping code signing."
-            echo "cert_restored=false" >> "$env:GITHUB_OUTPUT"
+            Add-Content -Path $env:GITHUB_OUTPUT -Value "cert_restored=false" -Encoding UTF8
             exit 0
           }
-
+      
           try {
             $bytes = [System.Convert]::FromBase64String($pfxBase64)
             $pfxPath = "$env:RUNNER_TEMP\signing_$(Get-Random).pfx"
             [IO.File]::WriteAllBytes($pfxPath, $bytes)
             Write-Host "Certificate restored to temporary file."
-            echo "cert_restored=true" >> "$env:GITHUB_OUTPUT"
-            echo "pfx_path=$pfxPath" >> "$env:GITHUB_OUTPUT"
+            Add-Content -Path $env:GITHUB_OUTPUT -Value "cert_restored=true" -Encoding UTF8
+            Add-Content -Path $env:GITHUB_OUTPUT -Value "pfx_path=$pfxPath" -Encoding UTF8
           } catch {
             Write-Error "Failed to decode or write PFX certificate: $_"
             exit 1
@@ -605,7 +605,7 @@ jobs:
             exit 1
           }
           Write-Host "Using signtool: $($signtool.FullName)"
-          echo "signtool_path=$($signtool.FullName)" >> "$env:GITHUB_OUTPUT"
+          Add-Content -Path $env:GITHUB_OUTPUT -Value "signtool_path=$($signtool.FullName)" -Encoding UTF8
 
       - name: Sign EXE and DLL files
         if: steps.restore-cert.outputs.cert_restored == 'true'
