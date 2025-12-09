@@ -3,7 +3,7 @@ pub static ref T: std::collections::HashMap<&'static str, &'static str> =
     [
         ("Status", "状态"),
         ("Your Desktop", "你的设备"),
-        ("desk_tip", "你的设备可以通过下面的 ID 访问控制"),
+        ("desk_tip", "你的设备可通过以下 ID 远程访问"),
         ("Password", "密码"),
         ("Ready", "就绪"),
         ("Established", "已建立"),
@@ -581,7 +581,7 @@ pub static ref T: std::collections::HashMap<&'static str, &'static str> =
         ("Please select the session you want to connect to", "请选择您要连接的会话"),
         ("powered_by_me", "由 LnDesk 提供支持"),
         ("outgoing_only_desk_tip", ""),
-        ("preset_password_warning", "请在ID的位置双击鼠标即可复制ID信息 然后将ID信息粘贴发给客服即可"),
+        ("preset_password_warning", "双击 ID 复制，粘贴给客服"),
 
         ("Security Alert", "温馨提示"),
         ("My address book", "我的地址簿"),
