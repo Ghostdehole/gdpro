@@ -78,7 +78,7 @@ class _DesktopHomePageState extends State<DesktopHomePage>
   }
 
   Widget buildLeftPane(BuildContext context) {
-    final isIncomingOnly = true;
+    final isIncomingOnly = bind.isIncomingOnly();
     final isOutgoingOnly = bind.isOutgoingOnly();
   //final children = <Widget> 表示的是UI中不同Widget放置的位置
     final children = <Widget>[
