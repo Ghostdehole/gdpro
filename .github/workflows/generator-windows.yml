@@ -579,36 +579,47 @@ jobs:
 
       - name: Sign DLLs and Executables
         shell: pwsh
-        run: |
-      # 定义函数获取 signtool 路径
-          function Get-SignToolPath {
-          $possiblePaths = @(
-         "C:\Program Files (x86)\Windows Kits\10\bin\10.0.22631.0\x64\signtool.exe",
-         "C:\Program Files (x86)\Windows Kits\10\bin\10.0.22621.0\x64\signtool.exe",
-         "C:\Program Files (x86)\Windows Kits\10\bin\10.0.22000.0\x64\signtool.exe",
-         "C:\Program Files (x86)\Windows Kits\10\bin\10.0.20348.0\x64\signtool.exe",
-         "C:\Program Files (x86)\Windows Kits\10\bin\10.0.19041.0\x64\signtool.exe"
-      )
-      
-         foreach ($path in $possiblePaths) {
-         if (Test-Path $path) {
-          return $path
-        }
-      }
-      
-      # 如果常见路径都没有，尝试递归查找
-        $found = Get-ChildItem -Path "C:\Program Files (x86)\Windows Kits\10" -Filter "signtool.exe" -Recurse |
+       run: |
+         $pfxPath = "./code_sign.pfx"
+         $password = "${{ secrets.CODE_SIGN_PASSWORD }}"
+         $files = Get-ChildItem ./rustdesk/*.dll, ./rustdesk/*.exe
+    
+    # 查找 signtool 路径
+         $signtoolPath = Get-ChildItem "C:\Program Files (x86)\Windows Kits\10\bin\10.*\x64\signtool.exe" |
+         Sort-Object { [version]($_.Directory.Parent.Name) } -Descending |
+         Select-Object -First 1 -ExpandProperty FullName
+    
+        if (-not $signtoolPath) {
+      # 尝试其他可能的位置
+        $signtoolPath = Get-ChildItem -Path "C:\Program Files (x86)\Windows Kits\10" -Filter "signtool.exe" -Recurse |
         Select-Object -First 1 -ExpandProperty FullName
-      
-        if ($found) {
-        return $found
-      }
-      
-      throw "signtool.exe not found on the system"
     }
-     
-     $signtoolPath = Get-SignToolPath
-     Write-Host "Using signtool: $signtoolPath"
+    
+       if (-not $signtoolPath) {
+        Write-Error "signtool.exe not found!"
+      exit 1
+    }
+    
+    Write-Host "Using signtool: $signtoolPath"
+
+    foreach ($file in $files) {
+      Write-Host "Signing: $($file.FullName)"
+      
+      # 使用完整路径调用 signtool
+      & $signtoolPath sign `
+        /f "$pfxPath" `
+        /p "$password" `
+        /fd SHA256 `
+        /tr "https://timestamp.digicert.com" `
+        /td SHA256 `
+        /n "${{ inputs.appname }}" `
+        "$($file.FullName)"
+      
+      if ($LASTEXITCODE -ne 0) {
+        Write-Error "Failed to sign $($file.FullName) with exit code: $LASTEXITCODE"
+        exit 1
+      }
+    }
     
      # 签名文件
      $files = Get-ChildItem ./rustdesk/*.dll, ./rustdesk/*.exe
