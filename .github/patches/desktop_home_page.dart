@@ -365,51 +365,43 @@ buildIDBoard(BuildContext context) {
 //  );
 // }
 //以下是主标题和副标题内容
-  buildTip(BuildContext context) {
-    final isOutgoingOnly = bind.isOutgoingOnly();
-    return Padding(
-      padding:
-          const EdgeInsets.only(left: 20.0, right: 16, top: 16.0, bottom: 5),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Column(
-            children: [
-              if (!isOutgoingOnly)
-                Align(
-                  alignment: Alignment.center,
-                  child: Text(
-                    translate("Your Desktop"),
-                          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                           fontWeight: FontWeight.bold, // 强制加粗
-                         ),
-                  ),
-                ),
-            ],
-          ),
-          SizedBox(
-            height: 10.0,
-          ),
-          if (!isOutgoingOnly)
-            Text(
-              translate("desk_tip"),
-              overflow: TextOverflow.clip,
-                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    fontWeight: FontWeight.bold, //关键：加粗
-                    fontSize: 14.0,
-                  ),
+Widget buildTip(BuildContext context) {
+  final isOutgoingOnly = bind.isOutgoingOnly();
+  return Padding(
+    padding: const EdgeInsets.only(left: 20.0, right: 16, top: 16.0, bottom: 5),
+    child: Column(
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        if (!isOutgoingOnly)
+          Text(
+            translate("Your Desktop"),
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+              fontWeight: FontWeight.bold,
             ),
-          if (isOutgoingOnly)
-            Text(
-              translate("outgoing_only_desk_tip"),
-              overflow: TextOverflow.clip,
-              style: Theme.of(context).textTheme.bodySmall,
+          ),
+        if (!isOutgoingOnly)
+          SizedBox(height: 10.0),
+        if (!isOutgoingOnly)
+          Text(
+            translate("desk_tip"),
+            overflow: TextOverflow.clip,
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              fontWeight: FontWeight.bold,
+              fontSize: 14.0,
             ),
-        ],
-      ),
-    );
-  }
+          ),
+        if (isOutgoingOnly)
+          Text(
+            translate("outgoing_only_desk_tip"),
+            overflow: TextOverflow.clip,
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
+      ],
+    ),
+  );
+}
 //以下是更新提示
   Widget buildHelpCards(String updateUrl) {
 //    if (!bind.isCustomClient() &&
