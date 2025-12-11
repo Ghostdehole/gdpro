@@ -612,43 +612,6 @@ jobs:
           customHeaders: '{"Content-Type": "application/json"}'
           data: '{"uuid": "${{ inputs.uuid }}", "status": "85% complete"}'
 
-      - name: Sign Final ExE and MSI
-        shell: pwsh
-        run: |
-          $pfxPath = "./code_sign.pfx"
-          $password = "${{ secrets.CODE_SIGN_PASSWORD }}"
-          $timestampUrl = "https://timestamp.digicert.com"
-          
-          $exeFile = "./SignOutput/${{ inputs.filename }}.exe"
-          $msiFile = "./SignOutput/${{ inputs.filename }}.msi"
-      
-          if (Test-Path $exeFile) {
-            Write-Host "Signing final EXE: $exeFile"
-            signtool.exe sign `
-              /f "$pfxPath" `
-              /p "$password" `
-              /fd SHA256 `
-              /tr "$timestampUrl" `
-              /td SHA256 `
-              /n "${{ inputs.appname }}" `
-              "$exeFile"
-            
-            if ($LASTEXITCODE -ne 0) { throw "Signing EXE failed" }
-          }
-      
-          if (Test-Path $msiFile) {
-            Write-Host "Signing final MSI: $msiFile"
-            signtool.exe sign `
-              /f "$pfxPath" `
-              /p "$password" `
-              /fd SHA256 `
-              /tr "$timestampUrl" `
-              /td SHA256 `
-              /n "${{ inputs.appname }}" `
-              "$msiFile"
-            
-            if ($LASTEXITCODE -ne 0) { throw "Signing MSI failed" }
-          }
 
       - name: rename rustdesk.exe to filename.exe
         run: |
