@@ -466,7 +466,7 @@ pub static ref T: std::collections::HashMap<&'static str, &'static str> =
         ("show_monitors_tip", "在工具栏上显示监视器"),
         ("View Mode", "浏览模式"),
         ("login_linux_tip", "登录被控端的 Linux 账户，才能启用 X 设备"),
-        ("verify_rustdesk_password_tip", "请输入被控的的密码"),
+        ("verify_rustdesk_password_tip", "请输入被控端的密码"),
         ("remember_account_tip", "记住此账户"),
         ("os_account_desk_tip", "在无显示器的环境下，此账户用于登录被控系统，并启用设备"),
         ("OS Account", "系统账户"),
