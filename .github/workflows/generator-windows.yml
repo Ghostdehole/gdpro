@@ -668,21 +668,39 @@ jobs:
           customHeaders: '{"Content-Type": "application/json"}'
           data: '{"uuid": "${{ inputs.uuid }}", "status": "85% complete"}'
 
-      - name: Extract conn-type
+      - name: Extract conn-type 
         id: conn
         shell: pwsh
         run: |
           $c = "${{ inputs.custom }}"
-          $t = "default"
-          if ($c -ne "") {
-            try {
-              $t = ($c | ConvertFrom-Json).'conn-type'
-              if (-not $t) { $t = "default" }
-            } catch { $t = "default" }
-          }
-          $t = $t -replace '[^a-zA-Z0-9_.-]', '_'
-          echo "conn=$t" >> $env:GITHUB_OUTPUT
+          $t = "default" 
+          if ($c -eq "") {
+              Write-Host "::warning::Input is empty, using default conn-type: $t"
+          } else {
+              try {
+                $bytes = [System.Convert]::FromBase64String($c)
+                  $jsonStr = [System.Text.Encoding]::UTF8.GetString($bytes)
+                  $obj = $jsonStr | ConvertFrom-Json
       
+                  if ($null -ne $obj.'conn-type' -and $obj.'conn-type' -ne "") {
+                      $t = $obj.'conn-type'
+                      Write-Host "Successfully extracted conn-type: $t"
+                  } else {
+                      Write-Host "::warning::'conn-type' field is missing or empty in input JSON"
+                  }
+              } catch {
+                  Write-Host "::error::Failed to parse custom input. Error: $($_.Exception.Message)"
+                  $t = "default"
+              }
+          }
+          $sanitized = $t -replace '[^a-zA-Z0-9_.-]', '_'
+          if ($sanitized -ne $t) {
+              Write-Host " Sanitized conn-type from '$t' to '$sanitized'"
+              $t = $sanitized
+          }
+          "conn=$t" >> $env:GITHUB_OUTPUT
+          Write-Host " Final conn-type output: $t"
+            
       - name: Gen random tag
         id: tag
         shell: pwsh
