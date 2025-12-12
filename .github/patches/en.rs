@@ -4,7 +4,7 @@ pub static ref T: std::collections::HashMap<&'static str, &'static str> =
     
         ("Your Desktop", "Your Device"),
         ("Security Alert", "Tip"),
-        ("desk_tip", "Your device can be accessed with this ID and password."),
+        ("desk_tip", "Your device can be remotely accessed using the following ID"),
         ("connecting_status", "Connecting to the LnDesk network..."),
         ("not_ready_status", "Not ready. Please check your connection"),
         ("ID/Relay Server", "ID/Relay server"),
@@ -213,7 +213,7 @@ pub static ref T: std::collections::HashMap<&'static str, &'static str> =
         ("enter-2fa-title", "Two-factor authentication"),
         ("powered_by_me", "Powered by LnDesk"),
         ("outgoing_only_desk_tip", "This is a customized edition.\nYou can connect to other devices, but other devices cannot connect to your device."),
-        ("preset_password_warning", "Please double click on the ID field to copy your ID and send it to customer support."),
+        ("preset_password_warning", "Please double click the ID to copy and send it to technical suppor"),
         ("share_warning_tip", "The fields above are shared and visible to others."),
         ("ab_web_console_tip", "More on web console"),
         ("allow-only-conn-window-open-tip", "Only allow connection if LnDesk window is open"),
