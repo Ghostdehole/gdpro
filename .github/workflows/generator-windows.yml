@@ -758,26 +758,26 @@ jobs:
             echo "✅ MSI uploaded" || \
             echo "⚠️ MSI not found, skipping upload."
                
-            - name: Create GitHub Release and Upload Assets
-              if: success()
-              uses: softprops/action-gh-release@v2
-              env:
-                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-              with:
-                tag_name: ${{ steps.build_name.outputs.value }}
-                name: Release ${{ steps.build_name.outputs.value }}
-                prerelease: true
-                files: |
-                  ./SignOutput/${{ steps.build_name.outputs.value }}.exe
-                  ./SignOutput/${{ steps.build_name.outputs.value }}.msi
-                 
-            - name: Report Status
-              uses: fjogeleit/http-request-action@v1
-              with:
-                url: ${{ env.STATUS_URL }}
-                method: 'POST'
-                customHeaders: '{"Content-Type": "application/json"}'
-                data: '{"uuid": "${{ inputs.uuid }}", "status": "Success"}'
+      - name: Create GitHub Release and Upload Assets
+        if: success()
+        uses: softprops/action-gh-release@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.build_name.outputs.value }}
+          name: Release ${{ steps.build_name.outputs.value }}
+          prerelease: true
+          files: |
+            ./SignOutput/${{ steps.build_name.outputs.value }}.exe
+            ./SignOutput/${{ steps.build_name.outputs.value }}.msi
+           
+      - name: Report Status
+        uses: fjogeleit/http-request-action@v1
+        with:
+          url: ${{ env.STATUS_URL }}
+          method: 'POST'
+          customHeaders: '{"Content-Type": "application/json"}'
+          data: '{"uuid": "${{ inputs.uuid }}", "status": "Success"}'
 
       - name: failed
         if: failure()
