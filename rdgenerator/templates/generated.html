@@ -123,39 +123,36 @@
         <text x="128" y="200" font-family="Arial" font-size="50" font-weight="bold" text-anchor="middle" fill="white">Android</text>
     </svg>
 
-    <div>
-        <h2 class="success-text">Build Generated Successfully</h2>
-        <div class="download-section">
-            {% if platform == 'windows' %}
-                <a href='/download?filename={{filename}}.exe&uuid={{uuid}}' class="download-link">Download {{filename}}.exe</a>
-                <a href='/download?filename={{filename}}.msi&uuid={{uuid}}' class="download-link">Download {{filename}}.msi</a>
-            {% elif platform == 'windows-x86' %}
-                <a href='/download?filename={{filename}}.exe&uuid={{uuid}}' class="download-link">Download {{filename}}.exe</a>
-            {% elif platform == 'linux' %}
-                <a href='/download?filename={{filename}}-x86_64.deb&uuid={{uuid}}' class="download-link">Download {{filename}}-x86_64.deb</a>
-                <a href='/download?filename={{filename}}-x86_64.rpm&uuid={{uuid}}' class="download-link">Download {{filename}}-x86_64.rpm</a>
-                <a href='/download?filename={{filename}}-suse-x86_64.rpm&uuid={{uuid}}' class="download-link">Download {{filename}}-suse-x86_64.rpm</a>
-                <a href='/download?filename={{filename}}-x86_64.pkg.tar.zst&uuid={{uuid}}' class="download-link">Download {{filename}}-x86_64.pkg.tar.zst</a>
-                <a href='/download?filename={{filename}}-aarch64.deb&uuid={{uuid}}' class="download-link">Download {{filename}}-aarch64.deb</a>
-                <a href='/download?filename={{filename}}-aarch64.rpm&uuid={{uuid}}' class="download-link">Download {{filename}}-aarch64.rpm</a>
-                <a href='/download?filename={{filename}}-suse-aarch64.rpm&uuid={{uuid}}' class="download-link">Download {{filename}}-suse-aarch64.rpm</a>
-                <a href='/download?filename={{filename}}-aarch64.pkg.tar.zst&uuid={{uuid}}' class="download-link">Download {{filename}}-aarch64.pkg.tar.zst</a>
-                <a href='/download?filename={{filename}}-x86_64.AppImage&uuid={{uuid}}' class="download-link">Download {{filename}}-x86_64.AppImage</a>
-                <a href='/download?filename={{filename}}-aarch64.AppImage&uuid={{uuid}}' class="download-link">Download {{filename}}-aarch64.AppImage</a>
-                <a href='/download?filename={{filename}}-x86_64.flatpak&uuid={{uuid}}' class="download-link">Download {{filename}}-x86_64.flatpak</a>
-                <a href='/download?filename={{filename}}-aarch64.flatpak&uuid={{uuid}}' class="download-link">Download {{filename}}-aarch64.flatpak</a>
-            {% elif platform == 'android' %}
-                <a href='/download?filename={{filename}}-aarch64.apk&uuid={{uuid}}' class="download-link">Download {{filename}}-aarch64.apk</a>
-                <a href='/download?filename={{filename}}-x86_64.apk&uuid={{uuid}}' class="download-link">Download {{filename}}-x86_64.apk</a>
-                <a href='/download?filename={{filename}}-armv7.apk&uuid={{uuid}}' class="download-link">Download {{filename}}-armv7.apk</a>
-            {% elif platform == 'macos' %}
-                <a href='/download?filename={{filename}}-x86_64.dmg&uuid={{uuid}}' class="download-link">Download {{filename}}-x86_64.dmg</a>
-                <a href='/download?filename={{filename}}-aarch64.dmg&uuid={{uuid}}' class="download-link">Download {{filename}}-aarch64.dmg</a>
-            {% else %}
-                <p>Error: No file generated</p>
-            {% endif %}
-        </div>
+<div>
+    <h2 class="success-text">Build Generated Successfully</h2>
+    <div class="download-section">
+        {% if platform == 'windows' %}
+            <a href="/download?uuid={{ uuid }}&type=exe" class="download-link">Download {{ filename }}.exe</a>
+            <a href="/download?uuid={{ uuid }}&type=msi" class="download-link">Download {{ filename }}.msi</a>
+
+        {% elif platform == 'windows-x86' %}
+            <a href="/download?uuid={{ uuid }}&type=exe" class="download-link">Download {{ filename }}.exe</a>
+
+        {% elif platform == 'linux' %}
+            <a href="/download?uuid={{ uuid }}&type=deb" class="download-link">Download {{ filename }} (x86_64.deb)</a>
+            <a href="/download?uuid={{ uuid }}&type=rpm" class="download-link">Download {{ filename }} (x86_64.rpm)</a>
+            <!-- 注意：如果有多份 rpm，需更细粒度（见下方“高级方案”） -->
+            <a href="/download?uuid={{ uuid }}&type=pkg.tar.zst" class="download-link">Download {{ filename }} (.pkg.tar.zst)</a>
+            <a href="/download?uuid={{ uuid }}&type=AppImage" class="download-link">Download {{ filename }} (.AppImage)</a>
+            <a href="/download?uuid={{ uuid }}&type=flatpak" class="download-link">Download {{ filename }} (.flatpak)</a>
+
+        {% elif platform == 'android' %}
+            <a href="/download?uuid={{ uuid }}&type=apk" class="download-link">Download {{ filename }} (ARM64 APK)</a>
+            <!-- 如果有多 APK，建议合并成一个链接，或用 JS 动态选择 -->
+
+        {% elif platform == 'macos' %}
+            <a href="/download?uuid={{ uuid }}&type=dmg" class="download-link">Download {{ filename }} (.dmg)</a>
+
+        {% else %}
+            <p>Error: No file generated</p>
+        {% endif %}
     </div>
+</div>
 
     <div id="platformNote" class="platform-note"></div>
 
