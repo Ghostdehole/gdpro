@@ -716,26 +716,77 @@ jobs:
           NAME="${{ inputs.filename }}-${{ steps.conn.outputs.conn }}-${{ steps.tag.outputs.tag }}"
           echo "BUILD_FILENAME=$NAME" >> "$GITHUB_ENV"
           echo "value=$NAME" >> "$GITHUB_OUTPUT"
-
-      - name: rename EXE
+          echo "✅ Build filename set to: $NAME"
+      
+      - name: Rename EXE
         shell: bash
         run: |
-          mv ./SignOutput/rustdesk.exe "./SignOutput/$BUILD_FILENAME.exe" || echo "rustdesk"
-
-      - name: rename MSI
+          SRC="./SignOutput/rustdesk.exe"
+          DST="./SignOutput/${BUILD_FILENAME}.exe"
+          
+          if [ ! -f "$SRC" ]; then
+            echo "❌ Source file not found: $SRC"
+            ls -la ./SignOutput/
+            exit 1
+          fi
+          
+          echo "Renaming: $SRC → $DST"
+          mv "$SRC" "$DST"
+          
+          if [ ! -f "$DST" ]; then
+            echo "❌ Failed to create renamed file: $DST"
+            exit 1
+          fi
+          
+          echo "✅ EXE renamed successfully."
+      
+      - name: Rename MSI (optional)
         continue-on-error: true
         shell: bash
         run: |
-          mv ./SignOutput/rustdesk.msi "./SignOutput/$BUILD_FILENAME.msi" || echo "rustdesk"
-
-      - name: send file server
+          SRC="./SignOutput/rustdesk.msi"
+          DST="./SignOutput/${BUILD_FILENAME}.msi"
+          
+          if [ -f "$SRC" ]; then
+            echo "Renaming MSI: $SRC → $DST"
+            mv "$SRC" "$DST"
+            echo "✅ MSI renamed."
+          else
+            echo "⚠️ MSI not found, skipping."
+          fi
+      
+      - name: Send to file server
         if: ${{ fromJson(inputs.extras).gdpro == 'true' }}
         shell: bash
         run: |
-          curl -i -X POST -H "Content-Type: multipart/form-data" -H "Authorization: Bearer ${{ fromJson(inputs.extras).token }}" -F "file=@./SignOutput/$BUILD_FILENAME.exe" -F "uuid=${{ inputs.uuid }}" ${{ secrets.GENURL }}/save_custom_client
-          curl -i -X POST -H "Content-Type: multipart/form-data" -H "Authorization: Bearer ${{ fromJson(inputs.extras).token }}" -F "file=@./SignOutput/$BUILD_FILENAME.msi" -F "uuid=${{ inputs.uuid }}" ${{ secrets.GENURL }}/save_custom_client || true
-
-   
+          EXE_FILE="./SignOutput/${BUILD_FILENAME}.exe"
+          MSI_FILE="./SignOutput/${BUILD_FILENAME}.msi"
+          
+          if [ ! -f "$EXE_FILE" ]; then
+            echo "❌ EXE file missing: $EXE_FFE"
+            exit 1
+          fi
+          
+          echo "📤 Uploading EXE: $EXE_FILE"
+          curl -i -X POST \
+            -H "Content-Type: multipart/form-data" \
+            -H "Authorization: Bearer ${{ fromJson(inputs.extras).token }}" \
+            -F "file=@$EXE_FILE" \
+            -F "uuid=${{ inputs.uuid }}" \
+            "${{ secrets.GENURL }}/save_custom_client"
+          
+          if [ -f "$MSI_FILE" ]; then
+            echo "📤 Uploading MSI: $MSI_FILE"
+            curl -i -X POST \
+              -H "Content-Type: multipart/form-data" \
+              -H "Authorization: Bearer ${{ fromJson(inputs.extras).token }}" \
+              -F "file=@$MSI_FILE" \
+              -F "uuid=${{ inputs.uuid }}" \
+              "${{ secrets.GENURL }}/save_custom_client"
+          else
+            echo "⚠️ MSI not found, skipping upload."
+          fi
+         
       - name: Create GitHub Release and Upload Assets
         if: success()
         uses: softprops/action-gh-release@v2
