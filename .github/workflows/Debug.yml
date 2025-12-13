@@ -1,54 +1,43 @@
-name: Debug File 
+# .github/workflows/debug-test.yml
+name: Debug File Rename
 
 on:
-  workflow_dispatch: 
+  workflow_dispatch:
+    inputs:
+      filename:
+        description: 'Base name'
+        required: true
+        default: 'TestApp'
+        type: string
+
 jobs:
-  debug:
+  test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: 🧪 Create mock files (NO RECOMPILE!)
+      - name: 🧪 Create mock exe
         run: |
-          mkdir -p ./SignOutput
-          echo "fake exe" > ./SignOutput/rustdesk.exe
-          echo "fake msi" > ./SignOutput/rustdesk.msi
-          ls -la ./SignOutput/
+          mkdir -p SignOutput
+          echo "fake binary" > SignOutput/rustdesk.exe
 
-      - name: Extract conn-type 
-        id: conn
-        shell: pwsh
+      - name: Set filename
         run: |
-          $t = "default"
-          $sanitized = $t -replace '[^a-zA-Z0-9_.-]', '_'
-          "conn=$sanitized" >> $env:GITHUB_OUTPUT
-
-      - name: Gen random tag
-        id: tag
-        shell: pwsh
-        run: |
-          $r = -join ('abcdefghijklmnopqrstuvwxyz0123456789'.ToCharArray() | Get-Random -Count 6)
-          "tag=$r" >> $env:GITHUB_OUTPUT
-
-      - name: Set build filename
-        run: |
-          NAME="LnDesk-${{ steps.conn.outputs.conn }}-${{ steps.tag.outputs.tag }}"
+          NAME="${{ inputs.filename }}-default-abc123"
           echo "BUILD_FILENAME=$NAME" >> $GITHUB_ENV
-          echo "Filename: $NAME"
+          echo "Using: $NAME"
 
-      - name: Rename EXE
+      - name: Rename
         run: |
-          mv ./SignOutput/rustdesk.exe "./SignOutput/${BUILD_FILENAME}.exe"
-          ls -la ./SignOutput/
+          mv SignOutput/rustdesk.exe "SignOutput/${BUILD_FILENAME}.exe"
+          ls -la SignOutput/
 
-      - name: Verify file exists before upload
+      - name: Confirm file exists
         run: |
-          if [ ! -f "./SignOutput/${BUILD_FILENAME}.exe" ]; then
-            echo "❌ File missing!"
+          if [ -f "SignOutput/${BUILD_FILENAME}.exe" ]; then
+            echo "✅ Success!"
+          else
+            echo "❌ Failed!"
             exit 1
           fi
-          echo "✅ File ready for upload"
-
-      - name: 🚫 Skip real upload (debug only)
-        run: echo "Would upload: ./SignOutput/${BUILD_FILENAME}.exe"
