@@ -700,14 +700,15 @@ jobs:
           }
           "conn=$t" >> $env:GITHUB_OUTPUT
           Write-Host " Final conn-type output: $t"
-            
+                  
       - name: Extract first 4 chars of UUID
         id: tag
+        shell: bash
         run: |
           RAW_UUID="${{ github.event.inputs.uuid }}"
           CLEAN_UUID=$(echo "$RAW_UUID" | tr -d '-')
           SHORT_UUID=${CLEAN_UUID:0:4}
-          echo "tag=$SHORT_UUID" >> $GITHUB_OUTPUT
+          echo "tag=$SHORT_UUID" >> "$GITHUB_OUTPUT"
           
       - name: Set build filename
         id: build_name
