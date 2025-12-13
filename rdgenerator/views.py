@@ -274,9 +274,7 @@ def check_for_file(request):
             'macos': '.dmg',
             'android': '.apk'
         }
-        suffix = ext_map.get(platform, '.exe')
-        display_filename = f"{base_name}-{conn_type}-{short_uuid}{suffix}"
-        return render(request, 'generated.html', {'filename': filename, 'uuid':uuid, 'platform':platform,'display_filename': display_filename})
+        return render(request, 'generated.html', {'filename': filename, 'uuid':uuid, 'platform':platform,'short_uuid': short_uuid,'direction': direction})
     else:
         return render(request, 'waiting.html', {'filename':filename, 'uuid':uuid, 'status':status, 'platform':platform})
 
