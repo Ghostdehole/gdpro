@@ -109,7 +109,7 @@ def generator_view(request):
 
             ###create the custom.txt json here and send in as inputs below
             decodedCustom = {}
-            if direction != "Both":
+            if direction != "both":
                 decodedCustom['conn-type'] = direction
             if installation == "installationN":
                 decodedCustom['disable-installation'] = 'Y'
@@ -269,7 +269,7 @@ def check_for_file(request):
         return render(request, 'waiting.html', {'filename':filename, 'uuid':uuid, 'status':status, 'platform':platform})
 
 def download(request):
-uuid_str = request.GET.get('uuid')
+    uuid_str = request.GET.get('uuid')
     if not uuid_str:
         return HttpResponse("Missing UUID", status=400)
     gh_run = GithubRun.objects.filter(uuid=uuid_str).first()
@@ -281,8 +281,9 @@ uuid_str = request.GET.get('uuid')
     if not build_dir.exists():
         raise Http404("Build files missing")
     actual_file = None
+    valid_suffixes = {'.exe', '.msi', '.dmg', '.deb', '.apk'}
     for f in build_dir.iterdir():
-        if f.is_file() and f.suffix.lower() in ['.exe', '.msi', '.dmg', '.deb', '.apk']:
+        if f.is_file() and f.suffix.lower() in valid_suffixes:
             actual_file = f
             break
     if not actual_file:
@@ -292,7 +293,7 @@ uuid_str = request.GET.get('uuid')
     short_uuid = gh_run.uuid.replace('-', '')[:4] 
     suffix = actual_file.suffix
     download_filename = f"{base_name}-{conn_type}-{short_uuid}{suffix}"
-    safe_filename = quote(download_filename)
+    safe_filename = quote(download_filename)  # 处理特殊字符
     with open(actual_file, 'rb') as f:
         response = HttpResponse(f.read(), content_type='application/octet-stream')
         response['Content-Disposition'] = f'attachment; filename="{safe_filename}"'
@@ -311,7 +312,7 @@ def get_png(request):
 
     return response
 
-def create_github_run(myuuid, filename=filename, direction=direction):
+def create_github_run(myuuid, filename, direction):
     new_github_run = GithubRun(
         uuid=myuuid,
         filename=filename,
