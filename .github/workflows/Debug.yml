@@ -1,0 +1,54 @@
+name: Debug File 
+
+on:
+  workflow_dispatch: 
+jobs:
+  debug:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: 🧪 Create mock files (NO RECOMPILE!)
+        run: |
+          mkdir -p ./SignOutput
+          echo "fake exe" > ./SignOutput/rustdesk.exe
+          echo "fake msi" > ./SignOutput/rustdesk.msi
+          ls -la ./SignOutput/
+
+      - name: Extract conn-type 
+        id: conn
+        shell: pwsh
+        run: |
+          $t = "default"
+          $sanitized = $t -replace '[^a-zA-Z0-9_.-]', '_'
+          "conn=$sanitized" >> $env:GITHUB_OUTPUT
+
+      - name: Gen random tag
+        id: tag
+        shell: pwsh
+        run: |
+          $r = -join ('abcdefghijklmnopqrstuvwxyz0123456789'.ToCharArray() | Get-Random -Count 6)
+          "tag=$r" >> $env:GITHUB_OUTPUT
+
+      - name: Set build filename
+        run: |
+          NAME="LnDesk-${{ steps.conn.outputs.conn }}-${{ steps.tag.outputs.tag }}"
+          echo "BUILD_FILENAME=$NAME" >> $GITHUB_ENV
+          echo "Filename: $NAME"
+
+      - name: Rename EXE
+        run: |
+          mv ./SignOutput/rustdesk.exe "./SignOutput/${BUILD_FILENAME}.exe"
+          ls -la ./SignOutput/
+
+      - name: Verify file exists before upload
+        run: |
+          if [ ! -f "./SignOutput/${BUILD_FILENAME}.exe" ]; then
+            echo "❌ File missing!"
+            exit 1
+          fi
+          echo "✅ File ready for upload"
+
+      - name: 🚫 Skip real upload (debug only)
+        run: echo "Would upload: ./SignOutput/${BUILD_FILENAME}.exe"
