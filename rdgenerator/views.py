@@ -242,7 +242,7 @@ def generator_view(request):
                 'Authorization': 'Bearer '+_settings.GHBEARER,
                 'X-GitHub-Api-Version': '2022-11-28'
             }
-            create_github_run(myuuid)
+            create_github_run(myuuid, filename=filename, direction=direction)
             response = requests.post(url, json=data, headers=headers)
             print(response)
             if response.status_code == 204:
