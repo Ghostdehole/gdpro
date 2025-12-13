@@ -1,43 +1,162 @@
-# .github/workflows/debug-test.yml
-name: Debug File Rename
-
+name: Test No-Build Workflow
+run-name: Test No-Build - ${{ inputs.appname }}
 on:
   workflow_dispatch:
     inputs:
-      filename:
-        description: 'Base name'
+      server:
+        description: 'Rendezvous Server'
         required: true
-        default: 'TestApp'
+        default: 'test.example.com'
+        type: string
+      key:
+        description: 'Public Key'
+        required: true
+        default: 'dummykey1234567890='
+        type: string
+      apiServer:
+        description: 'API Server'
+        required: true
+        default: 'https://api.test.example.com'
+        type: string
+      custom:
+        description: "Custom JSON (base64)"
+        required: true
+        default: 'eyJjb25uLXR5cGUiOiAidGVzdC10eXBlIn0='  # {"conn-type": "test-type"}
+        type: string
+      uuid:
+        description: "uuid of request"
+        required: true
+        default: '12345678-1234-5678-1234-567812345678'
+        type: string
+      iconlink:
+        description: "icon link (JSON string or 'false')"
+        required: false
+        default: 'false'
+        type: string
+      logolink:
+        description: "logo link (JSON string or 'false')"
+        required: false
+        default: 'false'
+        type: string
+      appname:
+        description: "app name"
+        required: true
+        default: 'TestDesk'
+        type: string
+      filename:
+        description: "Filename"
+        required: true
+        default: 'testdesk'
+        type: string
+      extras:
+        description: "extra inputs in json"
+        required: true
+        default: '{"version":"master","gdpro":"true","compname":"TestOrg","urlLink":"https://test.example.com","downloadLink":"https://test.example.com/download","delayFix":"false","cycleMonitor":"false","xOffline":"false","removeNewVersionNotif":"true","token":"dummy-token"}'
         type: string
 
+env:
+  STATUS_URL: "${{ secrets.GENURL }}/updategh"
+
 jobs:
-  test:
+  test-no-build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout (not really needed, but for completeness)
         uses: actions/checkout@v4
 
-      - name: 🧪 Create mock exe
+      - name: Parse and validate inputs
         run: |
-          mkdir -p SignOutput
-          echo "fake binary" > SignOutput/rustdesk.exe
+          echo "=== Input Summary ==="
+          echo "server: ${{ inputs.server }}"
+          echo "key: *** (masked)"
+          echo "apiServer: ${{ inputs.apiServer }}"
+          echo "appname: ${{ inputs.appname }}"
+          echo "filename: ${{ inputs.filename }}"
+          echo "uuid: ${{ inputs.uuid }}"
+          echo "iconlink: ${{ inputs.iconlink }}"
+          echo "logolink: ${{ inputs.logolink }}"
+          echo "custom (base64): ${{ inputs.custom }}"
+          echo "extras: ${{ inputs.extras }}"
 
-      - name: Set filename
+      - name: Set gdpro value
+        if: ${{ fromJson(inputs.extras).gdpro == 'true' }}
         run: |
-          NAME="${{ inputs.filename }}-default-abc123"
-          echo "BUILD_FILENAME=$NAME" >> $GITHUB_ENV
-          echo "Using: $NAME"
+          echo "Using internal GENURL for status"
+          echo "STATUS_URL=${{ secrets.GENURL }}/updategh" >> $GITHUB_ENV
 
-      - name: Rename
+      - name: Set gdpro value (external)
+        if: ${{ fromJson(inputs.extras).gdpro == 'false' }}
         run: |
-          mv SignOutput/rustdesk.exe "SignOutput/${BUILD_FILENAME}.exe"
-          ls -la SignOutput/
+          echo "Using provided API server for status"
+          echo "STATUS_URL=${{ inputs.apiServer }}/api/updategh" >> $GITHUB_ENV
 
-      - name: Confirm file exists
+      - name: Report Status - Start
+        uses: fjogeleit/http-request-action@v1
+        continue-on-error: true
+        with:
+          url: ${{ env.STATUS_URL }}
+          method: 'POST'
+          customHeaders: '{"Content-Type": "application/json"}'
+          data: '{"uuid": "${{ inputs.uuid }}", "status": "5% complete (test mode)"}'
+
+      - name: Simulate custom.txt creation
         run: |
-          if [ -f "SignOutput/${BUILD_FILENAME}.exe" ]; then
-            echo "✅ Success!"
+          echo -n "${{ inputs.custom }}" | base64 -d
+          echo -n "${{ inputs.custom }}" > custom.txt
+          echo "✅ custom.txt created"
+
+      - name: Extract conn-type from custom input
+        id: conn
+        shell: bash
+        run: |
+          CUSTOM_B64="${{ inputs.custom }}"
+          if [[ -z "$CUSTOM_B64" ]]; then
+            CONN_TYPE="default"
           else
-            echo "❌ Failed!"
-            exit 1
+            JSON=$(echo "$CUSTOM_B64" | base64 -d 2>/dev/null || echo '{}')
+            CONN_TYPE=$(echo "$JSON" | jq -r '.["conn-type"] // "default"' 2>/dev/null || echo "default")
           fi
+          SANITIZED=$(echo "$CONN_TYPE" | sed 's/[^a-zA-Z0-9_.-]/_/g')
+          echo "conn=$SANITIZED" >> $GITHUB_OUTPUT
+          echo "Extracted conn-type: $SANITIZED"
+
+      - name: Extract first 4 chars of UUID
+        id: tag
+        shell: bash
+        run: |
+          RAW_UUID="${{ github.event.inputs.uuid }}"
+          CLEAN_UUID=$(echo "$RAW_UUID" | tr -d '-')
+          SHORT_UUID=${CLEAN_UUID:0:4}
+          echo "tag=$SHORT_UUID" >> "$GITHUB_OUTPUT"
+          echo "Short UUID: $SHORT_UUID"
+
+      - name: Set build filename
+        id: build_name
+        shell: bash
+        run: |
+          NAME="${{ inputs.filename }}-${{ steps.conn.outputs.conn }}-${{ steps.tag.outputs.tag }}"
+          echo "BUILD_FILENAME=$NAME" >> "$GITHUB_ENV"
+          echo "value=$NAME" >> "$GITHUB_OUTPUT"
+          echo "✅ Build filename set to: $NAME"
+
+      - name: Simulate file generation
+        run: |
+          touch "${{ steps.build_name.outputs.value }}.exe"
+          touch "${{ steps.build_name.outputs.value }}.msi"
+          ls -l
+
+      - name: Report Success
+        uses: fjogeleit/http-request-action@v1
+        continue-on-error: true
+        with:
+          url: ${{ env.STATUS_URL }}
+          method: 'POST'
+          customHeaders: '{"Content-Type": "application/json"}'
+          data: '{"uuid": "${{ inputs.uuid }}", "status": "Success (test mode)"}'
+
+      - name: Final output
+        run: |
+          echo "🎉 Test workflow completed successfully!"
+          echo "Generated fake files:"
+          echo "  - ${{ steps.build_name.outputs.value }}.exe"
+          echo "  - ${{ steps.build_name.outputs.value }}.msi"
