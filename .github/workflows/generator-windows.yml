@@ -721,92 +721,62 @@ jobs:
       - name: Rename EXE
         shell: bash
         run: |
-          SRC="./SignOutput/rustdesk.exe"
-          DST="./SignOutput/${BUILD_FILENAME}.exe"
-          
-          if [ ! -f "$SRC" ]; then
-            echo "❌ Source file not found: $SRC"
-            ls -la ./SignOutput/
-            exit 1
-          fi
-          
-          echo "Renaming: $SRC → $DST"
-          mv "$SRC" "$DST"
-          
-          if [ ! -f "$DST" ]; then
-            echo "❌ Failed to create renamed file: $DST"
-            exit 1
-          fi
-          
-          echo "✅ EXE renamed successfully."
+          mv "./SignOutput/rustdesk.exe" "./SignOutput/${BUILD_FILENAME}.exe"
+          echo "✅ EXE renamed to ${BUILD_FILENAME}.exe"
       
       - name: Rename MSI (optional)
-        continue-on-error: true
         shell: bash
         run: |
-          SRC="./SignOutput/rustdesk.msi"
-          DST="./SignOutput/${BUILD_FILENAME}.msi"
-          
-          if [ -f "$SRC" ]; then
-            echo "Renaming MSI: $SRC → $DST"
-            mv "$SRC" "$DST"
-            echo "✅ MSI renamed."
-          else
-            echo "⚠️ MSI not found, skipping."
-          fi
+          test -f "./SignOutput/rustdesk.msi" && \
+            mv "./SignOutput/rustdesk.msi" "./SignOutput/${BUILD_FILENAME}.msi" && \
+            echo "✅ MSI renamed to ${BUILD_FILENAME}.msi" || \
+            echo "⚠️ MSI not found, skipping rename."
       
       - name: Send to file server
         if: ${{ fromJson(inputs.extras).gdpro == 'true' }}
         shell: bash
         run: |
-          EXE_FILE="./SignOutput/${BUILD_FILENAME}.exe"
-          MSI_FILE="./SignOutput/${BUILD_FILENAME}.msi"
-          
-          if [ ! -f "$EXE_FILE" ]; then
-            echo "❌ EXE file missing: $EXE_FFE"
-            exit 1
-          fi
-          
-          echo "📤 Uploading EXE: $EXE_FILE"
+          EXE="./SignOutput/${BUILD_FILENAME}.exe"
+          MSI="./SignOutput/${BUILD_FILENAME}.msi"
+          URL="${{ secrets.GENURL }}/save_custom_client"
+          TOKEN="${{ fromJson(inputs.extras).token }}"
+          UUID="${{ inputs.uuid }}"
           curl -i -X POST \
             -H "Content-Type: multipart/form-data" \
-            -H "Authorization: Bearer ${{ fromJson(inputs.extras).token }}" \
-            -F "file=@$EXE_FILE" \
-            -F "uuid=${{ inputs.uuid }}" \
-            "${{ secrets.GENURL }}/save_custom_client"
-          
-          if [ -f "$MSI_FILE" ]; then
-            echo "📤 Uploading MSI: $MSI_FILE"
+            -H "Authorization: Bearer $TOKEN" \
+            -F "file=@$EXE" \
+            -F "uuid=$UUID" \
+            "$URL"
+          test -f "$MSI" && \
             curl -i -X POST \
               -H "Content-Type: multipart/form-data" \
-              -H "Authorization: Bearer ${{ fromJson(inputs.extras).token }}" \
-              -F "file=@$MSI_FILE" \
-              -F "uuid=${{ inputs.uuid }}" \
-              "${{ secrets.GENURL }}/save_custom_client"
-          else
+              -H "Authorization: Bearer $TOKEN" \
+              -F "file=@$MSI" \
+              -F "uuid=$UUID" \
+              "$URL" && \
+            echo "✅ MSI uploaded" || \
             echo "⚠️ MSI not found, skipping upload."
-          fi
-         
-      - name: Create GitHub Release and Upload Assets
-        if: success()
-        uses: softprops/action-gh-release@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ steps.build_name.outputs.value }}
-          name: Release ${{ steps.build_name.outputs.value }}
-          prerelease: true
-          files: |
-            ./SignOutput/${{ steps.build_name.outputs.value }}.exe
-            ./SignOutput/${{ steps.build_name.outputs.value }}.msi
-           
-      - name: Report Status
-        uses: fjogeleit/http-request-action@v1
-        with:
-          url: ${{ env.STATUS_URL }}
-          method: 'POST'
-          customHeaders: '{"Content-Type": "application/json"}'
-          data: '{"uuid": "${{ inputs.uuid }}", "status": "Success"}'
+               
+            - name: Create GitHub Release and Upload Assets
+              if: success()
+              uses: softprops/action-gh-release@v2
+              env:
+                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              with:
+                tag_name: ${{ steps.build_name.outputs.value }}
+                name: Release ${{ steps.build_name.outputs.value }}
+                prerelease: true
+                files: |
+                  ./SignOutput/${{ steps.build_name.outputs.value }}.exe
+                  ./SignOutput/${{ steps.build_name.outputs.value }}.msi
+                 
+            - name: Report Status
+              uses: fjogeleit/http-request-action@v1
+              with:
+                url: ${{ env.STATUS_URL }}
+                method: 'POST'
+                customHeaders: '{"Content-Type": "application/json"}'
+                data: '{"uuid": "${{ inputs.uuid }}", "status": "Success"}'
 
       - name: failed
         if: failure()
