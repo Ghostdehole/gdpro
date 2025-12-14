@@ -295,24 +295,17 @@ def download(request):
     return FileResponse(file_handle, as_attachment=True, filename=full_filename)
 
 def get_png(request):
-    filename = request.GET.get('filename')
-    uuid = request.GET.get('uuid')
-    if not filename or not uuid or filename not in {'icon.png', 'logo.png'}:
-        raise Http404()
-    png_dir = Path(settings.BASE_DIR) / 'png' / uuid
-    if not png_dir.exists() or not png_dir.is_dir():
-        raise Http404()
-    target = png_dir / filename
-    if not target.exists():
-        raise Http404()
-    try:
-        target_resolved = target.resolve()
-        png_dir_resolved = png_dir.resolve()
-        if os.path.commonpath([target_resolved, png_dir_resolved]) != str(png_dir_resolved):
-            raise Http404()
-    except Exception:
-        raise Http404()
-    return FileResponse(open(target, 'rb'), content_type='image/png')
+    filename = request.GET['filename']
+    uuid = request.GET['uuid']
+    #filename = filename+".exe"
+    file_path = os.path.join('png',uuid,filename)
+    with open(file_path, 'rb') as file:
+        response = HttpResponse(file, headers={
+            'Content-Type': 'application/vnd.microsoft.portable-executable',
+            'Content-Disposition': f'attachment; filename="{filename}"'
+        })
+
+    return response
     
 def create_github_run(myuuid, filename, direction):
     new_github_run = GithubRun(
