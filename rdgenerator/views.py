@@ -9,12 +9,14 @@ import requests
 import base64
 import json
 import uuid
-from django.conf import settings as _settings
+from django.conf import settings
 from django.db.models import Q
 from .forms import GenerateForm
 from .models import GithubRun
 from PIL import Image
 from urllib.parse import quote
+from django.http import HttpResponse, Http404, FileResponse
+
 
 def generator_view(request):
     if request.method == 'POST':
@@ -87,7 +89,7 @@ def generator_view(request):
             if not all(char.isascii() for char in appname):
                 appname = "rustdesk"
             myuuid = str(uuid.uuid4())
-            protocol = _settings.PROTOCOL
+            protocol = settings.PROTOCOL
             host = request.get_host()
             full_url = f"{protocol}://{host}"
             try:
@@ -190,7 +192,7 @@ def generator_view(request):
 
             #github limits inputs to 10, so lump extras into one with json
             extras = {}
-            extras['genurl'] = _settings.GENURL
+            extras['genurl'] = settings.GENURL
             #extras['runasadmin'] = runasadmin
             extras['urlLink'] = urlLink
             extras['downloadLink'] = downloadLink
@@ -205,19 +207,19 @@ def generator_view(request):
 
             ####from here run the github action, we need user, repo, access token.
             if platform == 'windows':
-                url = 'https://api.github.com/repos/'+_settings.GHUSER+'/'+_settings.REPONAME+'/actions/workflows/generator-windows.yml/dispatches'
+                url = 'https://api.github.com/repos/'+settings.GHUSER+'/'+settings.REPONAME+'/actions/workflows/generator-windows.yml/dispatches'
             if platform == 'windows-x86':
-                url = 'https://api.github.com/repos/'+_settings.GHUSER+'/'+_settings.REPONAME+'/actions/workflows/generator-windows-x86.yml/dispatches'
+                url = 'https://api.github.com/repos/'+settings.GHUSER+'/'+settings.REPONAME+'/actions/workflows/generator-windows-x86.yml/dispatches'
             elif platform == 'linux':
-                url = 'https://api.github.com/repos/'+_settings.GHUSER+'/'+_settings.REPONAME+'/actions/workflows/generator-linux.yml/dispatches'
+                url = 'https://api.github.com/repos/'+settings.GHUSER+'/'+settings.REPONAME+'/actions/workflows/generator-linux.yml/dispatches'
             elif platform == 'android':
-                url = 'https://api.github.com/repos/'+_settings.GHUSER+'/'+_settings.REPONAME+'/actions/workflows/generator-android.yml/dispatches'
+                url = 'https://api.github.com/repos/'+settings.GHUSER+'/'+settings.REPONAME+'/actions/workflows/generator-android.yml/dispatches'
             elif platform == 'macos':
-                url = 'https://api.github.com/repos/'+_settings.GHUSER+'/'+_settings.REPONAME+'/actions/workflows/generator-macos.yml/dispatches'
+                url = 'https://api.github.com/repos/'+settings.GHUSER+'/'+settings.REPONAME+'/actions/workflows/generator-macos.yml/dispatches'
             else:
-                url = 'https://api.github.com/repos/'+_settings.GHUSER+'/'+_settings.REPONAME+'/actions/workflows/generator-windows.yml/dispatches'
+                url = 'https://api.github.com/repos/'+settings.GHUSER+'/'+settings.REPONAME+'/actions/workflows/generator-windows.yml/dispatches'
 
-            #url = 'https://api.github.com/repos/'+_settings.GHUSER+'/rustdesk/actions/workflows/test.yml/dispatches'  
+            #url = 'https://api.github.com/repos/'+settings.GHUSER+'/rustdesk/actions/workflows/test.yml/dispatches'  
             data = {
                 "ref":"master",
                 "inputs":{
@@ -239,7 +241,7 @@ def generator_view(request):
             headers = {
                 'Accept':  'application/vnd.github+json',
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer '+_settings.GHBEARER,
+                'Authorization': 'Bearer '+settings.GHBEARER,
                 'X-GitHub-Api-Version': '2022-11-28'
             }
             create_github_run(myuuid, filename=filename, direction=direction)
@@ -272,48 +274,46 @@ def check_for_file(request):
 
 def download(request):
     uuid_str = request.GET.get('uuid')
-    if not uuid_str:
-        return HttpResponse("Missing UUID", status=400)
+    full_filename = request.GET.get('filename')
+    if not uuid_str or not full_filename:
+        return HttpResponse("Missing UUID or filename", status=400)
     gh_run = GithubRun.objects.filter(uuid=uuid_str).first()
-    if not gh_run:
-        raise Http404("Build not found")
-    if gh_run.status != "Success":
+    if not gh_run or gh_run.status != "Success":
         return HttpResponse("Build not ready", status=409)
-    build_dir = Path(_settings.BASE_DIR) / 'exe' / uuid_str
-    if not build_dir.exists():
-        raise Http404("Build files missing")
-    actual_file = None
-    valid_suffixes = {'.exe', '.msi', '.dmg', '.deb', '.apk'}
-    for f in build_dir.iterdir():
-        if f.is_file() and f.suffix.lower() in valid_suffixes:
-            actual_file = f
-            break
-    if not actual_file:
-        raise Http404("No executable file found")
-    base_name = gh_run.filename or "rustdesk"
-    conn_type = gh_run.direction.lower()  # incoming / outgoing / both
-    short_uuid = gh_run.uuid.replace('-', '')[:4] 
-    suffix = actual_file.suffix
-    download_filename = f"{base_name}-{conn_type}-{short_uuid}{suffix}"
-    safe_filename = quote(download_filename)  # 处理特殊字符
-    with open(actual_file, 'rb') as f:
-        response = HttpResponse(f.read(), content_type='application/octet-stream')
-        response['Content-Disposition'] = f'attachment; filename="{safe_filename}"'
-        return response
+    build_dir = Path(settings.BASE_DIR) / 'exe' / uuid_str
+    target_file = build_dir / full_filename
+    try:
+        target_file = target_file.resolve()
+        build_dir_resolved = build_dir.resolve()
+        if os.path.commonpath([target_file, build_dir_resolved]) != str(build_dir_resolved):
+            raise Http404("Access denied")
+    except Exception:
+        raise Http404("Invalid path")
+    if not target_file.exists():
+        return HttpResponse(f"File not found: {full_filename}", status=404)
+    file_handle = open(target_file, 'rb')
+    return FileResponse(file_handle, as_attachment=True, filename=full_filename)
 
 def get_png(request):
-    filename = request.GET['filename']
-    uuid = request.GET['uuid']
-    #filename = filename+".exe"
-    file_path = os.path.join('png',uuid,filename)
-    with open(file_path, 'rb') as file:
-        response = HttpResponse(file, headers={
-            'Content-Type': 'application/vnd.microsoft.portable-executable',
-            'Content-Disposition': f'attachment; filename="{filename}"'
-        })
-
-    return response
-
+    filename = request.GET.get('filename')
+    uuid = request.GET.get('uuid')
+    if not filename or not uuid or filename not in {'icon.png', 'logo.png'}:
+        raise Http404()
+    png_dir = Path(settings.BASE_DIR) / 'png' / uuid
+    if not png_dir.exists() or not png_dir.is_dir():
+        raise Http404()
+    target = png_dir / filename
+    if not target.exists():
+        raise Http404()
+    try:
+        target_resolved = target.resolve()
+        png_dir_resolved = png_dir.resolve()
+        if os.path.commonpath([target_resolved, png_dir_resolved]) != str(png_dir_resolved):
+            raise Http404()
+    except Exception:
+        raise Http404()
+    return FileResponse(open(target, 'rb'), content_type='image/png')
+    
 def create_github_run(myuuid, filename, direction):
     new_github_run = GithubRun(
         uuid=myuuid,
@@ -374,7 +374,7 @@ def startgh(request):
     #print(request)
     data_ = json.loads(request.body)
     ####from here run the github action, we need user, repo, access token.
-    url = 'https://api.github.com/repos/'+_settings.GHUSER+'/'+_settings.REPONAME+'/actions/workflows/generator-'+data_.get('platform')+'.yml/dispatches'  
+    url = 'https://api.github.com/repos/'+settings.GHUSER+'/'+settings.REPONAME+'/actions/workflows/generator-'+data_.get('platform')+'.yml/dispatches'  
     data = {
         "ref":"master",
         "inputs":{
@@ -393,7 +393,7 @@ def startgh(request):
     headers = {
         'Accept':  'application/vnd.github+json',
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer '+_settings.GHBEARER,
+        'Authorization': 'Bearer '+settings.GHBEARER,
         'X-GitHub-Api-Version': '2022-11-28'
     }
     response = requests.post(url, json=data, headers=headers)
