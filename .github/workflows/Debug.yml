@@ -1,5 +1,6 @@
-name: Test No-Build Workflow
-run-name: Test No-Build - ${{ inputs.appname }}
+name: Test Upload-Only Workflow
+run-name: Test Upload - ${{ inputs.appname }}
+
 on:
   workflow_dispatch:
     inputs:
@@ -21,7 +22,7 @@ on:
       custom:
         description: "Custom JSON (base64)"
         required: true
-        default: 'eyJjb25uLXR5cGUiOiAidGVzdC10eXBlIn0='  # {"conn-type": "test-type"}
+        default: 'eyJjb25uLXR5cGUiOiAidGVzdC10eXBlIn0=' # {"conn-type": "test-type"}
         type: string
       uuid:
         description: "uuid of request"
@@ -55,41 +56,34 @@ on:
         type: string
 
 env:
-  STATUS_URL: "${{ secrets.GENURL }}/updategh"
+  # --- 从 generator-windows.txt 复用的关键 env ---
+  SCITER_RUST_VERSION: "1.75"
+  RUST_VERSION: "1.75"
+  FLUTTER_VERSION: "3.24.5"
+  VERSION: "${{ fromJson(inputs.extras).version }}"
+  UPLOAD_ARTIFACT: 'true'
+  STATUS_URL: "${{ secrets.GENURL }}/updategh"  # 默认值，下面会根据 gdpro 覆盖
 
 jobs:
-  test-no-build:
+  test-upload:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout (not really needed, but for completeness)
+      - name: Checkout (for completeness)
         uses: actions/checkout@v4
 
-      - name: Parse and validate inputs
-        run: |
-          echo "=== Input Summary ==="
-          echo "server: ${{ inputs.server }}"
-          echo "key: *** (masked)"
-          echo "apiServer: ${{ inputs.apiServer }}"
-          echo "appname: ${{ inputs.appname }}"
-          echo "filename: ${{ inputs.filename }}"
-          echo "uuid: ${{ inputs.uuid }}"
-          echo "iconlink: ${{ inputs.iconlink }}"
-          echo "logolink: ${{ inputs.logolink }}"
-          echo "custom (base64): ${{ inputs.custom }}"
-          echo "extras: ${{ inputs.extras }}"
-
-      - name: Set gdpro value
+      # === Step 1: 设置 STATUS_URL（与 generator-windows 逻辑一致）===
+      - name: Set STATUS_URL for gdpro=true
         if: ${{ fromJson(inputs.extras).gdpro == 'true' }}
         run: |
-          echo "Using internal GENURL for status"
-          echo "STATUS_URL=${{ secrets.GENURL }}/updategh" >> $GITHUB_ENV
+          echo "STATUS_URL=${{ secrets.GENURL }}/updategh" >> "$GITHUB_ENV"
 
-      - name: Set gdpro value (external)
+      - name: Set STATUS_URL for gdpro=false
         if: ${{ fromJson(inputs.extras).gdpro == 'false' }}
         run: |
-          echo "Using provided API server for status"
-          echo "STATUS_URL=${{ inputs.apiServer }}/api/updategh" >> $GITHUB_ENV
+          echo "STATUS_URL=${{ inputs.apiServer }}/api/updategh" >> "$GITHUB_ENV"
 
+      # === Step 2: 上报状态（模拟开始）===
       - name: Report Status - Start
         uses: fjogeleit/http-request-action@v1
         continue-on-error: true
@@ -97,15 +91,17 @@ jobs:
           url: ${{ env.STATUS_URL }}
           method: 'POST'
           customHeaders: '{"Content-Type": "application/json"}'
-          data: '{"uuid": "${{ inputs.uuid }}", "status": "5% complete (test mode)"}'
+          data: '{"uuid": "${{ inputs.uuid }}", "status": "5% complete (upload test)"}'
 
-      - name: Simulate custom.txt creation
+      # === Step 3: 创建 custom.txt（与 generator-windows 一致）===
+      - name: Create custom.txt file
+        shell: bash
         run: |
-          echo -n "${{ inputs.custom }}" | base64 -d
-          echo -n "${{ inputs.custom }}" > custom.txt
+          echo -n "${{ inputs.custom }}" > ./custom.txt
           echo "✅ custom.txt created"
 
-      - name: Extract conn-type from custom input
+      # === Step 4: 提取 conn-type（与 generator-windows 完全一致）===
+      - name: Extract conn-type
         id: conn
         shell: bash
         run: |
@@ -117,9 +113,9 @@ jobs:
             CONN_TYPE=$(echo "$JSON" | jq -r '.["conn-type"] // "default"' 2>/dev/null || echo "default")
           fi
           SANITIZED=$(echo "$CONN_TYPE" | sed 's/[^a-zA-Z0-9_.-]/_/g')
-          echo "conn=$SANITIZED" >> $GITHUB_OUTPUT
-          echo "Extracted conn-type: $SANITIZED"
+          echo "conn=$SANITIZED" >> "$GITHUB_OUTPUT"
 
+      # === Step 5: 提取 UUID 前4位（与 generator-windows 完全一致）===
       - name: Extract first 4 chars of UUID
         id: tag
         shell: bash
@@ -128,8 +124,8 @@ jobs:
           CLEAN_UUID=$(echo "$RAW_UUID" | tr -d '-')
           SHORT_UUID=${CLEAN_UUID:0:4}
           echo "tag=$SHORT_UUID" >> "$GITHUB_OUTPUT"
-          echo "Short UUID: $SHORT_UUID"
 
+      # === Step 6: 设置 BUILD_FILENAME（与 generator-windows 完全一致）===
       - name: Set build filename
         id: build_name
         shell: bash
@@ -139,12 +135,67 @@ jobs:
           echo "value=$NAME" >> "$GITHUB_OUTPUT"
           echo "✅ Build filename set to: $NAME"
 
-      - name: Simulate file generation
+      # === Step 7: 模拟生成 EXE/MSI 文件（代替真实构建）===
+      - name: Simulate EXE and MSI generation
+        shell: bash
         run: |
-          touch "${{ steps.build_name.outputs.value }}.exe"
-          touch "${{ steps.build_name.outputs.value }}.msi"
-          ls -l
+          mkdir -p SignOutput
+          # 创建假 EXE（带一点内容避免空文件）
+          echo "// Fake EXE for testing upload logic" > "SignOutput/${{ steps.build_name.outputs.value }}.exe"
+          chmod +x "SignOutput/${{ steps.build_name.outputs.value }}.exe"
+          # 创建假 MSI
+          echo "// Fake MSI for testing upload logic" > "SignOutput/${{ steps.build_name.outputs.value }}.msi"
+          ls -l SignOutput/
 
+      # === Step 8: 【核心】复用 generator-windows 的上传逻辑 ===
+      - name: Send to file server (gdpro mode)
+        if: ${{ fromJson(inputs.extras).gdpro == 'true' }}
+        shell: bash
+        env:
+          BUILD_FILENAME: ${{ steps.build_name.outputs.value }}
+        run: |
+          EXE="./SignOutput/${BUILD_FILENAME}.exe"
+          MSI="./SignOutput/${BUILD_FILENAME}.msi"
+          URL="${{ secrets.GENURL }}/save_custom_client"
+          TOKEN="${{ fromJson(inputs.extras).token }}"
+          UUID="${{ inputs.uuid }}"
+
+          # 上传 EXE
+          curl -i -X POST \
+            -H "Content-Type: multipart/form-data" \
+            -H "Authorization: Bearer $TOKEN" \
+            -F "file=@$EXE" \
+            -F "uuid=$UUID" \
+            "$URL"
+
+          # 上传 MSI（如果存在）
+          if [ -f "$MSI" ]; then
+            curl -i -X POST \
+              -H "Content-Type: multipart/form-data" \
+              -H "Authorization: Bearer $TOKEN" \
+              -F "file=@$MSI" \
+              -F "uuid=$UUID" \
+              "$URL"
+            echo "✅ MSI uploaded"
+          else
+            echo "⚠️ MSI not found, skipping upload."
+          fi
+
+      # === Step 9: 如果不是 gdpro 模式，上传到 GitHub Release（可选）===
+      - name: Create GitHub Release and Upload Assets (non-gdpro)
+        if: ${{ fromJson(inputs.extras).gdpro != 'true' }}
+        uses: softprops/action-gh-release@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.build_name.outputs.value }}
+          name: Test Release ${{ steps.build_name.outputs.value }}
+          prerelease: true
+          files: |
+            ./SignOutput/${{ steps.build_name.outputs.value }}.exe
+            ./SignOutput/${{ steps.build_name.outputs.value }}.msi
+
+      # === Step 10: 上报成功状态 ===
       - name: Report Success
         uses: fjogeleit/http-request-action@v1
         continue-on-error: true
@@ -152,11 +203,9 @@ jobs:
           url: ${{ env.STATUS_URL }}
           method: 'POST'
           customHeaders: '{"Content-Type": "application/json"}'
-          data: '{"uuid": "${{ inputs.uuid }}", "status": "Success (test mode)"}'
+          data: '{"uuid": "${{ inputs.uuid }}", "status": "Success (upload test)"}'
 
-      - name: Final output
+      - name: Final Summary
         run: |
-          echo "🎉 Test workflow completed successfully!"
-          echo "Generated fake files:"
-          echo "  - ${{ steps.build_name.outputs.value }}.exe"
-          echo "  - ${{ steps.build_name.outputs.value }}.msi"
+          echo "🎉 Upload-only test completed!"
+          echo "File: ${{ steps.build_name.outputs.value }}.{exe,msi}"
