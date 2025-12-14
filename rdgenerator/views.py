@@ -271,7 +271,7 @@ def check_for_file(request):
         return render(request, 'generated.html', {'filename': filename, 'uuid':uuid, 'platform':platform,'short_uuid': short_uuid,'direction': direction})
     else:
         return render(request, 'waiting.html', {'filename':filename, 'uuid':uuid, 'status':status, 'platform':platform})
-
+//12.14
 def download(request):
     uuid_str = request.GET.get('uuid')
     full_filename = request.GET.get('filename')
