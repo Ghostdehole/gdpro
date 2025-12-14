@@ -769,7 +769,7 @@ jobs:
               -F "uuid=$UUID" \
               "$URL" && \
             echo "✅ MSI uploaded" || \
-            echo "⚠️ MSI not found, skipping upload.
+            echo "⚠️ MSI not found, skipping upload."
            
       - name: Report Status
         uses: fjogeleit/http-request-action@v1
