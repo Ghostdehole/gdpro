@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <title id="pageTitle">Loading...</title>
+  <meta charset="UTF-8">
+  <title id="pageTitle">构建已成功生成</title>
   <style>
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
@@ -14,26 +14,6 @@
       margin: 0;
       text-align: center;
       background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-    }
-    .lang-switcher {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      font-size: 14px;
-      color: #333;
-    }
-    .lang-btn {
-      margin-left: 8px;
-      padding: 4px 8px;
-      background: #eee;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 14px;
-    }
-    .lang-btn.active {
-      background: #3498db;
-      color: white;
     }
     .platform-logo {
       width: 150px;
@@ -83,16 +63,6 @@
 </head>
 <body>
 
-<!-- 语言切换 -->
-<div class="lang-switcher">
-  <span id="langLabel">Language:</span>
-  <button class="lang-btn" data-lang="en">English</button>
-  <button class="lang-btn" data-lang="zh">中文</button>
-</div>
-
-<!-- 平台 Logo（保留原有 SVG） -->
-{% include "logos.html" %} <!-- 或直接内联你的四个 <svg> -->
-
 <svg id="windowsLogo" class="platform-logo" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg">
   <defs><linearGradient id="windowsGradient" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#00A4EF;stop-opacity:1" /><stop offset="100%" style="stop-color:#0078D7;stop-opacity:1" /></linearGradient></defs>
   <rect width="256" height="256" rx="50" ry="50" fill="url(#windowsGradient)"/>
@@ -122,162 +92,77 @@
 </svg>
 
 <div>
-  <h2 class="success-text" id="successText">Loading...</h2>
-  <div class="download-section" id="downloadSection">
-    <!-- 下载链接将由 JS + Jinja2 共同生成 -->
+  <h2 class="success-text">构建已成功生成</h2>
+  <div class="download-section">
     {% if platform == 'windows' %}
-      <a href="/download?filename={{ filename }}-{{ direction }}-{{ short_uuid }}.exe&uuid={{ uuid }}" class="download-link" data-key="downloadExe"></a>
-      <a href="/download?filename={{ filename }}-{{ direction }}-{{ short_uuid }}.msi&uuid={{ uuid }}" class="download-link" data-key="downloadMsi"></a>
+      <a href="/download?filename={{ filename }}-{{ direction }}-{{ short_uuid }}.exe&uuid={{ uuid }}" class="download-link">下载 {{ filename }}-{{ direction }}-{{ short_uuid }} (.exe)</a>
+      <a href="/download?filename={{ filename }}-{{ direction }}-{{ short_uuid }}.msi&uuid={{ uuid }}" class="download-link">下载 {{ filename }}-{{ direction }}-{{ short_uuid }} (.msi)</a>
     {% elif platform == 'windows-x86' %}
-      <a href='/download?filename={{filename}}.exe&uuid={{uuid}}' class="download-link" data-key="downloadExeSimple"></a>
+      <a href='/download?filename={{filename}}.exe&uuid={{uuid}}' class="download-link">下载 {{filename}}.exe</a>
     {% elif platform == 'linux' %}
-      <a href='/download?filename={{filename}}-x86_64.deb&uuid={{uuid}}' class="download-link" data-fmt="deb" data-arch="x86_64"></a>
-      <a href='/download?filename={{filename}}-x86_64.rpm&uuid={{uuid}}' class="download-link" data-fmt="rpm" data-arch="x86_64"></a>
-      <a href='/download?filename={{filename}}-suse-x86_64.rpm&uuid={{uuid}}' class="download-link" data-fmt="suse-rpm" data-arch="x86_64"></a>
-      <a href='/download?filename={{filename}}-x86_64.pkg.tar.zst&uuid={{uuid}}' class="download-link" data-fmt="pkg.tar.zst" data-arch="x86_64"></a>
-      <a href='/download?filename={{filename}}-aarch64.deb&uuid={{uuid}}' class="download-link" data-fmt="deb" data-arch="aarch64"></a>
-      <a href='/download?filename={{filename}}-aarch64.rpm&uuid={{uuid}}' class="download-link" data-fmt="rpm" data-arch="aarch64"></a>
-      <a href='/download?filename={{filename}}-suse-aarch64.rpm&uuid={{uuid}}' class="download-link" data-fmt="suse-rpm" data-arch="aarch64"></a>
-      <a href='/download?filename={{filename}}-aarch64.pkg.tar.zst&uuid={{uuid}}' class="download-link" data-fmt="pkg.tar.zst" data-arch="aarch64"></a>
-      <a href='/download?filename={{filename}}-x86_64.AppImage&uuid={{uuid}}' class="download-link" data-fmt="AppImage" data-arch="x86_64"></a>
-      <a href='/download?filename={{filename}}-aarch64.AppImage&uuid={{uuid}}' class="download-link" data-fmt="AppImage" data-arch="aarch64"></a>
-      <a href='/download?filename={{filename}}-x86_64.flatpak&uuid={{uuid}}' class="download-link" data-fmt="flatpak" data-arch="x86_64"></a>
-      <a href='/download?filename={{filename}}-aarch64.flatpak&uuid={{uuid}}' class="download-link" data-fmt="flatpak" data-arch="aarch64"></a>
+      <a href='/download?filename={{filename}}-x86_64.deb&uuid={{uuid}}' class="download-link">下载 {{filename}}-x86_64.deb</a>
+      <a href='/download?filename={{filename}}-x86_64.rpm&uuid={{uuid}}' class="download-link">下载 {{filename}}-x86_64.rpm</a>
+      <a href='/download?filename={{filename}}-suse-x86_64.rpm&uuid={{uuid}}' class="download-link">下载 {{filename}}-suse-x86_64.rpm</a>
+      <a href='/download?filename={{filename}}-x86_64.pkg.tar.zst&uuid={{uuid}}' class="download-link">下载 {{filename}}-x86_64.pkg.tar.zst</a>
+      <a href='/download?filename={{filename}}-aarch64.deb&uuid={{uuid}}' class="download-link">下载 {{filename}}-aarch64.deb</a>
+      <a href='/download?filename={{filename}}-aarch64.rpm&uuid={{uuid}}' class="download-link">下载 {{filename}}-aarch64.rpm</a>
+      <a href='/download?filename={{filename}}-suse-aarch64.rpm&uuid={{uuid}}' class="download-link">下载 {{filename}}-suse-aarch64.rpm</a>
+      <a href='/download?filename={{filename}}-aarch64.pkg.tar.zst&uuid={{uuid}}' class="download-link">下载 {{filename}}-aarch64.pkg.tar.zst</a>
+      <a href='/download?filename={{filename}}-x86_64.AppImage&uuid={{uuid}}' class="download-link">下载 {{filename}}-x86_64.AppImage</a>
+      <a href='/download?filename={{filename}}-aarch64.AppImage&uuid={{uuid}}' class="download-link">下载 {{filename}}-aarch64.AppImage</a>
+      <a href='/download?filename={{filename}}-x86_64.flatpak&uuid={{uuid}}' class="download-link">下载 {{filename}}-x86_64.flatpak</a>
+      <a href='/download?filename={{filename}}-aarch64.flatpak&uuid={{uuid}}' class="download-link">下载 {{filename}}-aarch64.flatpak</a>
     {% elif platform == 'android' %}
-      <a href='/download?filename={{filename}}-aarch64.apk&uuid={{uuid}}' class="download-link" data-fmt="apk" data-arch="aarch64"></a>
-      <a href='/download?filename={{filename}}-x86_64.apk&uuid={{uuid}}' class="download-link" data-fmt="apk" data-arch="x86_64"></a>
-      <a href='/download?filename={{filename}}-armv7.apk&uuid={{uuid}}' class="download-link" data-fmt="apk" data-arch="armv7"></a>
+      <a href='/download?filename={{filename}}-aarch64.apk&uuid={{uuid}}' class="download-link">下载 {{filename}}-aarch64.apk</a>
+      <a href='/download?filename={{filename}}-x86_64.apk&uuid={{uuid}}' class="download-link">下载 {{filename}}-x86_64.apk</a>
+      <a href='/download?filename={{filename}}-armv7.apk&uuid={{uuid}}' class="download-link">下载 {{filename}}-armv7.apk</a>
     {% elif platform == 'macos' %}
-      <a href='/download?filename={{filename}}-x86_64.dmg&uuid={{uuid}}' class="download-link" data-fmt="dmg" data-arch="x86_64"></a>
-      <a href='/download?filename={{filename}}-aarch64.dmg&uuid={{uuid}}' class="download-link" data-fmt="dmg" data-arch="aarch64"></a>
+      <a href='/download?filename={{filename}}-x86_64.dmg&uuid={{uuid}}' class="download-link">下载 {{filename}}-x86_64.dmg</a>
+      <a href='/download?filename={{filename}}-aarch64.dmg&uuid={{uuid}}' class="download-link">下载 {{filename}}-aarch64.dmg</a>
     {% else %}
-      <p id="errorNoFile">Error: No file generated</p>
+      <p>错误：未生成任何文件</p>
     {% endif %}
   </div>
 </div>
 <div id="platformNote" class="platform-note"></div>
 
 <script>
-// ========================
-// 获取模板变量（Jinja2 渲染后）
-// ========================
-const templateVars = {
-  filename: "{{ filename }}",
-  direction: "{{ direction }}",
-  short_uuid: "{{ short_uuid }}"
-};
-const platform = "{{ platform }}".toLowerCase();
-
-// ========================
-// 工具函数
-// ========================
-function replacePlaceholders(str, vars) {
-  return str.replace(/\{\{(\w+)\}\}/g, (match, key) => vars[key] || match);
-}
-
-// ========================
-// 加载语言包
-// ========================
-let currentLang = 'en';
-let translations = {};
-
-async function loadLanguage(lang) {
-  try {
-    const res = await fetch(`/locales/${lang}.json`);
-    if (!res.ok) throw new Error();
-    translations = await res.json();
-    currentLang = lang;
-    applyTranslations();
-    localStorage.setItem('selectedLang', lang);
-  } catch (e) {
-    console.warn(`Failed to load ${lang}, fallback to en`);
-    if (lang !== 'en') loadLanguage('en');
-  }
-}
-
-// ========================
-// 应用翻译
-// ========================
-function applyTranslations() {
-  const t = translations;
-  document.documentElement.lang = currentLang === 'zh' ? 'zh-CN' : 'en';
-
-  // 标题 & 主文本
-  document.getElementById('pageTitle').textContent = t.success || 'Build Generated';
-  document.getElementById('successText').textContent = t.success || 'Build Generated';
-
-  // 语言标签
-  document.getElementById('langLabel').textContent = t.langLabel || (currentLang === 'zh' ? '语言：' : 'Language:');
-
-  // Windows 特定文本
-  const exeLink = document.querySelector('.download-link[data-key="downloadExe"]');
-  const msiLink = document.querySelector('.download-link[data-key="downloadMsi"]');
-  const simpleExe = document.querySelector('.download-link[data-key="downloadExeSimple"]');
-
-  if (exeLink) exeLink.textContent = replacePlaceholders(t.downloadExe || "Download {{filename}} (.exe)", templateVars);
-  if (msiLink) msiLink.textContent = replacePlaceholders(t.downloadMsi || "Download {{filename}} (.msi)", templateVars);
-  if (simpleExe) simpleExe.textContent = replacePlaceholders(t.downloadExeSimple || "Download {{filename}}.exe", templateVars);
-
-  // 动态生成 Linux/Android/macOS 链接文本
-  document.querySelectorAll('.download-link[data-fmt]').forEach(link => {
-    const arch = link.dataset.arch;
-    const fmt = link.dataset.fmt;
-    let text = `${templateVars.filename}-${arch}.${fmt}`;
-    if (fmt === 'suse-rpm') text = `${templateVars.filename}-suse-${arch}.rpm`;
-    link.textContent = text;
-  });
-
-  // 平台提示
-  const note = document.getElementById('platformNote');
-  if (platform.includes('mac')) {
-    note.textContent = t.note_macos || 'Note for macOS';
-    note.style.display = 'block';
-  } else if (platform.includes('window')) {
-    note.textContent = t.note_windows || 'Note for Windows';
-    note.style.display = 'block';
-  } else if (platform === 'linux') {
-    note.textContent = t.note_linux || 'Note for Linux';
-    note.style.display = 'block';
-  } else if (platform === 'android') {
-    note.textContent = t.note_android || 'Note for Android';
-    note.style.display = 'block';
-  }
-
-  // 更新按钮状态
-  document.querySelectorAll('.lang-btn').forEach(btn => {
-    btn.classList.toggle('active', btn.dataset.lang === currentLang);
-  });
-}
-
-// ========================
-// 初始化
-// ========================
-function getInitialLang() {
-  return localStorage.getItem('selectedLang') ||
-         (navigator.language.startsWith('zh') ? 'zh' : 'en');
-}
-
-document.querySelectorAll('.lang-btn').forEach(btn => {
-  btn.addEventListener('click', () => loadLanguage(btn.dataset.lang));
-});
-
-document.addEventListener('DOMContentLoaded', () => {
-  loadLanguage(getInitialLang());
-
-  // 显示对应平台 logo
-  const logos = {
-    windows: document.getElementById('windowsLogo'),
-    macos: document.getElementById('macosLogo'),
-    linux: document.getElementById('linuxLogo'),
-    android: document.getElementById('androidLogo')
+function updatePlatformUI() {
+  const platform = '{{platform}}'.toLowerCase();
+  const platformLogos = {
+    'windows': document.getElementById('windowsLogo'),
+    'macos': document.getElementById('macosLogo'),
+    'linux': document.getElementById('linuxLogo'),
+    'android': document.getElementById('androidLogo')
   };
-  Object.values(logos).forEach(logo => { if (logo) logo.style.display = 'none'; });
+  const platformNote = document.getElementById('platformNote');
 
-  if (platform.includes('mac')) logos.macos.style.display = 'block';
-  else if (platform.includes('window')) logos.windows.style.display = 'block';
-  else if (platform === 'linux') logos.linux.style.display = 'block';
-  else if (platform === 'android') logos.android.style.display = 'block';
-});
+  Object.values(platformLogos).forEach(logo => logo.style.display = 'none');
+
+  if (platform === 'macos') {
+    document.getElementById('pageTitle').textContent = 'macOS 构建已生成';
+    platformLogos.macos.style.display = 'block';
+    platformNote.textContent = '注意：在 macOS 上，您可能需要调整安全设置才能运行此应用。';
+    platformNote.style.display = 'block';
+  } else if (platform === 'windows' || platform === 'windows-x86') {
+    document.getElementById('pageTitle').textContent = 'Windows 构建已生成';
+    platformLogos.windows.style.display = 'block';
+    platformNote.textContent = '注意：您可能需要关闭 SmartScreen 或调整 Windows 安全设置。';
+    platformNote.style.display = 'block';
+  } else if (platform === 'linux') {
+    document.getElementById('pageTitle').textContent = 'Linux 构建已生成';
+    platformLogos.linux.style.display = 'block';
+    platformNote.textContent = '注意：请确保已安装必要的依赖项。';
+    platformNote.style.display = 'block';
+  } else if (platform === 'android') {
+    document.getElementById('pageTitle').textContent = 'Android 构建已生成';
+    platformLogos.android.style.display = 'block';
+    platformNote.textContent = '注意：您可能需要在设备设置中启用“未知来源”。';
+    platformNote.style.display = 'block';
+  }
+}
+
+updatePlatformUI();
 </script>
 </body>
 </html>
