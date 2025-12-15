@@ -225,18 +225,17 @@ color: #0095EA;
 </head>
 <body>
 <h1><i class="fas fa-cogs"></i> 客户端构建平台 </h1>
-<form id="myForm" action="/generator" method="post" enctype="multipart/form-data">
-<div class="save-load-section-container">
-<div class="section">
-<h2 id="saveLoadTitle"> 保存/加载 <i class="fas fa-chevron-down"></i></h2>
-<div class="save-load-section">
-<button type="button" onclick="saveFormData()"> 保存 </button>
-<input type="file" id="fileInput" style="display:none;" accept=".json">
-<button type="button" onclick="loadFormData()"> 加载 </button>
-</div>
-</div>
-</div>
+<div style="position: fixed; top: 20px; right: 20px; z-index: 100;">
+    <button type="button" onclick="saveFormData()" style="background-color: #1a1a1a; color: white; border: none; padding: 8px 16px; margin-right: 8px; border-radius: 4px; cursor: pointer;">
+      保存配置
+    </button>
+    <button type="button" onclick="loadFormData()" style="background-color: #1a1a1a; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer;">
+      加载配置
+    </button>
+  </div>
 
+    <form id="platformForm" action="/generator" method="post" enctype="multipart/form-data">
+   {% csrf_token %}
 {% if form.iconfile.errors %}
 <ul class="errorlist">
 {% for error in form.iconfile.errors %}
@@ -523,18 +522,7 @@ document.getElementById(previewContainerId).appendChild(img);
 reader.readAsDataURL(input.files[0]);
 }
 }
-const saveLoadTitle = document.getElementById("saveLoadTitle");
-const saveLoadSection = document.querySelector(".save-load-section");
-saveLoadTitle.addEventListener("click", () => {
-if (!saveLoadSection.style.display || saveLoadSection.style.display === "none") {
-saveLoadSection.style.display = "block";
-} else {
-saveLoadSection.style.display = "none";
-}
-const icon = saveLoadTitle.querySelector("i");
-icon.classList.toggle("fa-chevron-down");
-icon.classList.toggle("fa-chevron-up");
-});
+
 async function saveFormData() {
 const filename = document.getElementById("{{ form.exename.id_for_label }}").value;
 if (!filename) {
