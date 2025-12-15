@@ -45,9 +45,9 @@ class GenerateForm(forms.Form):
     direction = forms.ChoiceField(
         widget=forms.RadioSelect,
         choices=[
-            ('incoming', '仅允许被控 ')
-            ('outgoing', '仅允许控制'）
-            ('both', '标准版')
+            ('incoming', '仅允许传入连接 ')
+            ('outgoing', '仅允许传出连接'）
+            ('both', '双向连接')
         ],
         initial='both',
         label="连接方向"
