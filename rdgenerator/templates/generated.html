@@ -1,198 +1,151 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title id="pageTitle">Loading...</title>
   <style>
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      height: 100vh;
+      min-height: 100vh;
       margin: 0;
+      background: #f9fafb;
       text-align: center;
-      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-    }
-    .platform-logo {
-      width: 150px;
-      height: 150px;
-      margin-bottom: 30px;
-      display: none;
-      filter: drop-shadow(0 10px 15px rgba(0,0,0,0.2));
-      transition: transform 0.3s ease;
-    }
-    .platform-logo:hover {
-      transform: scale(1.1);
-    }
-    .success-text {
       color: #333;
-      font-weight: 600;
-      margin-bottom: 20px;
-      font-size: 1.5em;
-    }
-    .download-section {
-      background: rgba(255,255,255,0.8);
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-      margin-top: 20px;
-    }
-    .download-link {
-      display: block;
-      margin: 10px 0;
-      padding: 10px;
-      background-color: #3498db;
-      color: white;
-      text-decoration: none;
-      border-radius: 5px;
-      transition: background-color 0.3s ease;
-    }
-    .download-link:hover {
-      background-color: #2980b9;
-    }
-    .platform-note {
-      color: #666;
-      font-size: 0.9em;
-      margin-top: 15px;
-      background: rgba(255,255,255,0.7);
-      padding: 10px;
-      border-radius: 8px;
     }
     .lang-switcher {
       position: absolute;
       top: 20px;
       right: 20px;
+      font-size: 14px;
     }
     .lang-btn {
       margin-left: 8px;
-      padding: 4px 8px;
-      cursor: pointer;
-      background: #eee;
+      padding: 4px 10px;
+      background: #e0e0e0;
       border: 1px solid #ccc;
       border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
     }
     .lang-btn.active {
       background: #3498db;
       color: white;
     }
+    .success-text {
+      font-size: 1.8em;
+      margin: 20px 0;
+      font-weight: 600;
+    }
+    .download-section {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      max-width: 500px;
+      width: 90%;
+    }
+    .download-link {
+      display: block;
+      margin: 10px 0;
+      padding: 12px;
+      background: #3498db;
+      color: white;
+      text-decoration: none;
+      border-radius: 6px;
+      transition: background 0.2s;
+    }
+    .download-link:hover {
+      background: #2980b9;
+    }
+    .platform-note {
+      margin-top: 20px;
+      padding: 12px;
+      background: #fff8e1;
+      border-left: 4px solid #ffc107;
+      text-align: left;
+      max-width: 500px;
+      width: 90%;
+    }
     .loading {
-      color: #666;
-      font-style: italic;
+      color: #999;
     }
   </style>
 </head>
 <body>
 
+<!-- 语言切换 -->
 <div class="lang-switcher">
   <span id="langLabel" class="loading">Loading...</span>
-  <span class="lang-btn" data-lang="en">English</span>
-  <span class="lang-btn" data-lang="zh">中文</span>
+  <button class="lang-btn" data-lang="en">English</button>
+  <button class="lang-btn" data-lang="zh">中文</button>
 </div>
 
-<!-- Logos (保持原样) -->
-<svg id="windowsLogo" class="platform-logo" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg">
-  <!-- Windows logo SVG content here -->
-</svg>
-<svg id="macosLogo" class="platform-logo" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg">
-  <!-- macOS logo SVG content here -->
-</svg>
-<svg id="linuxLogo" class="platform-logo" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg">
-  <!-- Linux logo SVG content here -->
-</svg>
-<svg id="androidLogo" class="platform-logo" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg">
-  <!-- Android logo SVG content here -->
-</svg>
+<!-- 主内容 -->
+<h2 class="success-text" id="successText" class="loading">Loading...</h2>
 
-<div>
-  <h2 class="success-text" id="successText" class="loading">Loading...</h2>
-  <div class="download-section" id="downloadSection">
-    {% if platform == 'windows' %}
-      <a href="/download?filename={{ filename }}-{{ direction }}-{{ short_uuid }}.exe&uuid={{ uuid }}" class="download-link" data-key="downloadExe"></a>
-      <a href="/download?filename={{ filename }}-{{ direction }}-{{ short_uuid }}.msi&uuid={{ uuid }}" class="download-link" data-key="downloadMsi"></a>
-    {% elif platform == 'windows-x86' %}
-      <a href='/download?filename={{filename}}.exe&uuid={{uuid}}' class="download-link" data-key="downloadExeSimple"></a>
-    {% elif platform == 'linux' %}
-      <a href='/download?filename={{filename}}-x86_64.deb&uuid={{uuid}}' class="download-link" data-fmt="deb" data-arch="x86_64"></a>
-      <a href='/download?filename={{filename}}-x86_64.rpm&uuid={{uuid}}' class="download-link" data-fmt="rpm" data-arch="x86_64"></a>
-      <a href='/download?filename={{filename}}-suse-x86_64.rpm&uuid={{uuid}}' class="download-link" data-fmt="suse-rpm" data-arch="x86_64"></a>
-      <a href='/download?filename={{filename}}-x86_64.pkg.tar.zst&uuid={{uuid}}' class="download-link" data-fmt="pkg.tar.zst" data-arch="x86_64"></a>
-      <a href='/download?filename={{filename}}-aarch64.deb&uuid={{uuid}}' class="download-link" data-fmt="deb" data-arch="aarch64"></a>
-      <a href='/download?filename={{filename}}-aarch64.rpm&uuid={{uuid}}' class="download-link" data-fmt="rpm" data-arch="aarch64"></a>
-      <a href='/download?filename={{filename}}-suse-aarch64.rpm&uuid={{uuid}}' class="download-link" data-fmt="suse-rpm" data-arch="aarch64"></a>
-      <a href='/download?filename={{filename}}-aarch64.pkg.tar.zst&uuid={{uuid}}' class="download-link" data-fmt="pkg.tar.zst" data-arch="aarch64"></a>
-      <a href='/download?filename={{filename}}-x86_64.AppImage&uuid={{uuid}}' class="download-link" data-fmt="AppImage" data-arch="x86_64"></a>
-      <a href='/download?filename={{filename}}-aarch64.AppImage&uuid={{uuid}}' class="download-link" data-fmt="AppImage" data-arch="aarch64"></a>
-      <a href='/download?filename={{filename}}-x86_64.flatpak&uuid={{uuid}}' class="download-link" data-fmt="flatpak" data-arch="x86_64"></a>
-      <a href='/download?filename={{filename}}-aarch64.flatpak&uuid={{uuid}}' class="download-link" data-fmt="flatpak" data-arch="aarch64"></a>
-    {% elif platform == 'android' %}
-      <a href='/download?filename={{filename}}-aarch64.apk&uuid={{uuid}}' class="download-link" data-fmt="apk" data-arch="aarch64"></a>
-      <a href='/download?filename={{filename}}-x86_64.apk&uuid={{uuid}}' class="download-link" data-fmt="apk" data-arch="x86_64"></a>
-      <a href='/download?filename={{filename}}-armv7.apk&uuid={{uuid}}' class="download-link" data-fmt="apk" data-arch="armv7"></a>
-    {% elif platform == 'macos' %}
-      <a href='/download?filename={{filename}}-x86_64.dmg&uuid={{uuid}}' class="download-link" data-fmt="dmg" data-arch="x86_64"></a>
-      <a href='/download?filename={{filename}}-aarch64.dmg&uuid={{uuid}}' class="download-link" data-fmt="dmg" data-arch="aarch64"></a>
-    {% else %}
-      <p id="errorNoFile" class="loading">Loading...</p>
-    {% endif %}
-  </div>
+<div class="download-section" id="downloadSection">
+  <!-- 下载链接将由 JS 动态生成或填充 -->
+  <p id="errorNoFile" style="display:none;" class="loading">Loading...</p>
 </div>
 
 <div id="platformNote" class="platform-note" style="display:none;"></div>
 
 <script>
-// ======================
-// 全局配置
-// ======================
-const templateVars = {
-  filename: "{{ filename }}",
-  direction: "{{ direction }}",
-  short_uuid: "{{ short_uuid }}"
-};
-const platform = "{{ platform }}".toLowerCase();
+// =============================
+// 配置区（这些值通常由后端模板引擎注入）
+// 如果是纯静态测试，这里会显示占位符
+// =============================
+const CONFIG = {
+  // 平台：windows, macos, linux, android
+  platform: "{{ platform }}".replace(/\{\{.*?\}\}/g, 'windows'), // 回退为 windows
 
-// ======================
+  // 文件信息（用于替换 {{filename}} 等）
+  filename: "{{ filename }}".replace(/\{\{.*?\}\}/g, 'myapp'),
+  direction: "{{ direction }}".replace(/\{\{.*?\}\}/g, 'release'),
+  short_uuid: "{{ short_uuid }}".replace(/\{\{.*?\}\}/g, 'a1b2c3'),
+  uuid: "{{ uuid }}".replace(/\{\{.*?\}\}/g, 'a1b2c3d4-e5f6-7890')
+};
+
+// =============================
 // 工具函数
-// ======================
+// =============================
 function replacePlaceholders(str, vars) {
   return str.replace(/\{\{(\w+)\}\}/g, (match, key) => {
     return vars[key] !== undefined ? vars[key] : match;
   });
 }
 
-// ======================
-// 加载语言包
-// ======================
+// =============================
+// 语言加载
+// =============================
 let currentLang = 'en';
 let translations = {};
 
 async function loadLanguage(lang) {
   try {
     const res = await fetch(`/locales/${lang}.json`);
-    if (!res.ok) throw new Error(`Failed to load ${lang}.json`);
+    if (!res.ok) throw new Error('Not found');
     translations = await res.json();
     currentLang = lang;
     applyTranslations();
     localStorage.setItem('selectedLang', lang);
   } catch (err) {
-    console.error('Language load error:', err);
-    // 回退到英文（如果还没加载过）
-    if (lang !== 'en') {
-      loadLanguage('en');
-    }
+    console.warn(`Failed to load ${lang}, fallback to en`);
+    if (lang !== 'en') loadLanguage('en');
   }
 }
 
-// ======================
+// =============================
 // 应用翻译
-// ======================
+// =============================
 function applyTranslations() {
   const t = translations;
-  const isZh = currentLang === 'zh';
-
-  // 更新 HTML lang 属性
-  document.documentElement.lang = isZh ? 'zh-CN' : 'en';
+  document.documentElement.lang = currentLang === 'zh' ? 'zh-CN' : 'en';
 
   // 更新标题和主文本
   document.getElementById('pageTitle').textContent = t.success || 'Build Generated';
@@ -200,64 +153,97 @@ function applyTranslations() {
 
   // 错误信息
   const errorEl = document.getElementById('errorNoFile');
-  if (errorEl) errorEl.textContent = t.errorNoFile || 'Error: No file generated';
+  errorEl.textContent = t.errorNoFile || 'Error: No file generated';
+  errorEl.style.display = 'none'; // 默认隐藏
 
-  // 语言切换标签
-  document.getElementById('langLabel').textContent = t.langLabel || (isZh ? '语言：' : 'Language:');
+  // 语言标签
+  document.getElementById('langLabel').textContent = t.langLabel || (currentLang === 'zh' ? '语言：' : 'Language:');
 
-  // 下载按钮（Windows）
-  const exeLink = document.querySelector('.download-link[data-key="downloadExe"]');
-  const msiLink = document.querySelector('.download-link[data-key="downloadMsi"]');
-  const simpleExe = document.querySelector('.download-link[data-key="downloadExeSimple"]');
+  // 清空下载区域
+  const downloadSection = document.getElementById('downloadSection');
+  downloadSection.innerHTML = '';
 
-  if (exeLink) exeLink.textContent = replacePlaceholders(t.downloadExe || "Download {{filename}} (.exe)", templateVars);
-  if (msiLink) msiLink.textContent = replacePlaceholders(t.downloadMsi || "Download {{filename}} (.msi)", templateVars);
-  if (simpleExe) simpleExe.textContent = replacePlaceholders(t.downloadExeSimple || "Download {{filename}}.exe", templateVars);
+  // 根据平台生成下载链接
+  const { platform, filename, direction, short_uuid, uuid } = CONFIG;
+  const vars = { filename, direction, short_uuid };
 
-  // 动态链接（Linux/Android/macOS）
-  const dynamicLinks = document.querySelectorAll('.download-link[data-fmt]');
-  dynamicLinks.forEach(link => {
-    const arch = link.dataset.arch;
-    const fmt = link.dataset.fmt;
-    let text = `${templateVars.filename}-${arch}.${fmt}`;
-    if (fmt === 'suse-rpm') text = `${templateVars.filename}-suse-${arch}.rpm`;
-    link.textContent = text;
-  });
+  if (platform.includes('window')) {
+    // Windows
+    const exeLink = document.createElement('a');
+    exeLink.href = `/download?filename=${filename}-${direction}-${short_uuid}.exe&uuid=${uuid}`;
+    exeLink.className = 'download-link';
+    exeLink.textContent = replacePlaceholders(t.downloadExe || "Download {{filename}} (.exe)", vars);
+    downloadSection.appendChild(exeLink);
 
-  // 平台提示
-  const noteEl = document.getElementById('platformNote');
-  if (platform.includes('mac')) {
-    noteEl.textContent = t.note_macos || 'Note for macOS...';
-    noteEl.style.display = 'block';
-  } else if (platform.includes('window')) {
-    noteEl.textContent = t.note_windows || 'Note for Windows...';
-    noteEl.style.display = 'block';
+    const msiLink = document.createElement('a');
+    msiLink.href = `/download?filename=${filename}-${direction}-${short_uuid}.msi&uuid=${uuid}`;
+    msiLink.className = 'download-link';
+    msiLink.textContent = replacePlaceholders(t.downloadMsi || "Download {{filename}} (.msi)", vars);
+    downloadSection.appendChild(msiLink);
+
+    showPlatformNote(t.note_windows || 'Note for Windows...');
+  } else if (platform.includes('mac')) {
+    // macOS
+    ['x86_64', 'aarch64'].forEach(arch => {
+      const link = document.createElement('a');
+      link.href = `/download?filename=${filename}-${arch}.dmg&uuid=${uuid}`;
+      link.className = 'download-link';
+      link.textContent = `${filename}-${arch}.dmg`;
+      downloadSection.appendChild(link);
+    });
+    showPlatformNote(t.note_macos || 'Note for macOS...');
   } else if (platform === 'linux') {
-    noteEl.textContent = t.note_linux || 'Note for Linux...';
-    noteEl.style.display = 'block';
+    // Linux
+    const formats = [
+      { arch: 'x86_64', fmt: 'deb' },
+      { arch: 'x86_64', fmt: 'rpm' },
+      { arch: 'x86_64', fmt: 'pkg.tar.zst' },
+      { arch: 'x86_64', fmt: 'AppImage' },
+      { arch: 'x86_64', fmt: 'flatpak' },
+      { arch: 'aarch64', fmt: 'deb' },
+      { arch: 'aarch64', fmt: 'rpm' },
+      { arch: 'aarch64', fmt: 'pkg.tar.zst' },
+      { arch: 'aarch64', fmt: 'AppImage' },
+      { arch: 'aarch64', fmt: 'flatpak' },
+    ];
+    formats.forEach(f => {
+      const link = document.createElement('a');
+      link.href = `/download?filename=${filename}-${f.arch}.${f.fmt}&uuid=${uuid}`;
+      link.className = 'download-link';
+      link.textContent = `${filename}-${f.arch}.${f.fmt}`;
+      downloadSection.appendChild(link);
+    });
+    showPlatformNote(t.note_linux || 'Note for Linux...');
   } else if (platform === 'android') {
-    noteEl.textContent = t.note_android || 'Note for Android...';
-    noteEl.style.display = 'block';
+    // Android
+    ['aarch64', 'x86_64', 'armv7'].forEach(arch => {
+      const link = document.createElement('a');
+      link.href = `/download?filename=${filename}-${arch}.apk&uuid=${uuid}`;
+      link.className = 'download-link';
+      link.textContent = `${filename}-${arch}.apk`;
+      downloadSection.appendChild(link);
+    });
+    showPlatformNote(t.note_android || 'Note for Android...');
+  } else {
+    // 未知平台
+    errorEl.style.display = 'block';
   }
 
-  // 激活语言按钮
+  // 更新按钮状态
   document.querySelectorAll('.lang-btn').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.lang === currentLang);
   });
 }
 
-// ======================
-// 事件绑定
-// ======================
-document.querySelectorAll('.lang-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    loadLanguage(btn.dataset.lang);
-  });
-});
+function showPlatformNote(text) {
+  const note = document.getElementById('platformNote');
+  note.textContent = text;
+  note.style.display = 'block';
+}
 
-// ======================
+// =============================
 // 初始化
-// ======================
+// =============================
 function getInitialLang() {
   const saved = localStorage.getItem('selectedLang');
   if (saved === 'zh' || saved === 'en') return saved;
@@ -265,34 +251,15 @@ function getInitialLang() {
   return 'en';
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  loadLanguage(getInitialLang());
-  updatePlatformUI(); // 显示对应平台 logo
+// 绑定语言切换
+document.querySelectorAll('.lang-btn').forEach(btn => {
+  btn.addEventListener('click', () => loadLanguage(btn.dataset.lang));
 });
 
-// ======================
-// 平台 Logo 控制（保留你原有的逻辑）
-// ======================
-function updatePlatformUI() {
-  const logos = {
-    windows: document.getElementById('windowsLogo'),
-    macos: document.getElementById('macosLogo'),
-    linux: document.getElementById('linuxLogo'),
-    android: document.getElementById('androidLogo')
-  };
-  Object.values(logos).forEach(logo => {
-    if (logo) logo.style.display = 'none';
-  });
-  if (platform.includes('mac')) {
-    logos.macos.style.display = 'block';
-  } else if (platform.includes('window')) {
-    logos.windows.style.display = 'block';
-  } else if (platform === 'linux') {
-    logos.linux.style.display = 'block';
-  } else if (platform === 'android') {
-    logos.android.style.display = 'block';
-  }
-}
+// 启动
+document.addEventListener('DOMContentLoaded', () => {
+  loadLanguage(getInitialLang());
+});
 </script>
 </body>
 </html>
