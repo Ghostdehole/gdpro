@@ -1,0 +1,12 @@
+{
+  "success": "构建已成功生成",
+  "downloadExe": "下载 {{filename}}-{{direction}}-{{short_uuid}} (.exe)",
+  "downloadMsi": "下载 {{filename}}-{{direction}}-{{short_uuid}} (.msi)",
+  "downloadExeSimple": "下载 {{filename}}.exe",
+  "errorNoFile": "错误：未生成文件",
+  "note_macos": "注意：在 macOS 上，您可能需要调整安全设置才能运行此应用。",
+  "note_windows": "注意：您可能需要关闭 SmartScreen 或调整 Windows 安全设置。",
+  "note_linux": "注意：请确保已安装所需依赖。",
+  "note_android": "注意：您可能需要在设备设置中启用“未知来源”。",
+  "langLabel": "语言："
+}
