@@ -112,7 +112,7 @@ def generator_view(request):
             ###create the custom.txt json here and send in as inputs below
             decodedCustom = {}
             ##if direction != "both":
-                decodedCustom['conn-type'] = direction
+            decodedCustom['conn-type'] = direction
             if installation == "installationN":
                 decodedCustom['disable-installation'] = 'Y'
             if settings == "settingsN":
