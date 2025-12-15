@@ -328,8 +328,8 @@ color: #0095EA;
 <label for="{{ form.theme.id_for_label }}">主题:</label>
 {{ form.theme }} {{ form.themeDorO }}
 <div class="help-text">
-*默认设置允许客户更改<br>
-*固化设置不允许客户更改<br><br>
+*默认设置: 允许客户更改<br>
+*固化设置：不允许客户更改<br><br>
 </div>
 </div>
 </div>
@@ -579,22 +579,35 @@ reader.readAsDataURL(file);
 });
 }
 
+// ==================== 修复：加载配置后自动填充表单（含 radio 正确支持）====================
 function fillForm(data) {
     if (!data || typeof data !== 'object') return;
-    
-    // 填充所有普通字段
-    for (const key in data) {
-        const el = document.querySelector(`[name="${key}"]`);
-        if (!el) continue;
 
-        if (el.type === 'checkbox' || el.type === 'radio') {
-            el.checked = data[key] === true || data[key] === 'on' || String(data[key]) === 'true';
-        } else if (el.type !== 'file') {
-            el.value = data[key];
+    // 填充普通字段
+    for (const key in data) {
+        const elements = document.querySelectorAll(`[name="${key}"]`);
+        if (!elements.length) continue;
+
+        // 单独处理 radio 组（如 direction）
+        if (elements[0].type === 'radio') {
+            elements.forEach(el => {
+                if (el.value === data[key]) {
+                    el.checked = true;
+                }
+            });
+        } else {
+            // 其他类型：checkbox / text / select 等
+            elements.forEach(el => {
+                if (el.type === 'checkbox') {
+                    el.checked = data[key] === true || data[key] === 'on' || String(data[key]) === 'true';
+                } else if (el.type !== 'file') {
+                    el.value = data[key];
+                }
+            });
         }
     }
 
-    // 恢复图标和 Logo 预览（如果保存的是 base64）
+    // 恢复图标和 Logo 预览
     if (data.iconfile && data.iconfile.startsWith('data:image')) {
         document.getElementById('id_iconbase64').value = data.iconfile;
         document.getElementById('icon-preview').innerHTML = `<img src="${data.iconfile}" style="max-width:300px;max-height:60px;">`;
@@ -605,7 +618,6 @@ function fillForm(data) {
     }
 }
 
-// 重写 loadFormData 以调用 fillForm
 function loadFormData() {
     const input = document.createElement('input');
     input.type = 'file';
@@ -627,6 +639,7 @@ function loadFormData() {
     };
     input.click();
 }
+
 </script>
 </body>
 </html>
