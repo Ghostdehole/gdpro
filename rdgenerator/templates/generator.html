@@ -578,7 +578,7 @@ reader.onerror = (error) => reject(error);
 reader.readAsDataURL(file);
 });
 }
-// ==================== 修复：加载配置后自动填充表单 ====================
+
 function fillForm(data) {
     if (!data || typeof data !== 'object') return;
     
@@ -617,7 +617,7 @@ function loadFormData() {
         reader.onload = function(ev) {
             try {
                 const data = JSON.parse(ev.target.result);
-                fillForm(data); // ← 关键修复：填回表单
+                fillForm(data); // 填回表单
                 alert('配置加载成功！共 ' + Object.keys(data).length + ' 项');
             } catch (err) {
                 alert('文件格式错误：' + err.message);
@@ -627,7 +627,6 @@ function loadFormData() {
     };
     input.click();
 }
-// ==================== 修复结束 ====================
 </script>
 </body>
 </html>
