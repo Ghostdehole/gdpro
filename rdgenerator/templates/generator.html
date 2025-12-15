@@ -588,49 +588,26 @@ reader.readAsDataURL(file);
 });
 }
 function loadFormData() {
-const fileInput = document.getElementById("fileInput");
-fileInput.click();
-fileInput.addEventListener("change", (event) => {
-const file = event.target.files[0];
-if (file) {
-const reader = new FileReader();
-reader.onload = (e) => {
-try {
-const formData = JSON.parse(e.target.result);
-for (const key in formData) {
-const elements = document.querySelectorAll(`[name="${key}"], [id="${key}"]`);
-if (elements.length > 0) {
-elements.forEach(element => {
-if (element.type === 'radio') {
-if (element.value === String(formData[key])) {
-element.checked = true;
-} else {
-element.checked = false;
+const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = '.json';
+  input.onchange = function(e) {
+    if (e.target.files.length === 0) return;
+    const file = e.target.files[0];
+    const reader = new FileReader();
+    reader.onload = function(ev) {
+      try {
+        const config = JSON.parse(ev.target.result);
+        alert('配置加载成功！共 ' + Object.keys(config).length + ' 项');
+      } catch (err) {
+        alert('文件格式错误：' + err.message);
+      }
+    };
+    reader.readAsText(file);
+  };
+  input.click();
 }
-} else if (element.type === 'checkbox') {
-element.checked = formData[key];
-} else if (element.type !== 'file') {
-element.value = formData[key];
-}
-if (key === 'iconfile' && formData[key]) {
-document.getElementById('id_iconbase64').value = formData[key];
-document.getElementById('icon-preview').innerHTML = `<img src="${formData[key]}" style="max-width: 300px; max-height: 60px;">`;
-}
-if (key === 'logofile' && formData[key]) {
-document.getElementById('id_logobase64').value = formData[key];
-document.getElementById('logo-preview').innerHTML = `<img src="${formData[key]}" style="max-width: 300px; max-height: 60px;">`;
-}
-});
-}
-}
-} catch (error) {
-alert("Error loading data. Invalid JSON file.");
-}
-};
-reader.readAsText(file);
-}
-});
-}
+
 </script>
 </body>
 </html>
