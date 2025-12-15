@@ -598,6 +598,8 @@ const input = document.createElement('input');
     reader.onload = function(ev) {
       try {
         const config = JSON.parse(ev.target.result);
+        console.log('准备填入的数据:', data);
+        fillForm(data); // 确保这一行存在！
         alert('配置加载成功！共 ' + Object.keys(config).length + ' 项');
       } catch (err) {
         alert('文件格式错误：' + err.message);
