@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>客户端构建器</title>
+    <title>自定义客户端构建器</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
@@ -233,15 +233,15 @@
       </style>
 </head>
 <body>
-    <h1><i class="fas fa-cogs"></i> 客户端构建器 </h1>
+    <h1><i class="fas fa-cogs"></i> RustDesk Custom Client Builder</h1>
     <form id="myForm" action="/generator" method="post" enctype="multipart/form-data">
         <div class="save-load-section-container">
             <div class="section">
-                <h2 id="saveLoadTitle"> 保存/加载配置 <i class="fas fa-chevron-down"></i></h2>  
+                <h2 id="saveLoadTitle">Save/Load Configuration <i class="fas fa-chevron-down"></i></h2>  
                 <div class="save-load-section">  
-                    <button type="button" onclick="saveFormData()"> 保存配置 </button>
+                    <button type="button" onclick="saveFormData()">Save Configuration</button>
                     <input type="file" id="fileInput" style="display:none;" accept=".json">
-                    <button type="button" onclick="loadFormData()"> 加载配置 </button>
+                    <button type="button" onclick="loadFormData()">Load Configuration</button>
                 </div>
             </div>
         </div>
@@ -391,18 +391,10 @@
                     {{ form.overrideManual }}<br><br>
             </div>
         </div>
-        <div class="platform">
+        <div class="platform" style="text-align: center; margin: 30px 0;">
             <div class="section">
-                <button type="submit"><i class="fas fa-rocket"></i> Generate Custom Client</button>
+                <button type="submit"><i class="fas fa-rocket"></i> 构建客户端</button>
             </div>
-        </div>
-        <div style="text-align: center; margin: 30px 0;">
-            <a href="https://github.com/bryangerlach/rdgen" 
-            target="_blank" 
-            class="sponsor-button">
-                <i class="fab fa-github"></i>
-                Source Code on Github
-            </a>
         </div>
         <div style="text-align: center; margin: 30px 0;">
             <a href="https://github.com/sponsors/bryangerlach?o=esb"
