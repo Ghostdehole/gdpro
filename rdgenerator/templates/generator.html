@@ -233,8 +233,7 @@ color: #0095EA;
       加载配置
     </button>
   </div>
-
-    <form id="platformForm" action="/generator" method="post" enctype="multipart/form-data">
+  <form id="platformForm" action="/generator" method="post" enctype="multipart/form-data">
    {% csrf_token %}
 {% if form.iconfile.errors %}
 <ul class="errorlist">
@@ -532,7 +531,7 @@ return;
 document.getElementById("filenameError").textContent = "";
 }
 const formData = {};
-const form = document.getElementById("myForm");
+const form = document.getElementById("platformForm");
 const formDataObj = new FormData(form);
 formDataObj.forEach((value, key) => {
 formData[key] = value;
