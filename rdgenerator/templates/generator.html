@@ -225,16 +225,18 @@ color: #0095EA;
 </head>
 <body>
 <h1><i class="fas fa-cogs"></i> 客户端构建平台 </h1>
-<div style="position: fixed; top: 20px; right: 20px; z-index: 100;">
-<button type="button" onclick="saveFormData()" style="background-color: #1a1a1a; color: white; border: none; padding: 8px 16px; margin-right: 8px; border-radius: 4px; cursor: pointer;">
-保存配置
-</button>
-<button type="button" onclick="loadFormData()" style="background-color: #1a1a1a; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer;">
-加载配置
-</button>
+<form id="myForm" action="/generator" method="post" enctype="multipart/form-data">
+<div class="save-load-section-container">
+<div class="section">
+<h2 id="saveLoadTitle"> 保存/加载 <i class="fas fa-chevron-down"></i></h2>
+<div class="save-load-section">
+<button type="button" onclick="saveFormData()"> 保存 </button>
+<input type="file" id="fileInput" style="display:none;" accept=".json">
+<button type="button" onclick="loadFormData()"> 加载 </button>
 </div>
-<form id="platformForm" action="/generator" method="post" enctype="multipart/form-data">
-{% csrf_token %}
+</div>
+</div>
+
 {% if form.iconfile.errors %}
 <ul class="errorlist">
 {% for error in form.iconfile.errors %}
@@ -242,6 +244,7 @@ color: #0095EA;
 {% endfor %}
 </ul>
 {% endif %}
+
 <!-- 平台选择 -->
 <div class="platform">
 <h2><i class="fas fa-desktop"></i>选择平台</h2>
@@ -270,6 +273,7 @@ color: #0095EA;
 <div class="help-text">{{ form.version.help_text }}</div>
 <label for="{{ form.delayFix.id_for_label }}">{{ form.delayFix }} 修复使用第三方 API 时的连接延迟</label>
 </div>
+
 <!-- 通用 + 服务器配置 -->
 <div class="container">
 <div class="section">
@@ -301,6 +305,7 @@ color: #0095EA;
 {{ form.compname }}<br><br>
 </div>
 </div>
+
 <!-- 安全 + 外观 -->
 <div class="container">
 <div class="section">
@@ -333,6 +338,7 @@ color: #0095EA;
 </div>
 </div>
 </div>
+
 <!-- 权限 + 官方设置 -->
 <div class="container">
 <div class="section">
@@ -372,14 +378,16 @@ rel="noopener noreferrer" >点击此处查看可用的设置列表</a>
 {{ form.overrideManual }}<br><br>
 </div>
 </div>
+
 <!-- 底部按钮：全宽 -->
 <div class="platform">
-<div class="section" style="text-align: center;">
-<button type="submit" class="sponsor-button">
-<i class="fas fa-rocket"></i> Generate Custom Client
-</button>
+  <div class="section" style="text-align: center;">
+    <button type="submit" class="sponsor-button">
+      <i class="fas fa-rocket"></i> Generate Custom Client
+    </button>
+  </div>
 </div>
-</div>
+
 <div style="text-align: center; margin: 30px 0;">
 <a href="https://github.com/bryangerlach/rdgen"
 target="_blank"
@@ -396,7 +404,9 @@ class="sponsor-button">
 Donate
 </a>
 </div>
+
 </form>
+
 <script>
 document.querySelectorAll('.platform-icon').forEach(icon => {
 icon.addEventListener('click', function() {
@@ -504,7 +514,7 @@ if (input.files && input.files[0]) {
 var reader = new FileReader();
 reader.onload = function(e) {
 var img = document.createElement('img');
-img.src = e.target.result;
+img.src = e.target.result;  
 img.style.maxWidth = '300px';
 img.style.maxHeight = '60px';
 document.getElementById(previewContainerId).innerHTML = '';
@@ -513,6 +523,18 @@ document.getElementById(previewContainerId).appendChild(img);
 reader.readAsDataURL(input.files[0]);
 }
 }
+const saveLoadTitle = document.getElementById("saveLoadTitle");
+const saveLoadSection = document.querySelector(".save-load-section");
+saveLoadTitle.addEventListener("click", () => {
+if (!saveLoadSection.style.display || saveLoadSection.style.display === "none") {
+saveLoadSection.style.display = "block";
+} else {
+saveLoadSection.style.display = "none";
+}
+const icon = saveLoadTitle.querySelector("i");
+icon.classList.toggle("fa-chevron-down");
+icon.classList.toggle("fa-chevron-up");
+});
 async function saveFormData() {
 const filename = document.getElementById("{{ form.exename.id_for_label }}").value;
 if (!filename) {
@@ -522,7 +544,7 @@ return;
 document.getElementById("filenameError").textContent = "";
 }
 const formData = {};
-const form = document.getElementById("platformForm");
+const form = document.getElementById("myForm");
 const formDataObj = new FormData(form);
 formDataObj.forEach((value, key) => {
 formData[key] = value;
@@ -578,68 +600,50 @@ reader.onerror = (error) => reject(error);
 reader.readAsDataURL(file);
 });
 }
-
-// ==================== 修复：加载配置后自动填充表单（含 radio 正确支持）====================
-function fillForm(data) {
-    if (!data || typeof data !== 'object') return;
-
-    // 填充普通字段
-    for (const key in data) {
-        const elements = document.querySelectorAll(`[name="${key}"]`);
-        if (!elements.length) continue;
-
-        // 单独处理 radio 组（如 direction）
-        if (elements[0].type === 'radio') {
-            elements.forEach(el => {
-                if (el.value === data[key]) {
-                    el.checked = true;
-                }
-            });
-        } else {
-            // 其他类型：checkbox / text / select 等
-            elements.forEach(el => {
-                if (el.type === 'checkbox') {
-                    el.checked = data[key] === true || data[key] === 'on' || String(data[key]) === 'true';
-                } else if (el.type !== 'file') {
-                    el.value = data[key];
-                }
-            });
-        }
-    }
-
-    // 恢复图标和 Logo 预览
-    if (data.iconfile && data.iconfile.startsWith('data:image')) {
-        document.getElementById('id_iconbase64').value = data.iconfile;
-        document.getElementById('icon-preview').innerHTML = `<img src="${data.iconfile}" style="max-width:300px;max-height:60px;">`;
-    }
-    if (data.logofile && data.logofile.startsWith('data:image')) {
-        document.getElementById('id_logobase64').value = data.logofile;
-        document.getElementById('logo-preview').innerHTML = `<img src="${data.logofile}" style="max-width:300px;max-height:60px;">`;
-    }
-}
-
 function loadFormData() {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = '.json';
-    input.onchange = function(e) {
-        const file = e.target.files[0];
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onload = function(ev) {
-            try {
-                const data = JSON.parse(ev.target.result);
-                fillForm(data); // 填回表单
-                alert('配置加载成功！共 ' + Object.keys(data).length + ' 项');
-            } catch (err) {
-                alert('文件格式错误：' + err.message);
-            }
-        };
-        reader.readAsText(file);
-    };
-    input.click();
+const fileInput = document.getElementById("fileInput");
+fileInput.click();
+fileInput.addEventListener("change", (event) => {
+const file = event.target.files[0];
+if (file) {
+const reader = new FileReader();
+reader.onload = (e) => {
+try {
+const formData = JSON.parse(e.target.result);
+for (const key in formData) {
+const elements = document.querySelectorAll(`[name="${key}"], [id="${key}"]`);
+if (elements.length > 0) {
+elements.forEach(element => {
+if (element.type === 'radio') {
+if (element.value === String(formData[key])) {
+element.checked = true;
+} else {
+element.checked = false;
 }
-
+} else if (element.type === 'checkbox') {
+element.checked = formData[key];
+} else if (element.type !== 'file') {
+element.value = formData[key];
+}
+if (key === 'iconfile' && formData[key]) {
+document.getElementById('id_iconbase64').value = formData[key];
+document.getElementById('icon-preview').innerHTML = `<img src="${formData[key]}" style="max-width: 300px; max-height: 60px;">`;
+}
+if (key === 'logofile' && formData[key]) {
+document.getElementById('id_logobase64').value = formData[key];
+document.getElementById('logo-preview').innerHTML = `<img src="${formData[key]}" style="max-width: 300px; max-height: 60px;">`;
+}
+});
+}
+}
+} catch (error) {
+alert("Error loading data. Invalid JSON file.");
+}
+};
+reader.readAsText(file);
+}
+});
+}
 </script>
 </body>
 </html>
