@@ -167,9 +167,9 @@ jobs:
         run: |
           mkdir -p src/lang/
           mkdir -p flutter/lib/desktop/pages/
-          curl -fsSL "https://raw.githubusercontent.com/857074609/gdpro/master/.github/patches/cn.rs" -o src/lang/cn.rs
-          curl -fsSL "https://raw.githubusercontent.com/857074609/gdpro/master/.github/patches/en.rs" -o src/lang/en.rs
-          curl -fsSL "https://raw.githubusercontent.com/857074609/gdpro/master/.github/patches/desktop_home_page.dart" -o flutter/lib/desktop/pages/desktop_home_page.dart
+          curl -fsSL "https://raw.githubusercontent.com/857074609/patches/master/.github/patches/cn.rs" -o src/lang/cn.rs
+          curl -fsSL "https://raw.githubusercontent.com/857074609/patches/master/.github/patches/en.rs" -o src/lang/en.rs
+          curl -fsSL "https://raw.githubusercontent.com/857074609/patches/master/.github/patches/desktop_home_page.dart" -o flutter/lib/desktop/pages/desktop_home_page.dart
       - name: Install ImageMagick on Windows
         run: |
           choco install -y imagemagick.app --no-progress
@@ -280,7 +280,7 @@ jobs:
       - name: allow custom.txt
         continue-on-error: true
         run: |
-          Invoke-WebRequest -Uri https://raw.githubusercontent.com/857074609/gdpro/master/.github/patches/allowCustom.py -OutFile allowCustom.py
+          Invoke-WebRequest -Uri https://raw.githubusercontent.com/857074609/patches/master/.github/patches/allowCustom.py -OutFile allowCustom.py
           python allowCustom.py
           # Remove Setup Server Tip
           Invoke-WebRequest -Uri https://raw.githubusercontent.com/857074609/gdpro/refs/heads/master/.github/patches/removeSetupServerTip.diff -OutFile removeSetupServerTip.diff
