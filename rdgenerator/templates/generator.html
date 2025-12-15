@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>自定义客户端构建器</title>
+    <title>客户端构建器</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
@@ -391,11 +391,18 @@
                     {{ form.overrideManual }}<br><br>
             </div>
         </div>
-        <div class="platform" style="text-align: center; margin: 30px 0;">
-            <div class="section">
-                <button type="submit"><i class="fas fa-rocket"></i> 构建客户端</button>
-            </div>
+        <div class="platform">
+          <div class="section">
+            <!-- 移动到右边的按钮 -->
+            <button type="submit" 
+                    style="display: block; margin: 0 auto; padding: 12px 30px; font-size: 16px; 
+                           background-color: #0d6efd; color: white; border: none; 
+                           border-radius: 6px; cursor: pointer; transition: background-color 0.2s;">
+              <i class="fas fa-rocket"></i> 生成自定义客户端
+            </button>
+          </div>
         </div>
+
         <div style="text-align: center; margin: 30px 0;">
             <a href="https://github.com/sponsors/bryangerlach?o=esb"
             target="_blank" 
