@@ -1,3 +1,4 @@
-[submodule ".github/patches"]
-	path = .github/patches
-	url = https://github.com/857074609/patches.git
+[submodule "patches"]
+    path = patches
+    url = https://github.com/857074609/patches.git
+    branch = main
