@@ -127,7 +127,7 @@ margin-top: 10px;
 .save-load-section-container {
 position: fixed;
 top: 20px;
-left: 20px;
+right: 20px;
 background-color: #111;
 padding: 0px;
 border-radius: 8px;
@@ -216,7 +216,7 @@ color: #0095EA;
 </style>
 </head>
 <body>
-<h1><i class="fas fa-cogs"></i> RustDesk 自定义客户端构建器</h1>
+<h1><i class="fas fa-cogs"></i> 客户端构建器</h1>
 <form id="myForm" action="/generator" method="post" enctype="multipart/form-data">
 <div class="save-load-section-container">
 <div class="section">
@@ -259,7 +259,7 @@ color: #0095EA;
 <option value="android">Android</option>
 <option value="macos">macOS</option>
 </select>
-<label for="{{ form.version.id_for_label }}">RustDesk 版本：</label>
+<label for="{{ form.version.id_for_label }}">版本号：</label>
 {{ form.version }}
 <div class="help-text">{{ form.version.help_text }}</div>
 <label for="{{ form.delayFix.id_for_label }}">{{ form.delayFix }} 修复使用第三方 API 时的连接延迟</label>
@@ -272,7 +272,7 @@ color: #0095EA;
 {{ form.exename }}<span id="filenameError" class="error"></span><br><br>
 <label for="{{ form.appname.id_for_label }}">自定义应用程序名称（留空则使用默认值）：</label>
 {{ form.appname }}<br><br>
-<label for="{{ form.direction.id_for_label }}">连接类型：</label>
+<label for="{{ form.direction.id_for_label }}"> 客户端类型：</label>
 {{ form.direction }}<br><br>
 <label for="{{ form.installation.id_for_label }}">禁用安装功能：</label>
 {{ form.installation }}<br><br>
@@ -280,18 +280,18 @@ color: #0095EA;
 {{ form.settings }}<br><br>
 </div>
 <div class="section">
-<h2><i class="fas fa-server"></i> 自定义服务器</h2>
-<label for="{{ form.serverIP.id_for_label }}">主机地址 (Host)：</label>
+<h2><i class="fas fa-server"></i> 服务器配置 </h2>
+<label for="{{ form.serverIP.id_for_label }}">服务器地址 (Host)：</label>
 {{ form.serverIP }}<br><br>
 <label for="{{ form.key.id_for_label }}">密钥 (Key)：</label>
 {{ form.key }}<br><br>
 <label for="{{ form.apiServer.id_for_label }}">API 地址：</label>
 {{ form.apiServer }}<br><br>
-<label for="{{ form.urlLink.id_for_label }}">自定义链接地址（替换 https://rustdesk.com）：</label>
+<label for="{{ form.urlLink.id_for_label }}">门户网站：</label>
 {{ form.urlLink }}<br><br>
-<label for="{{ form.downloadLink.id_for_label }}">自定义更新下载地址（替换 https://rustdesk.com/download）：</label>
+<label for="{{ form.downloadLink.id_for_label }}"> 客户端更新下载地址：</label>
 {{ form.downloadLink }}<br><br>
-<label for="{{ form.compname.id_for_label }}">版权公司名称（替换 Purslane Ltd）：</label>
+<label for="{{ form.compname.id_for_label }}">版权归属权：</label>
 {{ form.compname }}<br><br>
 </div>
 </div>
@@ -331,7 +331,7 @@ color: #0095EA;
 <div class="container">
 <div class="section">
 <h2><i class="fas fa-lock"></i> 权限控制</h2>
-以下权限可设为“默认”（用户可修改）或“固化”（不可更改）。<br>
+以下权限可设为“默认”（用户可修改）或“固化”（用户不可更改）。<br>
 {{ form.permissionsDorO }}
 <label for="{{ form.permissionsType.id_for_label }}">权限预设：</label>
 {{ form.permissionsType }}<br><br>
