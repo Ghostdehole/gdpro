@@ -1,247 +1,321 @@
 <!DOCTYPE html>
 <html lang="zh">
 <head>
-  <meta charset="UTF-8" />
-  <title>客户端构建平台</title>
-  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
-  <style>
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #121212;
-      color: white;
-      margin: 0;
-      padding: 20px;
-    }
-    .container {
-      max-width: 900px;
-      margin: 0 auto;
-    }
-    h1 {
-      text-align: center;
-      margin-bottom: 30px;
-    }
-    .section {
-      background-color: #1e1e1e;
-      padding: 20px;
-      margin-bottom: 20px;
-      border-radius: 8px;
-    }
-    label {
-      display: block;
-      margin: 10px 0 5px;
-    }
-    input[type="text"],
-    input[type="file"],
-    select,
-    textarea {
-      width: 100%;
-      padding: 8px;
-      margin-bottom: 10px;
-      background-color: #2a2a2a;
-      color: white;
-      border: 1px solid #444;
-      border-radius: 4px;
-    }
-    button {
-      background-color: #4CAF50;
-      color: white;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 16px;
-    }
-    button:hover {
-      background-color: #45a049;
-    }
-    .preview img {
-      max-width: 300px;
-      max-height: 60px;
-      margin-top: 5px;
-      border: 1px solid #555;
-    }
-    /* 固定按钮样式 */
-    .top-buttons {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      z-index: 1000;
-    }
-    .top-buttons button {
-      background-color: #1a1a1a;
-      color: white;
-      padding: 8px 16px;
-      margin-right: 8px;
-      font-size: 14px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <title>客户端构建平台</title>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: white;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .section {
+            background-color: #1e1e1e;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+        }
+        label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+        input[type="text"],
+        input[type="file"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            background-color: #2a2a2a;
+            color: white;
+            border: 1px solid #444;
+            border-radius: 4px;
+        }
+        input[type="checkbox"] {
+            margin-right: 10px;
+        }
+        button[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button[type="submit"]:hover {
+            background-color: #45a049;
+        }
+        .errorlist {
+            color: red;
+            list-style: none;
+            padding: 0;
+            margin: 5px 0 10px;
+        }
+        .preview img {
+            max-width: 300px;
+            max-height: 60px;
+            margin-top: 5px;
+            border: 1px solid #555;
+        }
+    </style>
 </head>
 <body>
-  <!-- 固定顶部按钮 -->
-  <div class="top-buttons">
-    <button type="button" onclick="saveFormData()">保存配置</button>
-    <button type="button" onclick="loadFormData()">加载配置</button>
-  </div>
+    <!-- 固定保存/加载按钮 -->
+    <div style="position: fixed; top: 20px; right: 20px; z-index: 1000;">
+        <button type="button"
+                onclick="saveFormData()"
+                style="background-color: #1a1a1a; color: white; border: none; padding: 8px 16px; margin-right: 8px; border-radius: 4px; cursor: pointer;">
+            保存配置
+        </button>
+        <button type="button"
+                onclick="loadFormData()"
+                style="background-color: #1a1a1a; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer;">
+            加载配置
+        </button>
+    </div>
 
-  <div class="container">
-    <h1><i class="fas fa-cogs"></i> 客户端构建平台</h1>
+    <div class="container">
+        <h1><i class="fas fa-cogs"></i> 客户端构建平台</h1>
 
-    <form id="platformForm">
-      <div class="section">
-        <label for="id_exename">可执行文件名 (仅英文):</label>
-        <input type="text" name="exename" id="id_exename" placeholder="myclient" />
+        <form id="platformForm" action="/generator" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
 
-        <label for="id_appname">应用名称:</label>
-        <input type="text" name="appname" id="id_appname" placeholder="My Remote Client" />
+            <!-- 平台选择 -->
+            <div class="section">
+                <h3>平台选择</h3>
+                {{ form.windows.errors }}
+                <label>{{ form.windows }} Windows</label>
+                {{ form.macos.errors }}
+                <label>{{ form.macos }} macOS</label>
+                {{ form.linux.errors }}
+                <label>{{ form.linux }} Linux</label>
+            </div>
 
-        <label for="id_platform">平台:</label>
-        <select name="platform" id="id_platform">
-          <option value="windows">Windows</option>
-          <option value="macos">macOS</option>
-          <option value="linux">Linux</option>
-        </select>
+            <!-- 基础信息 -->
+            <div class="section">
+                <h3>基础信息</h3>
+                {{ form.exename.errors }}
+                <label for="{{ form.exename.id_for_label }}">可执行文件名:</label>
+                {{ form.exename }}
 
-        <label for="id_serverIP">服务器 Host:</label>
-        <input type="text" name="serverIP" id="id_serverIP" placeholder="relay.example.com" />
+                {{ form.custom_domain.errors }}
+                <label for="{{ form.custom_domain.id_for_label }}">自定义域名 (可选):</label>
+                {{ form.custom_domain }}
 
-        <label for="id_key">密钥:</label>
-        <input type="text" name="key" id="id_key" placeholder="your-key-here" />
+                {{ form.api_url.errors }}
+                <label for="{{ form.api_url.id_for_label }}">API 地址 (可选):</label>
+                {{ form.api_url }}
 
-        <label for="id_iconfile">应用图标 (.png):</label>
-        <input type="file" name="iconfile" id="id_iconfile" accept=".png" />
-        <div id="icon-preview" class="preview"></div>
-        <input type="hidden" name="iconbase64" id="id_iconbase64" />
+                {{ form.useCustomBranding.errors }}
+                <label>{{ form.useCustomBranding }} 启用自定义品牌</label>
+            </div>
 
-        <label for="id_logofile">Logo (.png):</label>
-        <input type="file" name="logofile" id="id_logofile" accept=".png" />
-        <div id="logo-preview" class="preview"></div>
-        <input type="hidden" name="logobase64" id="id_logobase64" />
-      </div>
+            <!-- 图标与 Logo -->
+            <div class="section">
+                <h3>图标与 Logo</h3>
+                {{ form.iconfile.errors }}
+                <label for="{{ form.iconfile.id_for_label }}">应用图标 (.ico / .png):</label>
+                {{ form.iconfile }}
+                <div id="icon-preview" class="preview"></div>
+                <input type="hidden" name="iconbase64" id="id_iconbase64" value="{{ form.iconbase64.value|default:'' }}" />
 
-      <button type="submit">生成客户端</button>
-    </form>
-  </div>
+                {{ form.logofile.errors }}
+                <label for="{{ form.logofile.id_for_label }}">Logo 文件 (.png):</label>
+                {{ form.logofile }}
+                <div id="logo-preview" class="preview"></div>
+                <input type="hidden" name="logobase64" id="id_logobase64" value="{{ form.logobase64.value|default:'' }}" />
+            </div>
 
-  <script>
-    // ===== 保存表单 =====
-    function saveFormData() {
-      const form = document.getElementById('platformForm');
-      if (!form) {
-        alert('表单未找到！');
-        return;
-      }
+            <!-- 签名证书（Windows） -->
+            <div class="section">
+                <h3>签名证书（Windows）</h3>
+                {{ form.signToolFile.errors }}
+                <label for="{{ form.signToolFile.id_for_label }}">SignTool 工具:</label>
+                {{ form.signToolFile }}
 
-      const data = {};
-      const formData = new FormData(form);
+                {{ form.certificateFile.errors }}
+                <label for="{{ form.certificateFile.id_for_label }}">证书文件 (.pfx):</label>
+                {{ form.certificateFile }}
 
-      // 收集普通字段
-      for (const [name, value] of formData.entries()) {
-        if (!name.endsWith('base64')) {
-          data[name] = value;
+                {{ form.certPassword.errors }}
+                <label for="{{ form.certPassword.id_for_label }}">证书密码:</label>
+                {{ form.certPassword }}
+            </div>
+
+            <!-- 注册表设置（Windows） -->
+            <div class="section">
+                <h3>注册表设置（Windows）</h3>
+                {{ form.registryKey.errors }}
+                <label for="{{ form.registryKey.id_for_label }}">注册表路径:</label>
+                {{ form.registryKey }}
+
+                {{ form.registryValue.errors }}
+                <label for="{{ form.registryValue.id_for_label }}">注册表值:</label>
+                {{ form.registryValue }}
+            </div>
+
+            <!-- 安装脚本 -->
+            <div class="section">
+                <h3>安装脚本</h3>
+                {{ form.preInstallScript.errors }}
+                <label for="{{ form.preInstallScript.id_for_label }}">安装前脚本:</label>
+                {{ form.preInstallScript }}
+
+                {{ form.postInstallScript.errors }}
+                <label for="{{ form.postInstallScript.id_for_label }}">安装后脚本:</label>
+                {{ form.postInstallScript }}
+            </div>
+
+            <button type="submit">生成客户端</button>
+        </form>
+    </div>
+
+    <script>
+        // ========== 保存配置 ==========
+        function saveFormData() {
+            const form = document.getElementById('platformForm');
+            if (!form) {
+                alert('表单未找到！');
+                return;
+            }
+
+            const data = {};
+            const formData = new FormData(form);
+
+            // 收集所有字段（排除 base64 隐藏域）
+            for (const [name, value] of formData.entries()) {
+                if (!name.endsWith('base64')) {
+                    data[name] = value;
+                }
+            }
+
+            // 手动添加 base64 字段（如果存在）
+            const iconBase64 = document.getElementById('id_iconbase64')?.value;
+            if (iconBase64) data.iconfile = iconBase64;
+
+            const logoBase64 = document.getElementById('id_logobase64')?.value;
+            if (logoBase64) data.logofile = logoBase64;
+
+            // 生成文件名
+            const filename = data.exename || 'client-config';
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename + '.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
         }
-      }
 
-      // 添加 base64 图标/Logo（如果存在）
-      const iconBase64 = document.getElementById('id_iconbase64').value;
-      if (iconBase64) data.iconfile = iconBase64;
+        // ========== 加载配置 ==========
+        function loadFormData() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
 
-      const logoBase64 = document.getElementById('id_logobase64').value;
-      if (logoBase64) data.logofile = logoBase64;
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                if (!file) return;
 
-      // 生成文件
-      const filename = data.exename || 'client-config';
-      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = filename + '.json';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    }
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    try {
+                        const data = JSON.parse(event.target.result);
+                        fillForm(data); // ← 关键：传入 data
+                        alert('✅ 配置加载成功！');
+                    } catch (err) {
+                        alert('❌ 文件格式错误：' + err.message);
+                    }
+                };
+                reader.readAsText(file);
+            };
 
-    // ===== 加载表单 =====
-    function loadFormData() {
-      const input = document.createElement('input');
-      input.type = 'file';
-      input.accept = '.json';
-
-      input.onchange = function(e) {
-        const file = e.target.files[0];
-        if (!file) return;
-
-        const reader = new FileReader();
-        reader.onload = function(event) {
-          try {
-            const data = JSON.parse(event.target.result);
-            fillForm(data); // ← 关键：传入 data
-            alert('✅ 配置加载成功！');
-          } catch (err) {
-            alert('❌ 文件格式错误：' + err.message);
-          }
-        };
-        reader.readAsText(file);
-      };
-
-      input.click();
-    }
-
-    // ===== 填充表单 =====
-    function fillForm(data) {
-      if (!data || typeof data !== 'object') {
-        console.error('fillForm: invalid data');
-        return;
-      }
-
-      // 填充普通字段
-      for (const key in data) {
-        const el = document.querySelector(`[name="${key}"]`);
-        if (!el) continue;
-
-        if (el.type === 'checkbox' || el.type === 'radio') {
-          el.checked = data[key] === true || data[key] === 'on' || String(data[key]) === 'true';
-        } else if (el.type !== 'file') {
-          el.value = data[key];
+            input.click();
         }
-      }
 
-      // 处理图标预览
-      if (data.iconfile && data.iconfile.startsWith('data:image')) {
-        document.getElementById('id_iconbase64').value = data.iconfile;
-        document.getElementById('icon-preview').innerHTML = `<img src="${data.iconfile}" />`;
-      }
+        // ========== 填充表单（核心修复）==========
+        function fillForm(data) {
+            if (!data || typeof data !== 'object') {
+                console.error('fillForm: invalid data');
+                return;
+            }
 
-      if (data.logofile && data.logofile.startsWith('data:image')) {
-        document.getElementById('id_logobase64').value = data.logofile;
-        document.getElementById('logo-preview').innerHTML = `<img src="${data.logofile}" />`;
-      }
-    }
+            // 遍历所有字段
+            for (const key in data) {
+                const el = document.querySelector(`[name="${key}"]`);
+                if (!el) continue;
 
-    // ===== 实时预览图标/Logo =====
-    document.getElementById('id_iconfile').addEventListener('change', function(e) {
-      const file = e.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = function(ev) {
-          document.getElementById('id_iconbase64').value = ev.target.result;
-          document.getElementById('icon-preview').innerHTML = `<img src="${ev.target.result}" />`;
-        };
-        reader.readAsDataURL(file);
-      }
-    });
+                if (el.type === 'checkbox') {
+                    el.checked = data[key] === 'on' || data[key] === true || String(data[key]) === 'true';
+                } else if (el.type === 'file') {
+                    // 文件无法直接设置，跳过
+                } else {
+                    el.value = data[key];
+                }
+            }
 
-    document.getElementById('id_logofile').addEventListener('change', function(e) {
-      const file = e.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = function(ev) {
-          document.getElementById('id_logobase64').value = ev.target.result;
-          document.getElementById('logo-preview').innerHTML = `<img src="${ev.target.result}" />`;
-        };
-        reader.readAsDataURL(file);
-      }
-    });
-  </script>
+            // 特殊处理 base64 图标/Logo 预览
+            if (data.iconfile && data.iconfile.startsWith('data:image')) {
+                const iconBase64El = document.getElementById('id_iconbase64');
+                if (iconBase64El) {
+                    iconBase64El.value = data.iconfile;
+                    document.getElementById('icon-preview').innerHTML = `<img src="${data.iconfile}" />`;
+                }
+            }
+
+            if (data.logofile && data.logofile.startsWith('data:image')) {
+                const logoBase64El = document.getElementById('id_logobase64');
+                if (logoBase64El) {
+                    logoBase64El.value = data.logofile;
+                    document.getElementById('logo-preview').innerHTML = `<img src="${data.logofile}" />`;
+                }
+            }
+        }
+
+        // ========== 实时预览图标/Logo ==========
+        const iconInput = document.getElementById('id_iconfile');
+        if (iconInput) {
+            iconInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(ev) {
+                        document.getElementById('id_iconbase64').value = ev.target.result;
+                        document.getElementById('icon-preview').innerHTML = `<img src="${ev.target.result}" />`;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+
+        const logoInput = document.getElementById('id_logofile');
+        if (logoInput) {
+            logoInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(ev) {
+                        document.getElementById('id_logobase64').value = ev.target.result;
+                        document.getElementById('logo-preview').innerHTML = `<img src="${ev.target.result}" />`;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+    </script>
 </body>
 </html>
