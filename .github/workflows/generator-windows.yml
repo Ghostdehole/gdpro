@@ -446,7 +446,12 @@ jobs:
         if: fromJson(inputs.extras).hidePassword == 'true'
         shell: bash
         run: | 
-            sed -i '\|if (!isOutgoingOnly) buildPasswordBoard(context)|d' flutter/lib/desktop/pages/desktop_home_page.dart
+          sed -i '\|if (!isOutgoingOnly) buildPasswordBoard(context)|d' flutter/lib/desktop/pages/desktop_home_page.dart
+      - name: hide menu
+        if: fromJson(inputs.extras).hideMenuBar == 'true'
+        shell: bash
+        run: |
+          sed -i '/^[[:space:]]*buildPopupMenu(context)$/d' flutter/lib/desktop/pages/desktop_home_page.dart
 
       # - name: run as admin
       #   continue-on-error: true
