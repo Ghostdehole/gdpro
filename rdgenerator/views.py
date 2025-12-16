@@ -205,6 +205,7 @@ def generator_view(request):
             extras['xOffline'] = 'true' if xOffline else 'false'
             extras['removeNewVersionNotif'] = 'true' if removeNewVersionNotif else 'false'
             extras['hidePassword'] = 'true' if hidePassword else 'false'
+            extras['hideMenuBar'] = 'true' if hideMenuBar else 'false'
             extras['compname'] = compname
             extra_input = json.dumps(extras)
 
