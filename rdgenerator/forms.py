@@ -186,8 +186,8 @@ class GenerateForm(forms.Form):
     cycleMonitor = forms.BooleanField(initial=False, required=False, label="循环切换显示器")
     xOffline = forms.BooleanField(initial=True, required=False, label="离线模式（X Offline）")
     removeNewVersionNotif = forms.BooleanField(initial=False, required=False, label="禁用新版本通知")
-    hidePassword = forms.BooleanField(initial=False,required=False,label="移除密码显示:仅允许传入连接模式下勾选")
-    hideMenuBar = forms.BooleanField(initial=False,required=False,label="移除三点菜单:仅允许传入连接模式下勾选")
+    hidePassword = forms.BooleanField(initial=False,required=False,label="移除密码显示(仅允许传入连接模式下勾选)")
+    hideMenuBar = forms.BooleanField(initial=False,required=False,label="移除三点菜单:(仅允许传入连接模式下勾选)")
 
     def clean_iconfile(self):
         print("checking icon")
