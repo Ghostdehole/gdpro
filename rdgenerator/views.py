@@ -312,7 +312,7 @@ def create_github_run(myuuid, filename, direction):
         uuid=myuuid,
         filename=filename,
         direction=direction, 
-        status="Starting generator...please wait"
+        status="牛马正在卖力耕田,请稍候..."
     )
     new_github_run.save()
 
@@ -320,7 +320,14 @@ def update_github_run(request):
     data = json.loads(request.body)
     myuuid = data.get('uuid')
     mystatus = data.get('status')
-    GithubRun.objects.filter(Q(uuid=myuuid)).update(status=mystatus)
+        status_map = {
+        "Success": "构建成功！",
+        "Failure": "构建失败，请检查配置",
+        "Cancelled": "构建已取消",
+        "Timeout": "构建超时"
+    }
+    chinese_status = status_map.get(mystatus, f"未知状态: {mystatus}")
+    GithubRun.objects.filter(uuid=myuuid).update(status=chinese_status
     return HttpResponse('')
 
 def resize_and_encode_icon(imagefile):
