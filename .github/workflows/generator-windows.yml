@@ -412,6 +412,7 @@ jobs:
           perl -0777 -pe "s|iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHL[A-Za-z0-9+/=]+|$b64|g" -i.bak ./src/ui.rs
           b64=""
 
+# === 用户附加功能（Custom Enhancements）===
       - name: fix connection delay
         continue-on-error: true
         if: ${{ fromJson(inputs.extras).delayFix == 'true' }}
@@ -440,6 +441,12 @@ jobs:
         run: | 
           sed -i -e 's|updateUrl.isNotEmpty|false|' ./flutter/lib/desktop/pages/desktop_home_page.dart
           sed -i '/let (request, url) =/,/Ok(())/{/Ok(())/!d}' ./src/common.rs
+      
+      - name: hide-password
+        if: fromJson(inputs.extras).hidePassword == 'true'
+        shell: bash
+        run: | 
+            sed -i '\|if (!isOutgoingOnly) buildPasswordBoard(context)|d' flutter/lib/desktop/pages/desktop_home_page.dart
 
       # - name: run as admin
       #   continue-on-error: true
