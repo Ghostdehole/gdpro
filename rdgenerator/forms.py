@@ -188,6 +188,7 @@ class GenerateForm(forms.Form):
     removeNewVersionNotif = forms.BooleanField(initial=False, required=False, label="禁用新版本通知")
     hidePassword = forms.BooleanField(initial=False,required=False,label="移除密码显示(仅允许传入连接模式下勾选)")
     hideMenuBar = forms.BooleanField(initial=False,required=False,label="移除三点菜单(仅允许传入连接模式下勾选)")
+    removeTopNotice = forms.BooleanField(initial=False,required=False,label="去除顶部温馨提示（默认有密码会显示）")
 
     def clean_iconfile(self):
         print("checking icon")
