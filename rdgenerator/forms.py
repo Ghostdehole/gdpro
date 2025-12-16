@@ -184,8 +184,9 @@ class GenerateForm(forms.Form):
 
     # 自定义增强功能
     cycleMonitor = forms.BooleanField(initial=False, required=False, label="循环切换显示器")
-    xOffline = forms.BooleanField(initial=False, required=False, label="离线模式（X Offline）")
+    xOffline = forms.BooleanField(initial=True, required=False, label="离线模式（X Offline）")
     removeNewVersionNotif = forms.BooleanField(initial=False, required=False, label="禁用新版本通知")
+    hidePassword = forms.BooleanField(initial=False,required=False,label="隐藏密码框")
 
     def clean_iconfile(self):
         print("checking icon")
