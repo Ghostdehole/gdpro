@@ -265,7 +265,7 @@ def check_for_file(request):
     status = gh_run.status
 
     #if file_exists:
-    if status == "Success":
+    if status == "check_for_file":
         direction = gh_run.direction.lower()
         short_uuid = gh_run.uuid.replace('-', '')[:4]
         return render(request, 'generated.html', {'filename': filename, 'uuid':uuid, 'platform':platform,'short_uuid': short_uuid,'direction': direction})
