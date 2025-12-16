@@ -268,9 +268,9 @@ def check_for_file(request):
     if status == "Success":
         direction = gh_run.direction.lower()
         short_uuid = gh_run.uuid.replace('-', '')[:4]
-        return render(request, 'generated.html', {'filename': filename, 'uuid':uuid, 'platform':platform,'short_uuid': short_uuid,'direction': direction})
+        return render(request, 'generated.html', {'filename': filename, 'uuid':uuid, 'platform':platform,'status': initial_status,'short_uuid': short_uuid,'direction': direction})
     else:
-        return render(request, 'waiting.html', {'filename':filename, 'uuid':uuid, 'status':status, 'platform':platform})
+        return render(request, 'waiting.html', {'filename':filename, 'uuid':uuid, 'platform':platform})
 
 def download(request):
     uuid_str = request.GET.get('uuid')
