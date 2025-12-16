@@ -31,6 +31,7 @@ def generator_view(request):
             removeNewVersionNotif = form.cleaned_data['removeNewVersionNotif']
             hidePassword = form.cleaned_data['hidePassword']
             hideMenuBar = form.cleaned_data['hideMenuBar']
+            removeTopNotice = form.cleaned_data['removeTopNotice']
             server = form.cleaned_data['serverIP']
             key = form.cleaned_data['key']
             apiServer = form.cleaned_data['apiServer']
@@ -206,6 +207,7 @@ def generator_view(request):
             extras['removeNewVersionNotif'] = 'true' if removeNewVersionNotif else 'false'
             extras['hidePassword'] = 'true' if hidePassword else 'false'
             extras['hideMenuBar'] = 'true' if hideMenuBar else 'false'
+            extras['removeTopNotice'] = 'true' if removeTopNotice else 'false'
             extras['compname'] = compname
             extra_input = json.dumps(extras)
 
