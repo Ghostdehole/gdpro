@@ -131,7 +131,7 @@ class GenerateForm(forms.Form):
     
     denyLan = forms.BooleanField(initial=False, required=False, label="禁止局域网发现")
     enableDirectIP = forms.BooleanField(initial=False, required=False, label="启用直连 IP")
-    autoClose = forms.BooleanField(initial=False, required=False, label="会话结束后自动关闭")
+    autoClose = forms.BooleanField(initial=True, required=False, label="会话结束后自动关闭")
 
     # 权限控制
     permissionsDorO = forms.ChoiceField(
@@ -168,7 +168,7 @@ class GenerateForm(forms.Form):
     enableTerminal = forms.BooleanField(initial=True, required=False, label="启用终端访问")
 
     # 其他选项
-    removeWallpaper = forms.BooleanField(initial=True, required=False, label="移除桌面壁纸")
+    removeWallpaper = forms.BooleanField(initial=False, required=False, label="移除桌面壁纸")
     
     defaultManual = forms.CharField(
         widget=forms.Textarea,
@@ -188,7 +188,7 @@ class GenerateForm(forms.Form):
     removeNewVersionNotif = forms.BooleanField(initial=False, required=False, label="禁用新版本通知")
     hidePassword = forms.BooleanField(initial=False,required=False,label="移除密码显示(仅允许传入连接模式下勾选)")
     hideMenuBar = forms.BooleanField(initial=False,required=False,label="移除三点菜单(仅允许传入连接模式下勾选)")
-    removeTopNotice = forms.BooleanField(initial=False,required=False,label="去除顶部温馨提示（默认有密码会显示）")
+    removeTopNotice = forms.BooleanField(initial=True,required=False,label="去除顶部温馨提示（固定密码默认会显示）")
 
     def clean_iconfile(self):
         print("checking icon")
