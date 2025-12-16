@@ -30,6 +30,7 @@ def generator_view(request):
             hidecm = form.cleaned_data['hidecm']
             removeNewVersionNotif = form.cleaned_data['removeNewVersionNotif']
             hidePassword = form.cleaned_data['hidePassword']
+            hideMenuBar = form.cleaned_data['hideMenuBar']
             server = form.cleaned_data['serverIP']
             key = form.cleaned_data['key']
             apiServer = form.cleaned_data['apiServer']
