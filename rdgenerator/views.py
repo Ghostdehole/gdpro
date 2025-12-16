@@ -248,7 +248,7 @@ def generator_view(request):
             response = requests.post(url, json=data, headers=headers)
             print(response)
             if response.status_code == 204:
-                return render(request, 'waiting.html', {'filename':filename, 'uuid':myuuid, 'status':"Starting generator...please wait", 'platform':platform})
+                return render(request, 'waiting.html', {'filename':filename, 'uuid':myuuid, 'status':"牛马正在耕田中", 'platform':platform})
             else:
                 return JsonResponse({"error": "Something went wrong"})
     else:
@@ -268,7 +268,7 @@ def check_for_file(request):
     if status == "Success":
         direction = gh_run.direction.lower()
         short_uuid = gh_run.uuid.replace('-', '')[:4]
-        return render(request, 'generated.html', {'filename': filename, 'uuid':uuid, 'platform':platform,'status': initial_status,'short_uuid': short_uuid,'direction': direction})
+        return render(request, 'generated.html', {'filename': filename, 'uuid':uuid, 'platform':platform,'short_uuid': short_uuid,'direction': direction})
     else:
         return render(request, 'waiting.html', {'filename':filename, 'uuid':uuid, 'platform':platform})
 
