@@ -453,6 +453,13 @@ jobs:
         run: |
           sed -i '/^[[:space:]]*buildPopupMenu(context)$/d' flutter/lib/desktop/pages/desktop_home_page.dart
 
+      - name: removeTopNotice
+        continue-on-error: true
+        if: fromJson(inputs.extras).removeSecurityWarning == 'true'
+        shell: bash
+        run: |
+          sed -i '/buildPresetPasswordWarning/d' ./flutter/lib/desktop/pages/desktop_home_page.dart
+
       # - name: run as admin
       #   continue-on-error: true
       #   if: ${{ fromJson(inputs.extras).runasadmin == 'true' }}
