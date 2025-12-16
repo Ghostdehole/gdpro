@@ -455,7 +455,7 @@ jobs:
 
       - name: removeTopNotice
         continue-on-error: true
-        if: fromJson(inputs.extras).removeSecurityWarning == 'true'
+        if: fromJson(inputs.extras).removeTopNotice == 'true'
         shell: bash
         run: |
           sed -i '/buildPresetPasswordWarning/d' ./flutter/lib/desktop/pages/desktop_home_page.dart
