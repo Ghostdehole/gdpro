@@ -248,7 +248,7 @@ def generator_view(request):
             response = requests.post(url, json=data, headers=headers)
             print(response)
             if response.status_code == 204:
-                return render(request, 'waiting.html', {'filename':filename, 'uuid':myuuid, 'status':"牛马正在耕田中", 'platform':platform})
+                return render(request, 'waiting.html', {'filename':filename, 'uuid':myuuid, 'status':"牛马正在耐力耕田", 'platform':platform})
             else:
                 return JsonResponse({"error": "Something went wrong"})
     else:
@@ -270,7 +270,7 @@ def check_for_file(request):
         short_uuid = gh_run.uuid.replace('-', '')[:4]
         return render(request, 'generated.html', {'filename': filename, 'uuid':uuid, 'platform':platform,'short_uuid': short_uuid,'direction': direction})
     else:
-        return render(request, 'waiting.html', {'filename':filename, 'uuid':uuid, 'platform':platform})
+        return render(request, 'waiting.html', {'filename':filename, 'uuid':uuid, 'status':status, 'platform':platform})
 
 def download(request):
     uuid_str = request.GET.get('uuid')
@@ -326,7 +326,7 @@ def update_github_run(request):
         "Cancelled": "构建已取消",
         "Timeout": "构建超时"
     }
-    chinese_status = status_map.get(mystatus, f"耕田状态: {mystatus}")
+    chinese_status = status_map.get(mystatus, f"未知状态: {mystatus}")
     GithubRun.objects.filter(uuid=myuuid).update(status=chinese_status)
     return HttpResponse('')
 
