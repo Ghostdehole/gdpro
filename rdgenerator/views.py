@@ -327,7 +327,7 @@ def update_github_run(request):
         "Timeout": "构建超时"
     }
     chinese_status = status_map.get(mystatus, f"未知状态: {mystatus}")
-    GithubRun.objects.filter(uuid=myuuid).update(status=chinese_status
+    GithubRun.objects.filter(uuid=myuuid).update(status=chinese_status)
     return HttpResponse('')
 
 def resize_and_encode_icon(imagefile):
