@@ -183,9 +183,9 @@ class GenerateForm(forms.Form):
     )
 
     # 自定义增强功能
-    cycleMonitor = forms.BooleanField(initial=False, required=False, label="循环切换显示器")
-    xOffline = forms.BooleanField(initial=True, required=False, label="离线模式（X Offline）")
-    removeNewVersionNotif = forms.BooleanField(initial=False, required=False, label="禁用新版本通知")
+    cycleMonitor = forms.BooleanField(initial=False, required=False, label="会话顶部添加显示器切换按钮")
+    xOffline = forms.BooleanField(initial=True, required=False, label="在地址簿添加离线标记")
+    removeNewVersionNotif = forms.BooleanField(initial=False, required=False, label="移除安装更新通知")
     hidePassword = forms.BooleanField(initial=False,required=False,label="移除密码显示(仅允许传入连接模式下勾选)")
     hideMenuBar = forms.BooleanField(initial=False,required=False,label="移除三点菜单(仅允许传入连接模式下勾选)")
     removeTopNotice = forms.BooleanField(initial=True,required=False,label="移除顶部温馨提示（固定密码默认会显示）")
