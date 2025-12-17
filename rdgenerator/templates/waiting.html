@@ -184,6 +184,18 @@ function updatePlatformUI() {
     }
 }
 
+{% if status == "Success" %}
+    <p class="success">✅ 构建成功！</p>
+    {% include "generated.html" %}
+{% elif status == "Failure" %}
+    <p class="error">❌ 构建失败，请检查配置</p>
+{% elif status == "InProgress" %}
+    <p class="pending">🕒 牛马正在卖力耕种，请稍候...</p>
+    <meta http-equiv="refresh" content="5">
+{% else %}
+    <p>状态：{{ status }}</p>
+{% endif %}
+    
 // 页面加载时执行
 updatePlatformUI();
 
