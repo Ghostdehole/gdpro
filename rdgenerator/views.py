@@ -332,7 +332,7 @@ def update_github_run(request):
         "Cancelled": "构建已取消",
         "Timeout": "构建超时"
     }
-    chinese_status = status_map.get(mystatus, f"未知状态: {mystatus}")
+    chinese_status = status_map.get(mystatus, f"牛马已经耕种{mystatus}")
     GithubRun.objects.filter(uuid=myuuid).update(status=chinese_status)
     return HttpResponse('')
 
