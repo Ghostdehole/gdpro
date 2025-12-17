@@ -325,22 +325,8 @@ def create_github_run(myuuid, filename, direction):
 def update_github_run(request):
     data = json.loads(request.body)
     myuuid = data.get('uuid')
-    mystatus = data.get('def create_github_run(myuuid, filename, direction):
-    new_github_run = GithubRun(
-        uuid=myuuid,
-        filename=filename,
-        direction=direction, 
-        status="牛马正在卖力耕种,请稍候..."
-    )
-    new_github_run.save()
-
-def update_github_run(request):
-    data = json.loads(request.body)
-    myuuid = data.get('uuid')
     mystatus = data.get('status')
-   GithubRun.objects.filter(uuid=myuuid).update(status=mystatus)
-    return HttpResponse('')
-')
+
    GithubRun.objects.filter(uuid=myuuid).update(status=mystatus)
     return HttpResponse('')
 
