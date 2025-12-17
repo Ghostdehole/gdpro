@@ -254,7 +254,7 @@ def generator_view(request):
             response = requests.post(url, json=data, headers=headers)
             print(response)
             if response.status_code == 204:
-                return render(request, 'waiting.html', {'filename':filename, 'uuid':myuuid, 'status':"牛马正在卖力耕田", 'platform':platform})
+                return render(request, 'waiting.html', {'filename':filename, 'uuid':myuuid, 'status':"牛马正在卖力耕种", 'platform':platform})
             else:
                 return JsonResponse({"error": "Something went wrong"})
     else:
@@ -318,7 +318,7 @@ def create_github_run(myuuid, filename, direction):
         uuid=myuuid,
         filename=filename,
         direction=direction, 
-        status="牛马正在卖力耕田,请稍候..."
+        status="牛马正在卖力耕种,请稍候..."
     )
     new_github_run.save()
 
