@@ -318,6 +318,18 @@ def create_github_run(myuuid, filename, direction):
         uuid=myuuid,
         filename=filename,
         direction=direction, 
+        status="InProgress"
+    )
+    new_github_run.save()
+
+def update_github_run(request):
+    data = json.loads(request.body)
+    myuuid = data.get('uuid')
+    mystatus = data.get('def create_github_run(myuuid, filename, direction):
+    new_github_run = GithubRun(
+        uuid=myuuid,
+        filename=filename,
+        direction=direction, 
         status="牛马正在卖力耕种,请稍候..."
     )
     new_github_run.save()
@@ -326,14 +338,10 @@ def update_github_run(request):
     data = json.loads(request.body)
     myuuid = data.get('uuid')
     mystatus = data.get('status')
-    status_map = {
-        "Success": "构建成功！",
-        "Failure": "构建失败，请检查配置",
-        "Cancelled": "构建已取消",
-        "Timeout": "构建超时"
-    }
-    chinese_status = status_map.get(mystatus, f"牛马已经耕种{mystatus}")
-    GithubRun.objects.filter(uuid=myuuid).update(status=chinese_status)
+   GithubRun.objects.filter(uuid=myuuid).update(status=mystatus)
+    return HttpResponse('')
+')
+   GithubRun.objects.filter(uuid=myuuid).update(status=mystatus)
     return HttpResponse('')
 
 def resize_and_encode_icon(imagefile):
