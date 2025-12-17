@@ -326,8 +326,7 @@ def update_github_run(request):
     data = json.loads(request.body)
     myuuid = data.get('uuid')
     mystatus = data.get('status')
-
-   GithubRun.objects.filter(uuid=myuuid).update(status=mystatus)
+    GithubRun.objects.filter(uuid=myuuid).update(status=mystatus)
     return HttpResponse('')
 
 def resize_and_encode_icon(imagefile):
