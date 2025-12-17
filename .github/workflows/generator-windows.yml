@@ -496,7 +496,7 @@ jobs:
           url: ${{ env.STATUS_URL }}
           method: 'POST'
           customHeaders: '{"Content-Type": "application/json"}'
-          data: '{"uuid": "${{ inputs.uuid }}", "status": "50%  , this step takes about 5 minutes, be patient."}'
+          data: '{"uuid": "${{ inputs.uuid }}", "status": "50%  , 牛马离成功只有只有一半了"}'
 
       - name: Build rustdesk
         run: |
@@ -581,7 +581,7 @@ jobs:
           url: ${{ env.STATUS_URL }}
           method: 'POST'
           customHeaders: '{"Content-Type": "application/json"}'
-          data: '{"uuid": "${{ inputs.uuid }}", "status": "70%  , this step takes about 5 minutes, be patient."}'
+          data: '{"uuid": "${{ inputs.uuid }}", "status": "70%  , 牛马迎接白富美的日子不远了"}'
       
 
 
