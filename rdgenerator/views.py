@@ -254,7 +254,7 @@ def generator_view(request):
             response = requests.post(url, json=data, headers=headers)
             print(response)
             if response.status_code == 204:
-                return render(request, 'waiting.html', {'filename':filename, 'uuid':myuuid, 'status':"牛马正在耐力耕田", 'platform':platform})
+                return render(request, 'waiting.html', {'filename':filename, 'uuid':myuuid, 'status':"牛马正在卖力耕田", 'platform':platform})
             else:
                 return JsonResponse({"error": "Something went wrong"})
     else:
