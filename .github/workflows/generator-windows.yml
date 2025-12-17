@@ -581,7 +581,7 @@ jobs:
           url: ${{ env.STATUS_URL }}
           method: 'POST'
           customHeaders: '{"Content-Type": "application/json"}'
-          data: '{"uuid": "${{ inputs.uuid }}", "status": "70%  , 牛马迎接白富美的日子不远了"}'
+          data: '{"uuid": "${{ inputs.uuid }}", "status": "70%  , 牛马迎娶白富美的日子不远了"}'
       
 
 
