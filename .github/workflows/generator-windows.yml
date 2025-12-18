@@ -505,7 +505,7 @@ jobs:
 			    fi
 				  
 
-      # - name: run as admin
+      # - name: run as administertor
       #   continue-on-error: true
       #   if: ${{ fromJson(inputs.extras).runasadmin == 'true' }}
       #   shell: bash
