@@ -42,7 +42,11 @@ X_FRAME_OPTIONS = 'DENY'
 SECURE_REFERRER_POLICY = 'same-origin'
 GENURL = os.environ.get("GENURL", "").strip()
 if GENURL:
-    ALLOWED_HOSTS = [urlparse(GENURL).netloc]
+    parsed = urlparse(GENURL)
+    host = parsed.hostname  
+    if not host:
+        raise ValueError(f"Invalid GENURL: {GENURL}")
+    ALLOWED_HOSTS = [host]
 else:
     ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
     
