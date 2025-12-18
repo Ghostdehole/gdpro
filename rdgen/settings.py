@@ -33,8 +33,10 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
-
-ALLOWED_HOSTS = os.getenv('GENURL', '').strip()
+GENURL = os.getenv('GENURL', '').strip()
+if not GENURL:
+    raise ValueError("GENURL environment variable is required in production.")
+ALLOWED_HOSTS = [GENURL]
 #CSRF_TRUSTED_ORIGINS = os.getenv('CSRF_TRUSTED_ORIGINS', '').split()
 
 # Application definition
