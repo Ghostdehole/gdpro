@@ -319,13 +319,7 @@ color: #0095EA;
 <label for="{{ form.logofile.id_for_label }}">品牌标识（PNG 格式）：</label>
 {{ form.logofile }}<br><br>
 <div id="logo-preview"></div><br><br>
-<label for="{{ form.theme.id_for_label }}">主题：</label>
-{{ form.theme }} {{ form.themeDorO }}
-<div class="help-text">
-* 默认设置：允许用户更改<br>
-* 固化设置：禁止用户更改<br><br>
-</div>
-  <br> 
+    <br> 
 {% if form.custom_dart_file.errors %}
     {% for error in form.custom_dart_file.errors %}
       <div class="text-danger">{{ error }}</div>
@@ -344,8 +338,14 @@ color: #0095EA;
   <label for="{{ form.custom_dart_target_path.id_for_label }}">目标路径</label>
   {{ form.custom_dart_target_path }}
   <small class="form-text text-muted">以 lib/ 开头，不能包含 ".." 或以 "/" 开头</small>
-  
 </div>  
+<label for="{{ form.theme.id_for_label }}">主题：</label>
+{{ form.theme }} {{ form.themeDorO }}
+<div class="help-text">
+* 默认设置：允许用户更改<br>
+* 固化设置：禁止用户更改<br><br>
+</div>
+
 </div>
 </div>
 
