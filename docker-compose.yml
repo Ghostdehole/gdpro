@@ -1,7 +1,6 @@
 services:
-  rdgen:
-    # use bryangerlach/rdgen:latest for the latest build
-    image: bryangerlach/rdgen:latest
+  gdpro:
+    image: .
     restart: unless-stopped
     environment:
       SECRET_KEY: "django-insecure-!(t-!f#6g#sr%yfded9(xha)g+=!6craeez^cp+*&bz_7vdk61"
@@ -9,7 +8,7 @@ services:
       GHBEARER: "github_access_token"
       GENURL: "accessible_url_of_server"
       PROTOCOL: "https"
-      REPONAME: "rdgen"
+      REPONAME: "gdpro"
     ports:
       - "8000:8000"
     dns:
