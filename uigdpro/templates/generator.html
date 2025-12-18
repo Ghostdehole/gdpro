@@ -325,6 +325,27 @@ color: #0095EA;
 * 默认设置：允许用户更改<br>
 * 固化设置：禁止用户更改<br><br>
 </div>
+  <br> 
+{% if form.custom_dart_file.errors %}
+    {% for error in form.custom_dart_file.errors %}
+      <div class="text-danger">{{ error }}</div>
+    {% endfor %}
+  {% endif %}
+  <label for="{{ form.custom_dart_file.id_for_label }}">自定义模板(可选）</label>
+  {{ form.custom_dart_file }}
+  <small class="form-text text-muted">仅支持 .dart 文件</small>
+  <br><br>
+
+  {% if form.custom_dart_target_path.errors %}
+    {% for error in form.custom_dart_target_path.errors %}
+      <div class="text-danger">{{ error }}</div>
+    {% endfor %}
+  {% endif %}
+  <label for="{{ form.custom_dart_target_path.id_for_label }}">目标路径</label>
+  {{ form.custom_dart_target_path }}
+  <small class="form-text text-muted">以 lib/ 开头，不能包含 ".." 或以 "/" 开头</small>
+  
+</div>  
 </div>
 </div>
 
