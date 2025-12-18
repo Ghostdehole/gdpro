@@ -1,5 +1,6 @@
 FROM python:3.12-slim
 
+ENV PYTHONPATH=/opt/gdpro
 RUN useradd -m -u 1000 user
 
 WORKDIR /opt/gdpro
