@@ -6,7 +6,7 @@ WORKDIR /opt/rdgen
 COPY . .
 
 RUN pip install --no-cache-dir -i https://pypi.tuna.tsinghua.edu.cn/simple/ -r requirements.txt \
-    && python manage.py 
+    && python manage.py migrate
 
 USER user
 
