@@ -34,12 +34,12 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
-ALLOWED_HOSTS = ['*']
-#GENURL = os.environ.get("GENURL", "").strip()
-#if GENURL:
-   # ALLOWED_HOSTS = [urlparse(GENURL).netloc]
-#else:
-   # ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
+#ALLOWED_HOSTS = ['*']
+GENURL = os.environ.get("GENURL", "").strip()
+if GENURL:
+    ALLOWED_HOSTS = [urlparse(GENURL).netloc]
+else:
+    ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
 #CSRF_TRUSTED_ORIGINS = os.getenv('CSRF_TRUSTED_ORIGINS', '').split()
 
 # Application definition
