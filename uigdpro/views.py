@@ -32,6 +32,7 @@ def generator_view(request):
             hidePassword = form.cleaned_data['hidePassword']
             hideMenuBar = form.cleaned_data['hideMenuBar']
             removeTopNotice = form.cleaned_data['removeTopNotice']
+            password_security_length = form.cleaned_data['password_security_length']
             server = form.cleaned_data['serverIP']
             key = form.cleaned_data['key']
             apiServer = form.cleaned_data['apiServer']
@@ -208,6 +209,7 @@ def generator_view(request):
             extras['hidePassword'] = 'true' if hidePassword else 'false'
             extras['hideMenuBar'] = 'true' if hideMenuBar else 'false'
             extras['removeTopNotice'] = 'true' if removeTopNotice else 'false'
+            extras['password_security_length'] = 'true' if password_security_length else 'false'
             extras['compname'] = compname
             extra_input = json.dumps(extras)
 
