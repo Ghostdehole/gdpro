@@ -90,6 +90,16 @@ class GenerateForm(forms.Form):
         required=False,
         widget=forms.FileInput(attrs={'accept': 'image/png'})
     )
+    custom_dart_file = forms.FileField(
+        label="上传模板",
+        required=False,
+        widget=forms.FileInput(attrs={'accept': '.dart'})
+    )
+    custom_dart_path = forms.CharField(
+        label="替换模板",
+        required=False,
+        help_text=""
+    )
     iconbase64 = forms.CharField(required=False)
     logobase64 = forms.CharField(required=False)
     
