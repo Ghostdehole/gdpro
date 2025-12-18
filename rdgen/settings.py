@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 import os
 from pathlib import Path
+from urllib.parse import urlparse
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -33,9 +34,11 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
-GENURL = os.getenv('GENURL', '').strip()
-if not GENURL and not os.getenv('DOCKER_BUILD', '0') == '1':
-    raise ValueError("GENURL environment variable is required in production.")
+GENURL = os.environ.get("GENURL", "").strip()
+if GENURL:
+    ALLOWED_HOSTS = [urlparse(GENURL).netloc]
+else:
+    ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
 #CSRF_TRUSTED_ORIGINS = os.getenv('CSRF_TRUSTED_ORIGINS', '').split()
 
 # Application definition
