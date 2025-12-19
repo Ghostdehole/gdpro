@@ -266,7 +266,6 @@ color: #0095EA;
 </div>
 
 <div class="container">
-<div class="section">
 <h2><i class="fas fa-sliders-h"></i> 通用设置</h2>
 <label for="{{ form.exename.id_for_label }}">配置名称（仅限英文字符，不可包含空格或特殊符号）：</label>
 {{ form.exename }}<span id="filenameError" class="error"></span><br><br>
@@ -279,7 +278,8 @@ color: #0095EA;
 <label for="{{ form.settings.id_for_label }}">禁用设置：</label>
 {{ form.settings }}<br><br>
 </div>
-<div class="section">
+ 
+<div class="container">
 <h2><i class="fas fa-server"></i> 服务器配置 </h2>
 <label for="{{ form.serverIP.id_for_label }}">服务器地址 (Host)：</label>
 {{ form.serverIP }}<br><br>
@@ -292,12 +292,10 @@ color: #0095EA;
 <label for="{{ form.downloadLink.id_for_label }}"> 更新链接：</label>
 {{ form.downloadLink }}<br><br>
 <label for="{{ form.compname.id_for_label }}">版权归属：</label>
-{{ form.compname }}<br><br>
-</div>
-</div>
+{{ form.compname }}
+</div><br>
 
 <div class="container">
-<div class="section">
 <h2><i class="fas fa-shield-alt"></i> 安全设置</h2>
 <label for="{{ form.passApproveMode.id_for_label }}">认证方式：</label>
 {{ form.passApproveMode }}<br><br>
@@ -310,7 +308,7 @@ color: #0095EA;
 <label for="{{ form.hidecm.id_for_label }}">{{ form.hidecm }} 允许从远程屏幕隐藏连接窗口</label><br>
 </div>
 
-<div class="section">
+<div class="container">
 <h2><i class="fas fa-paint-brush"></i> 外观设置</h2>
 {{ form.iconbase64.as_hidden }}
 {{ form.logobase64.as_hidden }}
@@ -370,9 +368,8 @@ color: #0095EA;
 <label for="{{ form.enableCamera.id_for_label }}">{{ form.enableCamera }} 启用远程摄像头</label>
 <label for="{{ form.enableTerminal.id_for_label }}">{{ form.enableTerminal }} 启用远程终端</label>
 </div><br>
-  </div>  
-  </div>
-<div class="section">
+
+<div class="container">
 <h2><i class="fas fa-cog"></i> 高级设置</h2>
 <label for="{{ form.removeWallpaper.id_for_label }}">{{ form.removeWallpaper }} 远程会话期间移除桌面壁纸</label><br>
 <a href="https://rustdesk.com/docs/en/self-host/client-configuration/advanced-settings/"
@@ -383,9 +380,9 @@ rel="noopener noreferrer">点击此处查看可用的高级设置列表</a>
 <label for="{{ form.overrideManual.id_for_label }}">固化设置（用户不可修改）</label><br>
 {{ form.overrideManual }}<br><br>
 </div>
-</div>
-</div>  
-<div class="section">
+<br>
+
+<div class="container">
 <h2><i class="fas fa-code"></i> 附加功能</h2>
 <label for="{{ form.cycleMonitor.id_for_label }}">{{ form.cycleMonitor }} 会话顶部添加显示器切换按钮</label><br>
 <label for="{{ form.xOffline.id_for_label }}">{{ form.xOffline }} 在地址簿添加离线标记</label><br>
@@ -394,9 +391,7 @@ rel="noopener noreferrer">点击此处查看可用的高级设置列表</a>
 <label for="{{ form.hideMenuBar.id_for_label }}">{{ form.hideMenuBar }} 移除三点菜单(仅允许传入连接模式下勾选)</label><br>
 <label for="{{ form.removeTopNotice.id_for_label }}">{{ form.removeTopNotice}} 移除顶部温馨提示（固定密码默认会显示）</label><br>
 <label for="{{ form.password_security_length.id_for_label }}">{{ form.password_security_length}} 修改临时密码的长度</label><br>
-</div>
-  </div>
-</div>
+</div><br>
 
 <!-- 底部按钮 -->
 <div class="platform">
@@ -404,7 +399,6 @@ rel="noopener noreferrer">点击此处查看可用的高级设置列表</a>
 <button type="submit" class="sponsor-button">
 <i class="fas fa-rocket"></i> 牛马开始干活
 </button>
-</div>
 </div>
 
 
