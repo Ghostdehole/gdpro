@@ -100,7 +100,7 @@ class GenerateForm(forms.Form):
         required=False,
         widget=forms.TextInput(attrs={
             'class': 'form-control bg-secondary text-light',
-            'placeholder': '例如：lib/main.dart'
+            'placeholder': ''
         }),
         help_text="指定要替换的 Dart 文件路径（相对于项目根目录）"
 )
