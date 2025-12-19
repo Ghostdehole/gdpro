@@ -392,16 +392,18 @@ color: #0095EA;
       {{ form.iconbase64.as_hidden }}
       {{ form.logobase64.as_hidden }}
 
-      <div class="mb-3">
-        <label for="{{ form.iconfile.id_for_label }}" class="form-label">应用图标（PNG 格式）：</label>
-        {{ form.iconfile }}
-        <div id="icon-preview" class="mt-2"></div>
-      </div>
-
-      <div class="mb-3">
-        <label for="{{ form.logofile.id_for_label }}" class="form-label">品牌标识（PNG 格式）：</label>
-        {{ form.logofile }}
-        <div id="logo-preview" class="mt-2"></div>
+      <div class="row g-3 mb-3">
+        <div class="col-md-6">
+          <label for="{{ form.iconfile.id_for_label }}" class="form-label">应用图标（PNG 格式）：</label>
+          {{ form.iconfile }}
+          <div id="icon-preview" class="mt-2"></div>
+        </div>
+    
+        <div class="col-md-6">
+          <label for="{{ form.logofile.id_for_label }}" class="form-label">品牌标识（PNG 格式）：</label>
+          {{ form.logofile }}
+          <div id="logo-preview" class="mt-2"></div>
+        </div>
       </div>
 
       <div class="mb-3">
