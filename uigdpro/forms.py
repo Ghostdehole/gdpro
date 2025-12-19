@@ -104,7 +104,7 @@ class GenerateForm(forms.Form):
         }),
         help_text="指定要替换的 Dart 文件路径（相对于项目根目录）"
 )
-    )
+
     iconbase64 = forms.CharField(required=False)
     logobase64 = forms.CharField(required=False)
     
