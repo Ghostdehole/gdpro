@@ -277,7 +277,7 @@ color: #0095EA;
 <label for="{{ form.installation.id_for_label }}">禁止安装：</label>
 {{ form.installation }}<br><br>
 <label for="{{ form.settings.id_for_label }}">禁用设置：</label>
-{{ form.settings }}<br><br>
+{{ form.settings }}
 </div>
  
 <div class="section">
@@ -294,10 +294,12 @@ color: #0095EA;
 {{ form.downloadLink }}<br><br>
 <label for="{{ form.compname.id_for_label }}">版权归属：</label>
 {{ form.compname }}
-</div><br>
+</div>
 
 <div class="container">
- <div class="section">
+<div class="row">
+<div class="col-md-6">
+<div class="section">
 <h2><i class="fas fa-shield-alt"></i> 安全设置</h2>
 <label for="{{ form.passApproveMode.id_for_label }}">认证方式：</label>
 {{ form.passApproveMode }}<br><br>
@@ -310,6 +312,7 @@ color: #0095EA;
 <label for="{{ form.hidecm.id_for_label }}">{{ form.hidecm }} 允许从远程屏幕隐藏连接窗口</label><br>
 </div>
 
+<div class="col-md-6">
 <div class="section">
 <h2><i class="fas fa-paint-brush"></i> 外观设置</h2>
 {{ form.iconbase64.as_hidden }}
