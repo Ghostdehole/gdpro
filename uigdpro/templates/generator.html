@@ -6,6 +6,8 @@
 <title>客户端构建器</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 <style>
 body {
 font-family: 'Roboto', "Microsoft YaHei", "PingFang SC", "Hiragino Sans GB", "Noto Sans CJK SC", sans-serif;
@@ -265,147 +267,271 @@ color: #0095EA;
 <label for="{{ form.delayFix.id_for_label }}">{{ form.delayFix }} 修复使用第三方 API 时的连接延迟</label>
 </div>
 
-<div class="container">
- <div class="section">
-<h2><i class="fas fa-sliders-h"></i> 通用设置</h2>
-<label for="{{ form.exename.id_for_label }}">配置名称（仅限英文字符，不可包含空格或特殊符号）：</label>
-{{ form.exename }}<span id="filenameError" class="error"></span><br><br>
-<label for="{{ form.appname.id_for_label }}">自定义应用程序名称（留空则使用默认值）：</label>
-{{ form.appname }}<br><br>
-<label for="{{ form.direction.id_for_label }}"> 客户端类型：</label>
-{{ form.direction }}<br><br>
-<label for="{{ form.installation.id_for_label }}">禁止安装：</label>
-{{ form.installation }}<br><br>
-<label for="{{ form.settings.id_for_label }}">禁用设置：</label>
-{{ form.settings }}<br><br>
-</div>
- 
-<div class="section">
-<h2><i class="fas fa-server"></i> 服务器配置 </h2>
-<label for="{{ form.serverIP.id_for_label }}">服务器地址 (Host)：</label>
-{{ form.serverIP }}<br><br>
-<label for="{{ form.key.id_for_label }}">密钥 (Key)：</label>
-{{ form.key }}<br><br>
-<label for="{{ form.apiServer.id_for_label }}">API 地址：</label>
-{{ form.apiServer }}<br><br>
-<label for="{{ form.urlLink.id_for_label }}">门户网站：</label>
-{{ form.urlLink }}<br><br>
-<label for="{{ form.downloadLink.id_for_label }}"> 更新链接：</label>
-{{ form.downloadLink }}<br><br>
-<label for="{{ form.compname.id_for_label }}">版权归属：</label>
-{{ form.compname }}<br><br>
-</div>
- </div>
+<!-- 主容器 -->
+<div class="container py-4">
 
-<div class="container">
-<div class="section">
-<h2><i class="fas fa-shield-alt"></i> 安全设置</h2>
-<label for="{{ form.passApproveMode.id_for_label }}">认证方式：</label>
-{{ form.passApproveMode }}<br><br>
-<div id="passwordRequirement" class="password-requirement">启用“隐藏连接窗口”功能需设置永久密码。</div>
-<label for="{{ form.permanentPassword.id_for_label }}">设置永久密码：</label>
-{{ form.permanentPassword }} *此密码为默认值，客户端用户可自行修改<br><br>
-<label for="{{ form.denyLan.id_for_label }}">{{ form.denyLan }} 禁止局域网设备发现</label><br>
-<label for="{{ form.enableDirectIP.id_for_label }}">{{ form.enableDirectIP }} 启用直接 IP 访问</label><br>
-<label for="{{ form.autoClose.id_for_label }}">{{ form.autoClose }} 用户无操作时自动关闭传入会话</label><br>
-<label for="{{ form.hidecm.id_for_label }}">{{ form.hidecm }} 允许从远程屏幕隐藏连接窗口</label><br>
-</div>
+  <!-- 第一组：通用设置 + 服务器配置 -->
+  <div class="row mb-4">
+    <!-- 通用设置 -->
+    <div class="col-lg-6 mb-4 mb-lg-0">
+      <div class="card bg-dark text-light border-secondary h-100">
+        <div class="card-header bg-secondary text-white">
+          <i class="fas fa-sliders-h me-2"></i>通用设置
+        </div>
+        <div class="card-body">
+          <div class="mb-3">
+            <label for="{{ form.exename.id_for_label }}" class="form-label">配置名称（仅限英文字符，不可包含空格或特殊符号）：</label>
+            {{ form.exename }}
+            <div id="filenameError" class="text-danger small"></div>
+          </div>
+          <div class="mb-3">
+            <label for="{{ form.appname.id_for_label }}" class="form-label">自定义应用程序名称（留空则使用默认值）：</label>
+            {{ form.appname }}
+          </div>
+          <div class="mb-3">
+            <label for="{{ form.direction.id_for_label }}" class="form-label">客户端类型：</label>
+            {{ form.direction }}
+          </div>
+          <div class="form-check mb-2">
+            {{ form.installation }}
+            <label for="{{ form.installation.id_for_label }}" class="form-check-label">禁止安装</label>
+          </div>
+          <div class="form-check mb-2">
+            {{ form.settings }}
+            <label for="{{ form.settings.id_for_label }}" class="form-check-label">禁用设置</label>
+          </div>
+        </div>
+      </div>
+    </div>
 
-<div class="section">
-<h2><i class="fas fa-paint-brush"></i> 外观设置</h2>
-{{ form.iconbase64.as_hidden }}
-{{ form.logobase64.as_hidden }}
-<label for="{{ form.iconfile.id_for_label }}">应用图标（PNG 格式）：</label>
-{{ form.iconfile }}<br><br>
-<div id="icon-preview"></div><br><br>
-<label for="{{ form.logofile.id_for_label }}">品牌标识（PNG 格式）：</label>
-{{ form.logofile }}<br><br>
-<div id="logo-preview"></div><br><br>
-<div class="form-group">
-    {% if form.custom_dart_file.errors %}
-      {% for error in form.custom_dart_file.errors %}
-        <div class="text-danger">{{ error }}</div>
-      {% endfor %}
-    {% endif %}
-    <label for="{{ form.custom_dart_file.id_for_label }}">自定义模板（可选）</label>
-    {{ form.custom_dart_file }}
+    <!-- 服务器配置 -->
+    <div class="col-lg-6">
+      <div class="card bg-dark text-light border-secondary h-100">
+        <div class="card-header bg-secondary text-white">
+          <i class="fas fa-server me-2"></i>服务器配置
+        </div>
+        <div class="card-body">
+          <div class="mb-3">
+            <label for="{{ form.serverIP.id_for_label }}" class="form-label">服务器地址 (Host)：</label>
+            {{ form.serverIP }}
+          </div>
+          <div class="mb-3">
+            <label for="{{ form.key.id_for_label }}" class="form-label">密钥 (Key)：</label>
+            {{ form.key }}
+          </div>
+          <div class="mb-3">
+            <label for="{{ form.apiServer.id_for_label }}" class="form-label">API 地址：</label>
+            {{ form.apiServer }}
+          </div>
+          <div class="mb-3">
+            <label for="{{ form.urlLink.id_for_label }}" class="form-label">门户网站：</label>
+            {{ form.urlLink }}
+          </div>
+          <div class="mb-3">
+            <label for="{{ form.downloadLink.id_for_label }}" class="form-label">更新链接：</label>
+            {{ form.downloadLink }}
+          </div>
+          <div class="mb-3">
+            <label for="{{ form.compname.id_for_label }}" class="form-label">版权归属：</label>
+            {{ form.compname }}
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <div class="form-group">
-    {% if form.custom_dart_target_path.errors %}
-      {% for error in form.custom_dart_target_path.errors %}
-        <div class="text-danger">{{ error }}</div>
-      {% endfor %}
-    {% endif %}
-    <label for="{{ form.custom_dart_target_path.id_for_label }}">目标路径</label>
-    {{ form.custom_dart_target_path }}
-    <br><br><br>
+  <!-- 第二组：安全设置 + 外观设置 -->
+  <div class="row mb-4">
+    <!-- 安全设置 -->
+    <div class="col-lg-6 mb-4 mb-lg-0">
+      <div class="card bg-dark text-light border-secondary h-100">
+        <div class="card-header bg-secondary text-white">
+          <i class="fas fa-shield-alt me-2"></i>安全设置
+        </div>
+        <div class="card-body">
+          <div class="mb-3">
+            <label for="{{ form.passApproveMode.id_for_label }}" class="form-label">认证方式：</label>
+            {{ form.passApproveMode }}
+          </div>
+          <div id="passwordRequirement" class="alert alert-info small mb-3">启用“隐藏连接窗口”功能需设置永久密码。</div>
+          <div class="mb-3">
+            <label for="{{ form.permanentPassword.id_for_label }}" class="form-label">设置永久密码：</label>
+            {{ form.permanentPassword }}
+            <small class="text-muted">*此密码为默认值，客户端用户可自行修改</small>
+          </div>
+          <div class="form-check mb-2">
+            {{ form.denyLan }}
+            <label for="{{ form.denyLan.id_for_label }}" class="form-check-label">禁止局域网设备发现</label>
+          </div>
+          <div class="form-check mb-2">
+            {{ form.enableDirectIP }}
+            <label for="{{ form.enableDirectIP.id_for_label }}" class="form-check-label">启用直接 IP 访问</label>
+          </div>
+          <div class="form-check mb-2">
+            {{ form.autoClose }}
+            <label for="{{ form.autoClose.id_for_label }}" class="form-check-label">用户无操作时自动关闭传入会话</label>
+          </div>
+          <div class="form-check mb-2">
+            {{ form.hidecm }}
+            <label for="{{ form.hidecm.id_for_label }}" class="form-check-label">允许从远程屏幕隐藏连接窗口</label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 外观设置 -->
+    <div class="col-lg-6">
+      <div class="card bg-dark text-light border-secondary h-100">
+        <div class="card-header bg-secondary text-white">
+          <i class="fas fa-paint-brush me-2"></i>外观设置
+        </div>
+        <div class="card-body">
+          {{ form.iconbase64.as_hidden }}
+          {{ form.logobase64.as_hidden }}
+
+          <div class="mb-3">
+            <label for="{{ form.iconfile.id_for_label }}" class="form-label">应用图标（PNG 格式）：</label>
+            {{ form.iconfile }}
+            <div id="icon-preview" class="mt-2"></div>
+          </div>
+
+          <div class="mb-3">
+            <label for="{{ form.logofile.id_for_label }}" class="form-label">品牌标识（PNG 格式）：</label>
+            {{ form.logofile }}
+            <div id="logo-preview" class="mt-2"></div>
+          </div>
+
+          <div class="mb-3">
+            <label for="{{ form.custom_dart_file.id_for_label }}" class="form-label">自定义模板（可选）</label>
+            {{ form.custom_dart_file }}
+            {% if form.custom_dart_file.errors %}
+              <div class="text-danger small">{{ form.custom_dart_file.errors|join:", " }}</div>
+            {% endif %}
+          </div>
+
+          <div class="mb-3">
+            <label for="{{ form.custom_dart_target_path.id_for_label }}" class="form-label">目标路径</label>
+            {{ form.custom_dart_target_path }}
+            {% if form.custom_dart_target_path.errors %}
+              <div class="text-danger small">{{ form.custom_dart_target_path.errors|join:", " }}</div>
+            {% endif %}
+          </div>
+
+          <div class="mb-3">
+            <label for="{{ form.theme.id_for_label }}" class="form-label">主题：</label>
+            {{ form.theme }} {{ form.themeDorO }}
+            <div class="form-text">
+              * 默认设置：允许用户更改<br>
+              * 固化设置：禁止用户更改
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-<label for="{{ form.theme.id_for_label }}">主题：</label>
-{{ form.theme }} {{ form.themeDorO }}
-<div class="help-text">
-* 默认设置：允许用户更改<br>
-* 固化设置：禁止用户更改<br><br>
-</div>
-</div>
-</div>
 
-<div class="container">
-<div class="section">
-<h2><i class="fas fa-lock"></i> 权限控制</h2>
-以下权限可设为“默认”（用户可修改）或“固化”（用户不可更改）。<br>
-{{ form.permissionsDorO }}
-<label for="{{ form.permissionsType.id_for_label }}">权限预设：</label>
-{{ form.permissionsType }}<br><br>
-<div class="checkbox-group">
-<label for="{{ form.enableKeyboard.id_for_label }}">{{ form.enableKeyboard }} 启用键盘/鼠标控制</label>
-<label for="{{ form.enableClipboard.id_for_label }}">{{ form.enableClipboard }} 启用剪贴板同步</label>
-<label for="{{ form.enableFileTransfer.id_for_label }}">{{ form.enableFileTransfer }} 启用文件传输</label>
-<label for="{{ form.enableAudio.id_for_label }}">{{ form.enableAudio }} 启用音频传输</label>
-<label for="{{ form.enableTCP.id_for_label }}">{{ form.enableTCP }} 启用 TCP 隧道</label>
-<label for="{{ form.enableRemoteRestart.id_for_label }}">{{ form.enableRemoteRestart }} 启用远程重启</label>
-<label for="{{ form.enableRecording.id_for_label }}">{{ form.enableRecording }} 启用会话录制</label>
-<label for="{{ form.enableBlockingInput.id_for_label }}">{{ form.enableBlockingInput }} 启用阻止用户输入</label>
-<label for="{{ form.enableRemoteModi.id_for_label }}">{{ form.enableRemoteModi }} 启用远程配置修改</label>
-<label for="{{ form.enablePrinter.id_for_label }}">{{ form.enablePrinter }} 启用远程打印机</label>
-<label for="{{ form.enableCamera.id_for_label }}">{{ form.enableCamera }} 启用远程摄像头</label>
-<label for="{{ form.enableTerminal.id_for_label }}">{{ form.enableTerminal }} 启用远程终端</label>
-</div>
+  <!-- 第三组：权限控制 + 高级设置 -->
+  <div class="row mb-4">
+    <!-- 权限控制 -->
+    <div class="col-lg-6 mb-4 mb-lg-0">
+      <div class="card bg-dark text-light border-secondary h-100">
+        <div class="card-header bg-secondary text-white">
+          <i class="fas fa-lock me-2"></i>权限控制
+        </div>
+        <div class="card-body">
+          <p class="text-muted small mb-3">
+            以下权限可设为“默认”（用户可修改）或“固化”（用户不可更改）。
+          </p>
+          {{ form.permissionsDorO }}
+          <div class="mb-3">
+            <label for="{{ form.permissionsType.id_for_label }}" class="form-label">权限预设：</label>
+            {{ form.permissionsType }}
+          </div>
 
-<div class="section">
-<h2><i class="fas fa-cog"></i> 高级设置</h2>
-<label for="{{ form.removeWallpaper.id_for_label }}">{{ form.removeWallpaper }} 远程会话期间移除桌面壁纸</label><br>
-<a href="https://rustdesk.com/docs/en/self-host/client-configuration/advanced-settings/"
-target="_blank"
-rel="noopener noreferrer">点击此处查看可用的高级设置列表</a>
-<label for="{{ form.defaultManual.id_for_label }}">默认设置（用户可修改）</label><br>
-{{ form.defaultManual }}<br><br>
-<label for="{{ form.overrideManual.id_for_label }}">固化设置（用户不可修改）</label><br>
-{{ form.overrideManual }}<br><br>
-</div>
-</div><br>
+          <div class="row g-2">
+            {% for field in form.visible_fields %}
+              {% if field.name in 'enableKeyboard,enableClipboard,enableFileTransfer,enableAudio,enableTCP,enableRemoteRestart,enableRecording,enableBlockingInput,enableRemoteModi,enablePrinter,enableCamera,enableTerminal' %}
+                <div class="col-12 col-md-6">
+                  <div class="form-check">
+                    {{ field }}
+                    <label for="{{ field.id_for_label }}" class="form-check-label">{{ field.label }}</label>
+                  </div>
+                </div>
+              {% endif %}
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
 
- <div class="container">
-<div class="section">
-<h2><i class="fas fa-code"></i> 附加功能</h2>
-<label for="{{ form.cycleMonitor.id_for_label }}">{{ form.cycleMonitor }} 会话顶部添加显示器切换按钮</label><br>
-<label for="{{ form.xOffline.id_for_label }}">{{ form.xOffline }} 在地址簿添加离线标记</label><br>
-<label for="{{ form.removeNewVersionNotif.id_for_label }}">{{ form.removeNewVersionNotif }} 移除安装更新通知</label><br>
-<label for="{{ form.hidePassword.id_for_label }}">{{ form.hidePassword }} 移除密码显示(仅允许传入连接模式下勾选)</label><br>
-<label for="{{ form.hideMenuBar.id_for_label }}">{{ form.hideMenuBar }} 移除三点菜单(仅允许传入连接模式下勾选)</label><br>
-<label for="{{ form.removeTopNotice.id_for_label }}">{{ form.removeTopNotice}} 移除顶部温馨提示（固定密码默认会显示）</label><br>
-<label for="{{ form.password_security_length.id_for_label }}">{{ form.password_security_length}} 修改临时密码的长度</label><br>
-</div>
-</div>
+    <!-- 高级设置 -->
+    <div class="col-lg-6">
+      <div class="card bg-dark text-light border-secondary h-100">
+        <div class="card-header bg-secondary text-white">
+          <i class="fas fa-cog me-2"></i>高级设置
+        </div>
+        <div class="card-body">
+          <div class="form-check mb-3">
+            {{ form.removeWallpaper }}
+            <label for="{{ form.removeWallpaper.id_for_label }}" class="form-check-label">远程会话期间移除桌面壁纸</label>
+          </div>
 
-<!-- 底部按钮 -->
-<div class="platform">
-<div class="section" style="text-align: center;">
-<button type="submit" class="sponsor-button">
-<i class="fas fa-rocket"></i> 牛马开始干活
-</button>
-</div>
+          <p class="mb-3">
+            <a href="https://rustdesk.com/docs/en/self-host/client-configuration/advanced-settings/"
+               target="_blank"
+               rel="noopener noreferrer"
+               class="text-primary text-decoration-none small">
+              点击此处查看可用的高级设置列表
+            </a>
+          </p>
 
+          <div class="form-check mb-2">
+            {{ form.defaultManual }}
+            <label for="{{ form.defaultManual.id_for_label }}" class="form-check-label">默认设置（用户可修改）</label>
+          </div>
+          <div class="form-check mb-2">
+            {{ form.overrideManual }}
+            <label for="{{ form.overrideManual.id_for_label }}" class="form-check-label">固化设置（用户不可修改）</label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+ <!-- 附加功能） -->
+  <div class="row">
+    <div class="col-12">
+      <div class="card bg-dark text-light border-secondary">
+        <div class="card-header bg-secondary text-white">
+          <i class="fas fa-code me-2"></i>附加功能
+        </div>
+        <div class="card-body">
+          <div class="row g-2">
+            {% for field in form.visible_fields %}
+              {% if field.name in 'cycleMonitor,xOffline,removeNewVersionNotif,hidePassword,hideMenuBar,removeTopNotice,password_security_length' %}
+                <div class="col-12 col-md-6">
+                  <div class="form-check">
+                    {{ field }}
+                    <label for="{{ field.id_for_label }}" class="form-check-label">{{ field.label }}</label>
+                  </div>
+                </div>
+              {% endif %}
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!底部按扭--><!d<div class="row mt-4">
+    <div class="col-12 d-flex justify-content-center">
+      <button type="submit" class="btn btn-primary btn-lg px-5 py-3 shadow">
+        <i class="fas fa-rocket me-2"></i>牛马开始干活
+      </button>
+    </div>
+  </div>
+
+</div> <!-- /container -->
 
 
 </form>
