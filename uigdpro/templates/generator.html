@@ -218,319 +218,314 @@ color: #0095EA;
 </head>
 <body>
 <h1><i class="fas fa-cogs"></i> 客户端构建器</h1>
+
 <form id="myForm" action="/generator" method="post" enctype="multipart/form-data">
-<div class="save-load-section-container">
-<div class="section">
-<h2 id="saveLoadTitle">保存/加载配置 <i class="fas fa-chevron-down"></i></h2>
-<div class="save-load-section">
-<button type="button" onclick="saveFormData()">保存配置</button>
-<input type="file" id="fileInput" style="display:none;" accept=".json">
-<button type="button" onclick="loadFormData()">加载配置</button>
-</div>
-</div>
-</div>
 
-{% if form.iconfile.errors %}
-<ul class="errorlist">
-{% for error in form.iconfile.errors %}
-<li>{{ error }}</li>
-{% endfor %}
-</ul>
-{% endif %}
-
-<div class="platform">
-<h2><i class="fas fa-desktop"></i> 选择平台</h2>
-<div class="platform-icons">
-<span class="fa-stack fa-lg">
-<i class="fab fa-windows fa-stack-2x platform-icon active" data-platform="windows"></i>
-<strong class="fa-stack-1x text-64">64</strong>
-</span>
-<span class="fa-stack fa-lg">
-<i class="fab fa-windows fa-stack-2x platform-icon" data-platform="windows-x86"></i>
-<strong class="fa-stack-1x text-32">32</strong>
-</span>
-<i class="fab fa-linux platform-icon" data-platform="linux"></i>
-<i class="fab fa-android platform-icon" data-platform="android"></i>
-<i class="fab fa-apple platform-icon" data-platform="macos"></i>
-</div>
-<select name="platform" id="id_platform">
-<option value="windows" selected>Windows 64 位</option>
-<option value="windows-x86">Windows 32 位</option>
-<option value="linux">Linux</option>
-<option value="android">Android</option>
-<option value="macos">macOS</option>
-</select>
-<label for="{{ form.version.id_for_label }}">版本号：</label>
-{{ form.version }}
-<div class="help-text">{{ form.version.help_text }}</div>
-<label for="{{ form.delayFix.id_for_label }}">{{ form.delayFix }} 修复使用第三方 API 时的连接延迟</label>
-</div>
-
-<!-- 主容器 -->
-<div class="container py-4">
-
-  <!-- 第一组：通用设置 + 服务器配置 -->
-  <div class="row mb-4">
-    <!-- 通用设置 -->
-    <div class="col-lg-6 mb-4 mb-lg-0">
-      <div class="card bg-dark text-light border-secondary h-100">
-        <div class="card-header bg-secondary text-white">
-          <i class="fas fa-sliders-h me-2"></i>通用设置
-        </div>
-        <div class="card-body">
-          <div class="mb-3">
-            <label for="{{ form.exename.id_for_label }}" class="form-label">配置名称（仅限英文字符，不可包含空格或特殊符号）：</label>
-            {{ form.exename }}
-            <div id="filenameError" class="text-danger small"></div>
-          </div>
-          <div class="mb-3">
-            <label for="{{ form.appname.id_for_label }}" class="form-label">自定义应用程序名称（留空则使用默认值）：</label>
-            {{ form.appname }}
-          </div>
-          <div class="mb-3">
-            <label for="{{ form.direction.id_for_label }}" class="form-label">客户端类型：</label>
-            {{ form.direction }}
-          </div>
-          <div class="form-check mb-2">
-            {{ form.installation }}
-            <label for="{{ form.installation.id_for_label }}" class="form-check-label">禁止安装</label>
-          </div>
-          <div class="form-check mb-2">
-            {{ form.settings }}
-            <label for="{{ form.settings.id_for_label }}" class="form-check-label">禁用设置</label>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 服务器配置 -->
-    <div class="col-lg-6">
-      <div class="card bg-dark text-light border-secondary h-100">
-        <div class="card-header bg-secondary text-white">
-          <i class="fas fa-server me-2"></i>服务器配置
-        </div>
-        <div class="card-body">
-          <div class="mb-3">
-            <label for="{{ form.serverIP.id_for_label }}" class="form-label">服务器地址 (Host)：</label>
-            {{ form.serverIP }}
-          </div>
-          <div class="mb-3">
-            <label for="{{ form.key.id_for_label }}" class="form-label">密钥 (Key)：</label>
-            {{ form.key }}
-          </div>
-          <div class="mb-3">
-            <label for="{{ form.apiServer.id_for_label }}" class="form-label">API 地址：</label>
-            {{ form.apiServer }}
-          </div>
-          <div class="mb-3">
-            <label for="{{ form.urlLink.id_for_label }}" class="form-label">门户网站：</label>
-            {{ form.urlLink }}
-          </div>
-          <div class="mb-3">
-            <label for="{{ form.downloadLink.id_for_label }}" class="form-label">更新链接：</label>
-            {{ form.downloadLink }}
-          </div>
-          <div class="mb-3">
-            <label for="{{ form.compname.id_for_label }}" class="form-label">版权归属：</label>
-            {{ form.compname }}
-          </div>
-        </div>
+  <!-- 保存/加载配置浮窗（保持不变） -->
+  <div class="save-load-section-container">
+    <div class="section">
+      <h2 id="saveLoadTitle">保存/加载配置 <i class="fas fa-chevron-down"></i></h2>
+      <div class="save-load-section">
+        <button type="button" onclick="saveFormData()">保存配置</button>
+        <input type="file" id="fileInput" style="display:none;" accept=".json">
+        <button type="button" onclick="loadFormData()">加载配置</button>
       </div>
     </div>
   </div>
 
-  <!-- 第二组：安全设置 + 外观设置 -->
-  <div class="row mb-4">
-    <!-- 安全设置 -->
-    <div class="col-lg-6 mb-4 mb-lg-0">
-      <div class="card bg-dark text-light border-secondary h-100">
-        <div class="card-header bg-secondary text-white">
-          <i class="fas fa-shield-alt me-2"></i>安全设置
-        </div>
-        <div class="card-body">
-          <div class="mb-3">
-            <label for="{{ form.passApproveMode.id_for_label }}" class="form-label">认证方式：</label>
-            {{ form.passApproveMode }}
+  {% if form.iconfile.errors %}
+    <ul class="errorlist">{% for error in form.iconfile.errors %}<li>{{ error }}</li>{% endfor %}</ul>
+  {% endif %}
+
+  <!-- 平台选择（保持原样） -->
+  <div class="platform">
+    <h2><i class="fas fa-desktop"></i> 选择平台</h2>
+    <div class="platform-icons">
+      <span class="fa-stack fa-lg">
+        <i class="fab fa-windows fa-stack-2x platform-icon active" data-platform="windows"></i>
+        <strong class="fa-stack-1x text-64">64</strong>
+      </span>
+      <span class="fa-stack fa-lg">
+        <i class="fab fa-windows fa-stack-2x platform-icon" data-platform="windows-x86"></i>
+        <strong class="fa-stack-1x text-32">32</strong>
+      </span>
+      <i class="fab fa-linux platform-icon" data-platform="linux"></i>
+      <i class="fab fa-android platform-icon" data-platform="android"></i>
+      <i class="fab fa-apple platform-icon" data-platform="macos"></i>
+    </div>
+    <select name="platform" id="id_platform">
+      <option value="windows" selected>Windows 64 位</option>
+      <option value="windows-x86">Windows 32 位</option>
+      <option value="linux">Linux</option>
+      <option value="android">Android</option>
+      <option value="macos">macOS</option>
+    </select>
+    <label for="{{ form.version.id_for_label }}">版本号：</label>
+    {{ form.version }}
+    <div class="help-text">{{ form.version.help_text }}</div>
+    <div class="form-check mb-2">
+      {{ form.delayFix }}
+      <label for="{{ form.delayFix.id_for_label }}" class="form-check-label">修复使用第三方 API 时的连接延迟</label>
+    </div>
+  </div>
+
+  <!-- 主容器：三组双栏 + 附加功能 -->
+  <div class="container py-4">
+
+    <!-- 第一组：通用设置 + 服务器配置 -->
+    <div class="row mb-4">
+      <div class="col-lg-6 mb-4 mb-lg-0">
+        <div class="card bg-dark text-light border-secondary h-100">
+          <div class="card-header bg-secondary text-white">
+            <i class="fas fa-sliders-h me-2"></i>通用设置
           </div>
-          <div id="passwordRequirement" class="alert alert-info small mb-3">启用“隐藏连接窗口”功能需设置永久密码。</div>
-          <div class="mb-3">
-            <label for="{{ form.permanentPassword.id_for_label }}" class="form-label">设置永久密码：</label>
-            {{ form.permanentPassword }}
-            <small class="text-muted">*此密码为默认值，客户端用户可自行修改</small>
-          </div>
-          <div class="form-check mb-2">
-            {{ form.denyLan }}
-            <label for="{{ form.denyLan.id_for_label }}" class="form-check-label">禁止局域网设备发现</label>
-          </div>
-          <div class="form-check mb-2">
-            {{ form.enableDirectIP }}
-            <label for="{{ form.enableDirectIP.id_for_label }}" class="form-check-label">启用直接 IP 访问</label>
-          </div>
-          <div class="form-check mb-2">
-            {{ form.autoClose }}
-            <label for="{{ form.autoClose.id_for_label }}" class="form-check-label">用户无操作时自动关闭传入会话</label>
-          </div>
-          <div class="form-check mb-2">
-            {{ form.hidecm }}
-            <label for="{{ form.hidecm.id_for_label }}" class="form-check-label">允许从远程屏幕隐藏连接窗口</label>
+          <div class="card-body">
+            <div class="mb-3">
+              <label for="{{ form.exename.id_for_label }}" class="form-label">配置名称（仅限英文字符，不可包含空格或特殊符号）：</label>
+              {{ form.exename }}
+              <div id="filenameError" class="text-danger small"></div>
+            </div>
+            <div class="mb-3">
+              <label for="{{ form.appname.id_for_label }}" class="form-label">自定义应用程序名称（留空则使用默认值）：</label>
+              {{ form.appname }}
+            </div>
+            <div class="mb-3">
+              <label for="{{ form.direction.id_for_label }}" class="form-label">客户端类型：</label>
+              {{ form.direction }}
+            </div>
+            <div class="form-check mb-2">
+              {{ form.installation }}
+              <label for="{{ form.installation.id_for_label }}" class="form-check-label">禁止安装</label>
+            </div>
+            <div class="form-check mb-2">
+              {{ form.settings }}
+              <label for="{{ form.settings.id_for_label }}" class="form-check-label">禁用设置</label>
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- 外观设置 -->
-    <div class="col-lg-6">
-      <div class="card bg-dark text-light border-secondary h-100">
-        <div class="card-header bg-secondary text-white">
-          <i class="fas fa-paint-brush me-2"></i>外观设置
-        </div>
-        <div class="card-body">
-          {{ form.iconbase64.as_hidden }}
-          {{ form.logobase64.as_hidden }}
-
-          <div class="mb-3">
-            <label for="{{ form.iconfile.id_for_label }}" class="form-label">应用图标（PNG 格式）：</label>
-            {{ form.iconfile }}
-            <div id="icon-preview" class="mt-2"></div>
+      <div class="col-lg-6">
+        <div class="card bg-dark text-light border-secondary h-100">
+          <div class="card-header bg-secondary text-white">
+            <i class="fas fa-server me-2"></i>服务器配置
           </div>
-
-          <div class="mb-3">
-            <label for="{{ form.logofile.id_for_label }}" class="form-label">品牌标识（PNG 格式）：</label>
-            {{ form.logofile }}
-            <div id="logo-preview" class="mt-2"></div>
-          </div>
-
-          <div class="mb-3">
-            <label for="{{ form.custom_dart_file.id_for_label }}" class="form-label">自定义模板（可选）</label>
-            {{ form.custom_dart_file }}
-            {% if form.custom_dart_file.errors %}
-              <div class="text-danger small">{{ form.custom_dart_file.errors|join:", " }}</div>
-            {% endif %}
-          </div>
-
-          <div class="mb-3">
-            <label for="{{ form.custom_dart_target_path.id_for_label }}" class="form-label">目标路径</label>
-            {{ form.custom_dart_target_path }}
-            {% if form.custom_dart_target_path.errors %}
-              <div class="text-danger small">{{ form.custom_dart_target_path.errors|join:", " }}</div>
-            {% endif %}
-          </div>
-
-          <div class="mb-3">
-            <label for="{{ form.theme.id_for_label }}" class="form-label">主题：</label>
-            {{ form.theme }} {{ form.themeDorO }}
-            <div class="form-text">
-              * 默认设置：允许用户更改<br>
-              * 固化设置：禁止用户更改
+          <div class="card-body">
+            <div class="mb-3">
+              <label for="{{ form.serverIP.id_for_label }}" class="form-label">服务器地址 (Host)：</label>
+              {{ form.serverIP }}
+            </div>
+            <div class="mb-3">
+              <label for="{{ form.key.id_for_label }}" class="form-label">密钥 (Key)：</label>
+              {{ form.key }}
+            </div>
+            <div class="mb-3">
+              <label for="{{ form.apiServer.id_for_label }}" class="form-label">API 地址：</label>
+              {{ form.apiServer }}
+            </div>
+            <div class="mb-3">
+              <label for="{{ form.urlLink.id_for_label }}" class="form-label">门户网站：</label>
+              {{ form.urlLink }}
+            </div>
+            <div class="mb-3">
+              <label for="{{ form.downloadLink.id_for_label }}" class="form-label">更新链接：</label>
+              {{ form.downloadLink }}
+            </div>
+            <div class="mb-3">
+              <label for="{{ form.compname.id_for_label }}" class="form-label">版权归属：</label>
+              {{ form.compname }}
             </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- 第三组：权限控制 + 高级设置 -->
-  <div class="row mb-4">
-    <!-- 权限控制 -->
-    <div class="col-lg-6 mb-4 mb-lg-0">
-      <div class="card bg-dark text-light border-secondary h-100">
-        <div class="card-header bg-secondary text-white">
-          <i class="fas fa-lock me-2"></i>权限控制
-        </div>
-        <div class="card-body">
-          <p class="text-muted small mb-3">
-            以下权限可设为“默认”（用户可修改）或“固化”（用户不可更改）。
-          </p>
-          {{ form.permissionsDorO }}
-          <div class="mb-3">
-            <label for="{{ form.permissionsType.id_for_label }}" class="form-label">权限预设：</label>
-            {{ form.permissionsType }}
+    <!-- 第二组：安全设置 + 外观设置 -->
+    <div class="row mb-4">
+      <div class="col-lg-6 mb-4 mb-lg-0">
+        <div class="card bg-dark text-light border-secondary h-100">
+          <div class="card-header bg-secondary text-white">
+            <i class="fas fa-shield-alt me-2"></i>安全设置
           </div>
+          <div class="card-body">
+            <div class="mb-3">
+              <label for="{{ form.passApproveMode.id_for_label }}" class="form-label">认证方式：</label>
+              {{ form.passApproveMode }}
+            </div>
+            <div id="passwordRequirement" class="alert alert-info small mb-3">启用“隐藏连接窗口”功能需设置永久密码。</div>
+            <div class="mb-3">
+              <label for="{{ form.permanentPassword.id_for_label }}" class="form-label">设置永久密码：</label>
+              {{ form.permanentPassword }}
+              <small class="text-muted">*此密码为默认值，客户端用户可自行修改</small>
+            </div>
+            <div class="form-check mb-2">
+              {{ form.denyLan }}
+              <label for="{{ form.denyLan.id_for_label }}" class="form-check-label">禁止局域网设备发现</label>
+            </div>
+            <div class="form-check mb-2">
+              {{ form.enableDirectIP }}
+              <label for="{{ form.enableDirectIP.id_for_label }}" class="form-check-label">启用直接 IP 访问</label>
+            </div>
+            <div class="form-check mb-2">
+              {{ form.autoClose }}
+              <label for="{{ form.autoClose.id_for_label }}" class="form-check-label">用户无操作时自动关闭传入会话</label>
+            </div>
+            <div class="form-check mb-2">
+              {{ form.hidecm }}
+              <label for="{{ form.hidecm.id_for_label }}" class="form-check-label">允许从远程屏幕隐藏连接窗口</label>
+            </div>
+          </div>
+        </div>
+      </div>
 
-          <div class="row g-2">
-            {% for field in form.visible_fields %}
-              {% if field.name in 'enableKeyboard,enableClipboard,enableFileTransfer,enableAudio,enableTCP,enableRemoteRestart,enableRecording,enableBlockingInput,enableRemoteModi,enablePrinter,enableCamera,enableTerminal' %}
-                <div class="col-12 col-md-6">
-                  <div class="form-check">
-                    {{ field }}
-                    <label for="{{ field.id_for_label }}" class="form-check-label">{{ field.label }}</label>
-                  </div>
-                </div>
+      <div class="col-lg-6">
+        <div class="card bg-dark text-light border-secondary h-100">
+          <div class="card-header bg-secondary text-white">
+            <i class="fas fa-paint-brush me-2"></i>外观设置
+          </div>
+          <div class="card-body">
+            {{ form.iconbase64.as_hidden }}
+            {{ form.logobase64.as_hidden }}
+
+            <div class="mb-3">
+              <label for="{{ form.iconfile.id_for_label }}" class="form-label">应用图标（PNG 格式）：</label>
+              {{ form.iconfile }}
+              <div id="icon-preview" class="mt-2"></div>
+            </div>
+
+            <div class="mb-3">
+              <label for="{{ form.logofile.id_for_label }}" class="form-label">品牌标识（PNG 格式）：</label>
+              {{ form.logofile }}
+              <div id="logo-preview" class="mt-2"></div>
+            </div>
+
+            <div class="mb-3">
+              <label for="{{ form.custom_dart_file.id_for_label }}" class="form-label">自定义模板（可选）</label>
+              {{ form.custom_dart_file }}
+              {% if form.custom_dart_file.errors %}
+                <div class="text-danger small">{{ form.custom_dart_file.errors|join:", " }}</div>
               {% endif %}
-            {% endfor %}
-          </div>
-        </div>
-      </div>
-    </div>
+            </div>
 
-    <!-- 高级设置 -->
-    <div class="col-lg-6">
-      <div class="card bg-dark text-light border-secondary h-100">
-        <div class="card-header bg-secondary text-white">
-          <i class="fas fa-cog me-2"></i>高级设置
-        </div>
-        <div class="card-body">
-          <div class="form-check mb-3">
-            {{ form.removeWallpaper }}
-            <label for="{{ form.removeWallpaper.id_for_label }}" class="form-check-label">远程会话期间移除桌面壁纸</label>
-          </div>
-
-          <p class="mb-3">
-            <a href="https://rustdesk.com/docs/en/self-host/client-configuration/advanced-settings/"
-               target="_blank"
-               rel="noopener noreferrer"
-               class="text-primary text-decoration-none small">
-              点击此处查看可用的高级设置列表
-            </a>
-          </p>
-
-          <div class="form-check mb-2">
-            {{ form.defaultManual }}
-            <label for="{{ form.defaultManual.id_for_label }}" class="form-check-label">默认设置（用户可修改）</label>
-          </div>
-          <div class="form-check mb-2">
-            {{ form.overrideManual }}
-            <label for="{{ form.overrideManual.id_for_label }}" class="form-check-label">固化设置（用户不可修改）</label>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
- <!-- 附加功能） -->
-  <div class="row">
-    <div class="col-12">
-      <div class="card bg-dark text-light border-secondary">
-        <div class="card-header bg-secondary text-white">
-          <i class="fas fa-code me-2"></i>附加功能
-        </div>
-        <div class="card-body">
-          <div class="row g-2">
-            {% for field in form.visible_fields %}
-              {% if field.name in 'cycleMonitor,xOffline,removeNewVersionNotif,hidePassword,hideMenuBar,removeTopNotice,password_security_length' %}
-                <div class="col-12 col-md-6">
-                  <div class="form-check">
-                    {{ field }}
-                    <label for="{{ field.id_for_label }}" class="form-check-label">{{ field.label }}</label>
-                  </div>
-                </div>
+            <div class="mb-3">
+              <label for="{{ form.custom_dart_target_path.id_for_label }}" class="form-label">目标路径</label>
+              {{ form.custom_dart_target_path }}
+              {% if form.custom_dart_target_path.errors %}
+                <div class="text-danger small">{{ form.custom_dart_target_path.errors|join:", " }}</div>
               {% endif %}
-            {% endfor %}
+            </div>
+
+            <div class="mb-3">
+              <label for="{{ form.theme.id_for_label }}" class="form-label">主题：</label>
+              {{ form.theme }} {{ form.themeDorO }}
+              <div class="form-text">
+                * 默认设置：允许用户更改<br>
+                * 固化设置：禁止用户更改
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <!底部按扭--><!d<div class="row mt-4">
-    <div class="col-12 d-flex justify-content-center">
-      <button type="submit" class="btn btn-primary btn-lg px-5 py-3 shadow">
-        <i class="fas fa-rocket me-2"></i>牛马开始干活
-      </button>
+    <!-- 第三组：权限控制 + 高级设置 -->
+    <div class="row mb-4">
+      <div class="col-lg-6 mb-4 mb-lg-0">
+        <div class="card bg-dark text-light border-secondary h-100">
+          <div class="card-header bg-secondary text-white">
+            <i class="fas fa-lock me-2"></i>权限控制
+          </div>
+          <div class="card-body">
+            <p class="text-muted small mb-3">以下权限可设为“默认”（用户可修改）或“固化”（用户不可更改）。</p>
+            {{ form.permissionsDorO }}
+            <div class="mb-3">
+              <label for="{{ form.permissionsType.id_for_label }}" class="form-label">权限预设：</label>
+              {{ form.permissionsType }}
+            </div>
+            <div class="row g-2">
+              {% for field in form.visible_fields %}
+                {% if field.name in 'enableKeyboard,enableClipboard,enableFileTransfer,enableAudio,enableTCP,enableRemoteRestart,enableRecording,enableBlockingInput,enableRemoteModi,enablePrinter,enableCamera,enableTerminal' %}
+                  <div class="col-12 col-md-6">
+                    <div class="form-check">
+                      {{ field }}
+                      <label for="{{ field.id_for_label }}" class="form-check-label">{{ field.label }}</label>
+                    </div>
+                  </div>
+                {% endif %}
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-6">
+        <div class="card bg-dark text-light border-secondary h-100">
+          <div class="card-header bg-secondary text-white">
+            <i class="fas fa-cog me-2"></i>高级设置
+          </div>
+          <div class="card-body">
+            <div class="form-check mb-3">
+              {{ form.removeWallpaper }}
+              <label for="{{ form.removeWallpaper.id_for_label }}" class="form-check-label">远程会话期间移除桌面壁纸</label>
+            </div>
+            <p class="mb-3">
+              <a href="https://rustdesk.com/docs/en/self-host/client-configuration/advanced-settings/"
+                 target="_blank"
+                 rel="noopener noreferrer"
+                 class="text-primary text-decoration-none small">
+                点击此处查看可用的高级设置列表
+              </a>
+            </p>
+            <div class="form-check mb-2">
+              {{ form.defaultManual }}
+              <label for="{{ form.defaultManual.id_for_label }}" class="form-check-label">默认设置（用户可修改）</label>
+            </div>
+            <div class="form-check mb-2">
+              {{ form.overrideManual }}
+              <label for="{{ form.overrideManual.id_for_label }}" class="form-check-label">固化设置（用户不可修改）</label>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-  </div>
 
-</div> <!-- /container -->
+    <!-- 底部：附加功能（单独一行，支持未来扩展） -->
+    <div class="row">
+      <div class="col-12">
+        <div class="card bg-dark text-light border-secondary">
+          <div class="card-header bg-secondary text-white">
+            <i class="fas fa-code me-2"></i>附加功能
+          </div>
+          <div class="card-body">
+            <div class="row g-2">
+              {% for field in form.visible_fields %}
+                {% if field.name in 'cycleMonitor,xOffline,removeNewVersionNotif,hidePassword,hideMenuBar,removeTopNotice,password_security_length' %}
+                  <div class="col-12 col-md-6">
+                    <div class="form-check">
+                      {{ field }}
+                      <label for="{{ field.id_for_label }}" class="form-check-label">{{ field.label }}</label>
+                    </div>
+                  </div>
+                {% endif %}
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 提交按钮 -->
+    <div class="row mt-4">
+      <div class="col-12 d-flex justify-content-center">
+        <button type="submit" class="btn btn-primary btn-lg px-5 py-3 shadow">
+          <i class="fas fa-rocket me-2"></i>牛马开始干活
+        </button>
+      </div>
+    </div>
+
+  </div> <!-- /container -->
+
+
 
 
 </form>
