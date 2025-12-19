@@ -353,21 +353,33 @@ color: #0095EA;
         {{ form.permanentPassword }}
         <small class="form-text text-muted">* 此密码为默认值，用户可自行修改</small>
       </div>
-      <div class="form-check mb-2">
-        {{ form.denyLan }}
-        <label for="{{ form.denyLan.id_for_label }}" class="form-check-label">禁止局域网设备发现</label>
-      </div>
-      <div class="form-check mb-2">
-        {{ form.enableDirectIP }}
-        <label for="{{ form.enableDirectIP.id_for_label }}" class="form-check-label">启用直接 IP 访问</label>
-      </div>
-      <div class="form-check mb-2">
-        {{ form.autoClose }}
-        <label for="{{ form.autoClose.id_for_label }}" class="form-check-label">用户无操作时自动关闭传入会话</label>
-      </div>
-      <div class="form-check mb-2">
-        {{ form.hidecm }}
-        <label for="{{ form.hidecm.id_for_label }}" class="form-check-label">允许从远程屏幕隐藏连接窗口</label>
+
+      <!-- 多列复选框：安全设置 -->
+      <div class="row g-2">
+        <div class="col-md-6 col-lg-4 col-xl-3">
+          <div class="form-check">
+            {{ form.denyLan }}
+            <label for="{{ form.denyLan.id_for_label }}" class="form-check-label">禁止局域网设备发现</label>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-4 col-xl-3">
+          <div class="form-check">
+            {{ form.enableDirectIP }}
+            <label for="{{ form.enableDirectIP.id_for_label }}" class="form-check-label">启用直接 IP 访问</label>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-4 col-xl-3">
+          <div class="form-check">
+            {{ form.autoClose }}
+            <label for="{{ form.autoClose.id_for_label }}" class="form-check-label">用户无操作时自动关闭传入会话</label>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-4 col-xl-3">
+          <div class="form-check">
+            {{ form.hidecm }}
+            <label for="{{ form.hidecm.id_for_label }}" class="form-check-label">允许从远程屏幕隐藏连接窗口</label>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -432,10 +444,12 @@ color: #0095EA;
         <label for="{{ form.permissionsType.id_for_label }}" class="form-label">权限预设：</label>
         {{ form.permissionsType }}
       </div>
+
+      <!-- 多列复选框：权限控制 -->
       <div class="row g-2">
         {% for field in form.visible_fields %}
           {% if field.name in 'enableKeyboard,enableClipboard,enableFileTransfer,enableAudio,enableTCP,enableRemoteRestart,enableRecording,enableBlockingInput,enableRemoteModi,enablePrinter,enableCamera,enableTerminal' %}
-            <div class="col-12">
+            <div class="col-md-6 col-lg-4 col-xl-3">
               <div class="form-check">
                 {{ field }}
                 <label for="{{ field.id_for_label }}" class="form-check-label">{{ field.label }}</label>
@@ -482,10 +496,11 @@ color: #0095EA;
       <i class="fas fa-code me-2"></i> 附加功能
     </div>
     <div class="card-body">
+      <!-- 多列复选框：附加功能 -->
       <div class="row g-2">
         {% for field in form.visible_fields %}
           {% if field.name in 'cycleMonitor,xOffline,removeNewVersionNotif,hidePassword,hideMenuBar,removeTopNotice,password_security_length' %}
-            <div class="col-12">
+            <div class="col-md-6 col-lg-4 col-xl-3">
               <div class="form-check">
                 {{ field }}
                 <label for="{{ field.id_for_label }}" class="form-check-label">{{ field.label }}</label>
