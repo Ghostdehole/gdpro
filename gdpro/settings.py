@@ -22,8 +22,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get('SECRET_KEY')
-if not SECRET_KEY:
-    raise RuntimeError("SECRET_KEY environment variable not set!")
+#if not SECRET_KEY:
+    #raise RuntimeError("SECRET_KEY environment variable not set!")
 GHUSER = os.environ.get("GHUSER", '')
 GHBEARER = os.environ.get("GHBEARER", '')
 #GENURL = os.environ.get("GENURL", '')
