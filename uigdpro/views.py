@@ -468,11 +468,6 @@ def update_github_run(request):
 
 
 @csrf_exempt
-@require_http_methods(["POST"])
-from django.conf import settings
-from django.http import HttpResponse
-
-@csrf_exempt
 def save_custom_client(request):
     if request.method != 'POST':
         return HttpResponse("Method not allowed", status=405)
