@@ -24,6 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('SECRET_KEY')
 #if not SECRET_KEY:
     #raise RuntimeError("SECRET_KEY environment variable not set!")
+EXTERNAL_API_TOKEN = os.getenv("EXTERNAL_API_TOKEN", "change-this-in-production")
 GHUSER = os.environ.get("GHUSER", '')
 GHBEARER = os.environ.get("GHBEARER", '')
 #GENURL = os.environ.get("GENURL", '')
