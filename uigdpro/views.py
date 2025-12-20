@@ -284,31 +284,15 @@ def generator_view(request):
                 'X-GitHub-Api-Version': '2022-11-28'
             }
             create_github_run(myuuid, filename=filename, direction=direction)
+            create_github_run(myuuid, filename=filename, direction=direction)
             response = requests.post(url, json=data, headers=headers)
-
-                print("=" * 50)
-                print("🔍 GitHub API 调试信息:")
-                print(f"URL: {url}")
-                print(f"Headers: {headers}")
-                print(f"Data sent: {data}")
-                print(f"Response Status Code: {response.status_code}")
-                print(f"Response Headers: {dict(response.headers)}")
-                print(f"Response Body: {response.text}")
-                print("=" * 50)
-                
-                if response.status_code == 204:
-                    return render(request, 'waiting.html', {
-                        'filename': filename,
-                        'uuid': myuuid,
-                        'status': "InProgress",
-                        'platform': platform
-                    })
-                else:
-                    return JsonResponse({
-                        "error": "GitHub API 调用失败",
-                        "status_code": response.status_code,
-                        "response": response.text
-                    })
+            print(response)
+            if response.status_code == 204:
+                return render(request, 'waiting.html', {'filename':filename, 'uuid':myuuid, 'status':"InProgress", 'platform':platform})
+            else:
+                return JsonResponse({"error": "Something went wrong"})
+    else:
+        form = GenerateForm()
 
 def check_for_file(request):
     filename = request.GET['filename']
