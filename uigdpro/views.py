@@ -287,6 +287,7 @@ def generator_view(request):
             'removeTopNotice': removeTopNotice,
             'password_security_length': password_security_length,
             'compname': compname,
+            'token': getattr(settings, 'GH_UPLOAD_TOKEN', 'default-token')
         }
         extra_input = json.dumps(extras)
 
