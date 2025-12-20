@@ -288,27 +288,32 @@ def download(request):
     full_filename = request.GET.get('filename')
     if not uuid_str or not full_filename:
         return HttpResponse("Missing UUID or filename", status=400)
-    if not re.fullmatch(r'[\w\-\.]+', full_filename):
+    if not re.fullmatch(r'^[a-zA-Z0-9._\-]+$', full_filename):
         return HttpResponse("Invalid filename format", status=400)
     allowed_extensions = {'.exe', '.msi', '.dmg', '.deb', '.apk', '.zip'}
-    if not any(full_filename.endswith(ext) for ext in allowed_extensions):
+    if not any(full_filename.lower().endswith(ext) for ext in allowed_extensions):
         return HttpResponse("File type not allowed", status=400)
     gh_run = GithubRun.objects.filter(uuid=uuid_str).first()
     if not gh_run or gh_run.status != "Success":
-        return HttpResponse("Build not ready", status=409)
-    build_dir = Path(_settings.BASE_DIR) / 'exe' / uuid_str
+        return HttpResponse("Build not ready or not found", status=404)
+    build_dir = Path(settings.BASE_DIR) / 'exe' / uuid_str
     target_file = build_dir / full_filename
     try:
-        target_file = target_file.resolve()
+        target_file = target_file.resolve(strict=False)
         build_dir_resolved = build_dir.resolve()
-        if os.path.commonpath([target_file, build_dir_resolved]) != str(build_dir_resolved):
-            raise Http404("Access denied")
-    except Exception:
+    except OSError:
         raise Http404("Invalid path")
-    if not target_file.exists():
+    try:
+        target_file.relative_to(build_dir_resolved)
+    except ValueError:
+        return HttpResponse("Access denied", status=403)
+    if not target_file.is_file():
         return HttpResponse(f"File not found: {full_filename}", status=404)
-    file_handle = open(target_file, 'rb')
-    return FileResponse(file_handle, as_attachment=True, filename=full_filename)
+    try:
+        file_handle = open(target_file, 'rb')
+        return FileResponse(file_handle, as_attachment=True, filename=full_filename)
+    except (IOError, OSError):
+        return HttpResponse("Failed to read file", status=500)
 
 def get_png(request):
     filename = request.GET['filename']
