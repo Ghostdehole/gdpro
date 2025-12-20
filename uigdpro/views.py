@@ -21,12 +21,17 @@ from django.http import (
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
-
+from urllib.parse import urljoin
 from .forms import GenerateForm
 from .models import GithubRun
 
 logger = logging.getLogger(__name__)
 logger.info(f"upload_token value: {settings.GH_UPLOAD_TOKEN}")
+
+UP_SERVER = os.getenv('UP_SERVER')
+UP_TOKEN = os.getenv('UP_TOKEN')
+UP_REPO_ID = os.getenv('UP_REPO_ID')
+UP_UPLOAD_DIR = os.getenv('UP_UPLOAD_DIR', '/uploads/') 
 
 
 def save_png(file_input, uuid_str: str, domain: str, name: str) -> str | None:
