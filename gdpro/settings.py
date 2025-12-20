@@ -55,7 +55,7 @@ if GENURL:
         raise ValueError(f"Invalid GENURL: {GENURL}")
     ALLOWED_HOSTS = [host]
 else:
-    ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
+    ALLOWED_HOSTS = ["localhost", "127.0.0.1","192.168.12.253"]
 
 CSRF_TRUSTED_ORIGINS = os.getenv('CSRF_TRUSTED_ORIGINS', '').split()
 
