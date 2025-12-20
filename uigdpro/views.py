@@ -316,17 +316,36 @@ def download(request):
         return HttpResponse("Failed to read file", status=500)
 
 def get_png(request):
-    filename = request.GET['filename']
-    uuid = request.GET['uuid']
-    #filename = filename+".exe"
-    file_path = os.path.join('png',uuid,filename)
-    with open(file_path, 'rb') as file:
-        response = HttpResponse(file, headers={
-            'Content-Type': 'application/vnd.microsoft.portable-executable',
-            'Content-Disposition': f'attachment; filename="{filename}"'
-        })
-
-    return response
+    filename = request.GET.get('filename')
+    uuid = request.GET.get('uuid')
+    if not filename or not uuid:
+        return HttpResponse("Missing filename or UUID", status=400)
+    if not re.fullmatch(r'^[a-zA-Z0-9._\-]+$', filename):
+        return HttpResponse("Invalid filename", status=400)
+    if not filename.lower().endswith('.png'):
+        return HttpResponse("Only PNG files allowed", status=400)
+    if not re.fullmatch(r'^[a-f0-9\-]+$', uuid):
+        return HttpResponse("Invalid UUID format", status=400)
+    png_dir = Path(settings.BASE_DIR) / 'png' / uuid
+    target_file = png_dir / filename
+    try:
+        target_file = target_file.resolve(strict=False)
+        png_dir_resolved = png_dir.resolve()
+    except OSError:
+        raise Http404("Invalid path")
+    try:
+        target_file.relative_to(png_dir_resolved)
+    except ValueError:
+        return HttpResponse("Access denied", status=403)
+    if not target_file.is_file():
+        raise Http404("File not found")
+    try:
+        with open(target_file, 'rb') as f:
+            response = HttpResponse(f.read(), content_type='image/png')
+            response['Content-Disposition'] = f'inline; filename="{filename}"'
+            return response
+    except (IOError, OSError):
+        return HttpResponse("Failed to read file", status=500)
     
 def create_github_run(myuuid, filename, direction):
     new_github_run = GithubRun(
