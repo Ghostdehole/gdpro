@@ -213,8 +213,7 @@ def generator_view(request):
             extras['removeTopNotice'] = 'true' if removeTopNotice else 'false'
             extras['password_security_length'] = 'true' if password_security_length else 'false'
             extras['compname'] = compname
-            extras['custom_dart_link'] = custom_dart_link
-            extras['custom_dart_target_path'] = custom_dart_target_path
+
             extra_input = json.dumps(extras)
 
             ####from here run the github action, we need user, repo, access token.
