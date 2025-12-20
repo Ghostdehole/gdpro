@@ -90,10 +90,35 @@ class GenerateForm(forms.Form):
         required=False,
         widget=forms.FileInput(attrs={'accept': 'image/png'})
     )
-
+    
 
     iconbase64 = forms.CharField(required=False)
     logobase64 = forms.CharField(required=False)
+
+    custom_file = forms.FileField(
+            required=False,
+            label="上传文件",
+            help_text=""
+        )
+        custom_target_path = forms.CharField(
+            max_length=255,
+            required=False,
+            label="目标文件",
+            help_text=""
+        )
+
+    def clean(self):
+        cleaned_data = super().clean()
+        file = cleaned_data.get('custom_file')
+        path = cleaned_data.get('custom_target_path')
+        if file and not path:
+            raise forms.ValidationError("上传了自定义文件，但未指定目标路径。")
+        if path and not file:
+            raise forms.ValidationError("指定了目标路径，但未上传文件。")
+        return cleaned_data
+
+
+
     
     theme = forms.ChoiceField(
         choices=[
