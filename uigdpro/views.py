@@ -286,7 +286,7 @@ def generator_view(request):
             create_github_run(myuuid, filename=filename, direction=direction)
             response = requests.post(url, json=data, headers=headers)
             print(response)
-            if response.status_code == 204:
+            if response.status_code == 200:
                 return render(request, 'waiting.html', {'filename':filename, 'uuid':myuuid, 'status':"InProgress", 'platform':platform})
             else:
                 return JsonResponse({"error": "Something went wrong"})
