@@ -36,7 +36,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-#ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['*']
 DEBUG = False
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 SESSION_COOKIE_SECURE = True
@@ -49,14 +49,14 @@ SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_HSTS_PRELOAD = True
 
 GENURL = os.environ.get("GENURL", "").strip()
-if GENURL:
-    parsed = urlparse(GENURL)
-    host = parsed.hostname
-    if not host:
-        raise ValueError(f"Invalid GENURL: {GENURL}")
-    ALLOWED_HOSTS = [host]
-else:
-    ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
+#if GENURL:
+  #  parsed = urlparse(GENURL)
+  #  host = parsed.hostname
+ #   if not host:
+ #       raise ValueError(f"Invalid GENURL: {GENURL}")
+ #   ALLOWED_HOSTS = [host]
+#else:
+#    ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
 
 CSRF_TRUSTED_ORIGINS = os.getenv('CSRF_TRUSTED_ORIGINS', '').split()
 
