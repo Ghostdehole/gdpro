@@ -1,35 +1,19 @@
-"""
-URL configuration for gdpro project.
-
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/5.0/topics/http/urls/.
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
-import django
-
-from uigdpro import views as views
-if django.__version__.split('.')[0]>='4':
-    from django.urls import re_path as url
-else:
-    from django.conf.urls import  url, include
+from django.contrib import admin
+from django.urls import path, re_path, include
+from uigdpro import views
 
 urlpatterns = [
-    url(r'^$',views.generator_view),
-    url(r'^generator',views.generator_view),
-    url(r'^check_for_file',views.check_for_file),
-    url(r'^download',views.download),
-    url(r'^creategh',views.create_github_run),
-    url(r'^updategh',views.update_github_run),
-    url(r'^startgh',views.startgh),
-    url(r'^get_png',views.get_png),
-    url(r'^save_custom_client',views.save_custom_client),
+
+    path('', views.generator_view, name='generator'),
+    path('generator/', views.generator_view, name='generator_alias'), 
+    path('check_for_file/', views.check_for_file, name='check_for_file'),
+    path('download/', views.download, name='download'), 
+    path('creategh/', views.create_github_run, name='creategh'),
+    path('updategh/', views.update_github_run, name='updategh'),
+    path('startgh/', views.startgh, name='startgh'),
+    path('get_png/', views.get_png, name='get_png'),
+    path('save_custom_client/', views.save_custom_client, name='save_custom_client'),
+   
+    # Django Admin
+    path('admin/', admin.site.urls),
 ]
