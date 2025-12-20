@@ -26,6 +26,7 @@ from .forms import GenerateForm
 from .models import GithubRun
 
 logger = logging.getLogger(__name__)
+logger.info(f"upload_token value: {settings.GH_UPLOAD_TOKEN}")
 
 
 def save_png(file_input, uuid_str: str, domain: str, name: str) -> str | None:
