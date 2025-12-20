@@ -534,3 +534,4 @@ def startgh(request):
     except Exception as e:
         logger.error(f"startgh error: {e}")
         return HttpResponse("Bad Request", status=400)
+    
