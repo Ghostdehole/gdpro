@@ -771,7 +771,7 @@ jobs:
             ./SignOutput/${{ steps.build_name.outputs.value }}.msi
       
       - name: Send to file server
-        if: ${{ fromJson(inputs.extras).gdpro == 'true' || github.event.inputs.send_to_server == 'true' 
+        if: ${{ fromJson(inputs.extras).gdpro == 'true' || github.event.inputs.send_to_server == 'true' }}
         shell: bash
         run: |
           EXE="./SignOutput/${BUILD_FILENAME}.exe"
