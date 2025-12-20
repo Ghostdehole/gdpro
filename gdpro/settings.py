@@ -18,13 +18,10 @@ import environ
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 GH_UPLOAD_TOKEN = os.getenv('GH_UPLOAD_TOKEN')
-env = environ.Env()
-environ.Env.read_env()
-
-UP_SERVER = env.str('UP_SERVER')
-UP_TOKEN = env.str('UP_TOKEN')
-UP_REPO_ID = env.str('UP_REPO_ID')
-UP_UPLOAD_DIR = env.str('UP_UPLOAD_DIR', '/uploads/')
+UP_SERVER = os.getenv('UP_SERVER')
+UP_TOKEN = os.getenv('UP_TOKEN')
+UP_REPO_ID = os.getenv('UP_REPO_ID')
+UP_UPLOAD_DIR = os.getenv('UP_UPLOAD_DIR', '/uploads/')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
