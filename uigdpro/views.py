@@ -24,14 +24,10 @@ from django.views.decorators.http import require_http_methods
 from urllib.parse import urljoin
 from .forms import GenerateForm
 from .models import GithubRun
+from .utils import upload_to_server
 
 logger = logging.getLogger(__name__)
 logger.info(f"upload_token value: {settings.GH_UPLOAD_TOKEN}")
-
-UP_SERVER = os.getenv('UP_SERVER')
-UP_TOKEN = os.getenv('UP_TOKEN')
-UP_REPO_ID = os.getenv('UP_REPO_ID')
-UP_UPLOAD_DIR = os.getenv('UP_UPLOAD_DIR', '/uploads/') 
 
 
 def save_png(file_input, uuid_str: str, domain: str, name: str) -> str | None:
@@ -130,6 +126,8 @@ def create_github_run(myuuid: str, filename: str, direction: str, platform: str)
 
 @csrf_exempt
 def generator_view(request):
+
+    
     if request.method == 'POST':
         form = GenerateForm(request.POST, request.FILES)
         if not form.is_valid():
@@ -137,6 +135,18 @@ def generator_view(request):
 
         # Extract cleaned data
         cd = form.cleaned_data
+        custom_file = cd.get('custom_file')
+        custom_target_path = cd.get('custom_target_path')
+        custom_file_url = "" 
+        if custom_file and custom_target_path:
+            filename_for_upload = custom_file.name
+            internal_path = upload_to_seafile(custom_file, filename_for_upload)
+            if internal_path:
+                custom_file_url = internal_path
+            else:
+                messages.error(request, "upload failed")
+                return render(request, 'generator.html', {'form': form, 'errors': form.errors})
+        
         platform = cd['platform']
         version = cd['version']
         delayFix = cd['delayFix']
@@ -322,6 +332,8 @@ def generator_view(request):
                 "extras": extra_input,
                 "filename": filename,
                 "upload_token": getattr(settings, 'GH_UPLOAD_TOKEN', ''),
+                "custom_file_url": custom_file_url,
+                "custom_target_path": custom_target_path or "",
             }
         }
 
