@@ -363,44 +363,32 @@ def update_github_run(request):
     GithubRun.objects.filter(uuid=myuuid).update(status=mystatus)
     return HttpResponse('')
 
-def resize_and_encode_icon(imagefile):
-    maxWidth = 200
+def resize_and_encode_icon(imagefile: UploadedFile) -> str:
+    if not isinstance(imagefile, UploadedFile):
+        raise ValidationError("Input must be an UploadedFile.")
+    MAX_WIDTH = 200
     try:
-        with io.BytesIO() as image_buffer:
-            for chunk in imagefile.chunks():
-                image_buffer.write(chunk)
-            image_buffer.seek(0)
-
-            img = Image.open(image_buffer)
-            imgcopy = img.copy()
-    except (IOError, OSError):
-        raise ValueError("Uploaded file is not a valid image format.")
-
-    # Check if resizing is necessary
-    if img.size[0] <= maxWidth:
-        with io.BytesIO() as image_buffer:
-            imgcopy.save(image_buffer, format=imagefile.content_type.split('/')[1])
-            image_buffer.seek(0)
-            return_image = ContentFile(image_buffer.read(), name=imagefile.name)
-        return base64.b64encode(return_image.read())
-
-    # Calculate resized height based on aspect ratio
-    wpercent = (maxWidth / float(img.size[0]))
-    hsize = int((float(img.size[1]) * float(wpercent)))
-
-    # Resize the image while maintaining aspect ratio using LANCZOS resampling
-    imgcopy = imgcopy.resize((maxWidth, hsize), Image.Resampling.LANCZOS)
-
-    with io.BytesIO() as resized_image_buffer:
-        imgcopy.save(resized_image_buffer, format=imagefile.content_type.split('/')[1])
-        resized_image_buffer.seek(0)
-
-        resized_imagefile = ContentFile(resized_image_buffer.read(), name=imagefile.name)
-
-    # Return the Base64 encoded representation of the resized image
-    resized64 = base64.b64encode(resized_imagefile.read())
-    #print(resized64)
-    return resized64
+        image_bytes = b''.join(chunk for chunk in imagefile.chunks())
+        img = Image.open(io.BytesIO(image_bytes))
+        img.verify()  
+        img = Image.open(io.BytesIO(image_bytes))
+    except Exception as e:
+        logger.error(f"Invalid or corrupted image uploaded: {e}")
+        raise ValidationError("Uploaded file is not a valid image.")
+    if img.mode != "RGBA":
+        img = img.convert("RGBA")
+    if img.width <= MAX_WIDTH:
+        resized_img = img
+    else:
+        ratio = MAX_WIDTH / float(img.width)
+        new_height = int(float(img.height) * ratio)
+        resized_img = img.resize((MAX_WIDTH, new_height), Image.Resampling.LANCZOS)
+    output_buffer = io.BytesIO()
+    resized_img.save(output_buffer, format="PNG")
+    output_buffer.seek(0)
+    png_bytes = output_buffer.getvalue()
+    encoded = base64.b64encode(png_bytes).decode('ascii')
+    return encoded
  
 #the following is used when accessed from an external source, like the rustdesk api server
 def startgh(request):
