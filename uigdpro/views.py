@@ -288,6 +288,11 @@ def download(request):
     full_filename = request.GET.get('filename')
     if not uuid_str or not full_filename:
         return HttpResponse("Missing UUID or filename", status=400)
+    if not re.fullmatch(r'[\w\-\.]+', full_filename):
+        return HttpResponse("Invalid filename format", status=400)
+    allowed_extensions = {'.exe', '.msi', '.dmg', '.deb', '.apk', '.zip'}
+    if not any(full_filename.endswith(ext) for ext in allowed_extensions):
+        return HttpResponse("File type not allowed", status=400)
     gh_run = GithubRun.objects.filter(uuid=uuid_str).first()
     if not gh_run or gh_run.status != "Success":
         return HttpResponse("Build not ready", status=409)
