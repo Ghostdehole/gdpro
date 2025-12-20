@@ -158,5 +158,3 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 FILE_UPLOAD_MAX_MEMORY_SIZE = 4 * 1024 * 1024
 DATA_UPLOAD_MAX_MEMORY_SIZE = 4 * 1024 * 1024
 
-if not GHBEARER:
-    raise ValueError("GHBEARER is none.")
