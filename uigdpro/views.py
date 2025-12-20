@@ -277,7 +277,7 @@ def generator_view(request):
             'downloadLink': downloadLink,
             'delayFix': delayFix,
             'version': version,
-            'gdpro': true,
+            'gdpro': "true"
             'cycleMonitor': cycleMonitor,
             'xOffline': xOffline,
             'removeNewVersionNotif': removeNewVersionNotif,
