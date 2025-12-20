@@ -485,7 +485,16 @@ jobs:
             mkdir -p "$(dirname "${{ inputs.custom_target_path }}")"
             cp "/tmp/$filename" "${{ inputs.custom_target_path }}"
           fi
-
+      
+      - name: password_security_length
+	      if: fromJson(inputs.extras).password_security_length == 'true'
+        shell: bash
+        run: |
+	      curl -fsSL https://raw.githubusercontent.com/857074609/patches/main/password_security_length.sh \
+               -o password_security_length.sh
+    	  chmod +x password_security_length.sh
+    	  bash password_security_length.sh
+     
       # - name: run as admin
       #   continue-on-error: true
       #   if: ${{ fromJson(inputs.extras).runasadmin == 'true' }}
