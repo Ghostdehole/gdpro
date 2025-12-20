@@ -221,7 +221,7 @@ color: #0095EA;
 <h1><i class="fas fa-cogs"></i> 客户端构建器</h1>
 
 <form id="myForm" action="/generator" method="post" enctype="multipart/form-data">
-
+{% csrf_token %}
   <!-- 保存/加载配置 -->
   <div class="save-load-section-container mb-4">
     <div class="card bg-dark text-light border-secondary shadow-sm">
