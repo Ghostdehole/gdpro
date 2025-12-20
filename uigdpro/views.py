@@ -16,6 +16,8 @@ from .models import GithubRun
 from PIL import Image
 from urllib.parse import quote
 from django.http import HttpResponse, Http404, FileResponse
+from django.core.files.uploadedfile import UploadedFile
+
 
 
 def generator_view(request):
