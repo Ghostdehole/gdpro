@@ -521,7 +521,7 @@ def startgh(request):
             'macos': 'generator-macos.yml',
         }.get(platform, 'generator-windows.yml')
 
-        url = f"https://api.github.com/repos/{settings.GHUSER}/{settings.REPONAME}/actions/workflows/{workflow_file}/dispatches"
+        url = f"https://api.github.com/repos/{settings.GHUSER}/{settings.REPONAME}/actions/workflows/{workflow_file}/dispatches."
         headers = {
             'Accept': 'application/vnd.github+json',
             'Content-Type': 'application/json',
