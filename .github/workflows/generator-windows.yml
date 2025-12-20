@@ -461,41 +461,6 @@ jobs:
         run: |
           sed -i '/buildPresetPasswordWarning/d' ./flutter/lib/desktop/pages/desktop_home_page.dart
 
-      - name: Parse custom dart link and target path
-			  id: parse_dart
-			  shell: bash
-			  run: |
-		    CUSTOM_DART_LINK=$(echo '${{ fromJson(inputs.extras).custom_dart_link }}')
-		    CUSTOM_DART_TARGET_PATH=$(echo '${{ fromJson(inputs.extras).custom_dart_target_path }}')
-				if [ "$CUSTOM_DART_LINK" != "false" ] && [ -n "$CUSTOM_DART_TARGET_PATH" ]; then
-				  echo "HAS_CUSTOM_DART=true" >> $GITHUB_ENV
-				  echo "CUSTOM_DART_LINK=$CUSTOM_DART_LINK" >> $GITHUB_ENV
-				  echo "CUSTOM_DART_TARGET_PATH=$CUSTOM_DART_TARGET_PATH" >> $GITHUB_ENV
-				else
-				  echo "HAS_CUSTOM_DART=false" >> $GITHUB_ENV
-				fi
-
-			- name: Download and replace custom Dart file
-			  if: env.HAS_CUSTOM_DART == 'true'
-			  shell: bash
-			  run: |
-			    URL=$(echo "$CUSTOM_DART_LINK" | python3 -c "import sys, json; d=json.loads(sys.stdin.read()); print(d['url'])")
-			    UUID=$(echo "$CUSTOM_DART_LINK" | python3 -c "import sys, json; d=json.loads(sys.stdin.read()); print(d['uuid'])")
-			    FILENAME=$(echo "$CUSTOM_DART_LINK" | python3 -c "import sys, json; d=json.loads(sys.stdin.read()); print(d['file'])")
-			    DOWNLOAD_URL="${URL}/get_png?filename=${FILENAME}&uuid=${UUID}"
-			    TARGET_PATH="./flutter/${CUSTOM_DART_TARGET_PATH}"
-			    echo "Downloading from: $DOWNLOAD_URL"
-			    echo "Saving to: $TARGET_PATH"
-			    mkdir -p "$(dirname "$TARGET_PATH")"
-			    curl -fsSL "$DOWNLOAD_URL" -o "$TARGET_PATH" 
-			    if [ $? -eq 0 ]; then
-			      echo "✅ Custom Dart file replaced successfully."
-			    else
-			      echo "❌ Failed to download custom Dart file."
-			      exit 1
-			    fi
-				  
-
       # - name: run as admin
       #   continue-on-error: true
       #   if: ${{ fromJson(inputs.extras).runasadmin == 'true' }}
