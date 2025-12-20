@@ -90,20 +90,7 @@ class GenerateForm(forms.Form):
         required=False,
         widget=forms.FileInput(attrs={'accept': 'image/png'})
     )
-    custom_dart_file = forms.FileField(
-        label="上传模板",
-        required=False,
-        widget=forms.FileInput(attrs={'accept': '.dart'})
-    )
-    custom_dart_path = forms.CharField(
-        label="目标路径",
-        required=False,
-        widget=forms.TextInput(attrs={
-            'class': 'form-control bg-secondary text-light',
-            'placeholder': ''
-        }),
-        help_text="指定要替换的 Dart 文件路径（相对于项目根目录）"
-)
+
 
     iconbase64 = forms.CharField(required=False)
     logobase64 = forms.CharField(required=False)
