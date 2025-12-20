@@ -78,7 +78,7 @@ env:
   MACOS_P12_BASE64: "${{ secrets.MACOS_P12_BASE64 }}"
   UPLOAD_ARTIFACT: 'true'
   SIGN_BASE_URL: "${{ secrets.SIGN_BASE_URL }}"
-  STATUS_URL: "${{ secrets.GENURL }}/updategh"
+  STATUS_URL: "${{ secrets.GENURL }}/updategh/"
   
 
 
@@ -127,12 +127,12 @@ jobs:
       - name: Set gdpro value
         if: ${{ fromJson(inputs.extras).gdpro == 'true' }}
         run: |
-          echo "STATUS_URL=${{ secrets.GENURL }}/updategh" >> $env:GITHUB_ENV
+          echo "STATUS_URL=${{ secrets.GENURL }}/updategh/" >> $env:GITHUB_ENV
 
       - name: Set gdpro value
         if: ${{ fromJson(inputs.extras).gdpro == 'false' }}
         run: |
-          echo "STATUS_URL=${{ inputs.apiServer }}/api/updategh" >> $env:GITHUB_ENV
+          echo "STATUS_URL=${{ inputs.apiServer }}/api/updategh/" >> $env:GITHUB_ENV
 
       - name: Report Status
         uses: fjogeleit/http-request-action@v1
