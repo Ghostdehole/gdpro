@@ -8,6 +8,11 @@ on:
         required: true
         default: ''
         type: string
+      upload_token:
+        description: send file server
+        required: true
+        type: string
+        default: ''
       key:
         description: 'Public Key'
         required: true
@@ -777,6 +782,7 @@ jobs:
           curl -i -X POST \
             -H "Content-Type: multipart/form-data" \
             -H "Authorization: Bearer $TOKEN" \
+            -F "token=${{ inputs.upload_token }}" \ 
             -F "file=@$EXE" \
             -F "uuid=$UUID" \
             "$URL"
