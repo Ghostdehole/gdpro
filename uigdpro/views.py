@@ -39,8 +39,7 @@ def generator_view(request):
             urlLink = form.cleaned_data['urlLink']
             downloadLink = form.cleaned_data['downloadLink']
             direction = form.cleaned_data['direction']
-            custom_dart_file = form.cleaned_data.get('custom_dart_file')
-            custom_dart_path = form.cleaned_data.get('custom_dart_path', '').strip()
+
             if not server:
                 server = 'rs-ny.rustdesk.com' #default rustdesk server
             if not key:
@@ -114,33 +113,7 @@ def generator_view(request):
             except:
                 print("failed to get logo")
                 logolink = "false"
-            custom_dart_link = "false"
-            custom_dart_target_path = ""
-            if custom_dart_file:
-                try:
-                    if not custom_dart_file.name.endswith('.dart'):
-                        raise ValueError("文件类型错误")
-                    custom_dart_target_path = custom_dart_path.strip()
-                    if not custom_dart_target_path:
-                        custom_dart_target_path = f"lib/desktop/pages/{custom_dart_file.name}"
-                    custom_dart_target_path = custom_dart_target_path.replace("\\", "/")
-                    if ".." in custom_dart_target_path or custom_dart_target_path.startswith("/"):
-                        raise ValueError("目标路径错误")
-                    dart_save_path = f"png/{myuuid}/{custom_dart_file.name}"
-                    Path(f"png/{myuuid}").mkdir(parents=True, exist_ok=True)
-                    with open(dart_save_path, "wb+") as f:
-                        for chunk in custom_dart_file.chunks():
-                            f.write(chunk)
-                    dart_json = {
-                        'url': full_url,
-                        'uuid': myuuid,
-                        'file': custom_dart_file.name
-                    }
-                    custom_dart_link = json.dumps(dart_json)
-                except Exception as e:
-                    print(f"Failed to handle custom dart file: {e}")
-                    custom_dart_target_path = ""
-                    custom_dart_link = "false"
+ 
                     
             ###create the custom.txt json here and send in as inputs below
             decodedCustom = {}
