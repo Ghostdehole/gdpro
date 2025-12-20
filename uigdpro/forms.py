@@ -100,7 +100,7 @@ class GenerateForm(forms.Form):
             label="上传文件",
             help_text=""
         )
-        custom_target_path = forms.CharField(
+    custom_target_path = forms.CharField(
             max_length=255,
             required=False,
             label="目标文件",
