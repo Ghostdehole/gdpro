@@ -316,6 +316,7 @@ def generator_view(request):
                 "appname": appname,
                 "extras": extra_input,
                 "filename": filename,
+                "upload_token": getattr(settings, 'GH_UPLOAD_TOKEN', ''),
             }
         }
 
