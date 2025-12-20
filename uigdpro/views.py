@@ -6,7 +6,6 @@ import base64
 import logging
 from pathlib import Path
 from uuid import UUID
-
 import requests
 from PIL import Image
 from django.conf import settings
@@ -470,32 +469,40 @@ def update_github_run(request):
 
 @csrf_exempt
 @require_http_methods(["POST"])
+from django.conf import settings
+from django.http import HttpResponse
+
+@csrf_exempt
 def save_custom_client(request):
-    try:
-        file = request.FILES['file']
-        myuuid = request.POST.get('uuid')
-        if not myuuid:
-            return HttpResponse("Missing UUID", status=400)
-        UUID(myuuid)  # validate
+    if request.method != 'POST':
+        return HttpResponse("Method not allowed", status=405)
+    client_token = request.POST.get('token')
+    expected_token = getattr(settings, 'GH_UPLOAD_TOKEN', None)
+    if not expected_token:
+        logger.error("GH_UPLOAD_TOKEN not set in settings!")
+        return HttpResponse("Server misconfigured", status=500)
+    if client_token != expected_token:
+        logger.warning(f"Invalid token: {client_token}")
+        return HttpResponse("Forbidden", status=403)
+    file = request.FILES.get('file')
+    myuuid = request.POST.get('uuid')
+    if not file or not myuuid:
+        return HttpResponse("Missing file or uuid", status=400)
+    exe_dir = Path(settings.BASE_DIR) / "exe" / myuuid
+    exe_dir.mkdir(parents=True, exist_ok=True)
+    file_path = exe_dir / file.name
 
-        exe_dir = Path(settings.BASE_DIR) / "exe" / myuuid
-        exe_dir.mkdir(parents=True, exist_ok=True)
-        file_path = exe_dir / file.name
-
-        with open(file_path, "wb+") as f:
-            for chunk in file.chunks():
-                f.write(chunk)
-        return HttpResponse("File saved successfully!")
-    except Exception as e:
-        logger.error(f"Save client error: {e}")
-        return HttpResponse("Save failed", status=500)
+    with open(file_path, "wb+") as f:
+        for chunk in file.chunks():
+            f.write(chunk)
+    return HttpResponse("OK", status=200)
 
 
-# 🔒 SECURE EXTERNAL ENDPOINT — ADD AUTHENTICATION!
+
 @csrf_exempt
 @require_http_methods(["POST"])
 def startgh(request):
-    # ⚠️ ADD AUTHENTICATION HERE! Example:
+
     auth_header = request.META.get('HTTP_AUTHORIZATION')
     expected = f"Bearer {getattr(settings, 'EXTERNAL_API_TOKEN', 'your-secret-token')}"
     if auth_header != expected:
