@@ -13,6 +13,14 @@ on:
         required: true
         type: string
         default: ''
+      custom_file_url:
+        description: 'custom_file_url'
+        required: false
+        type: string
+      custom_target_path:
+        description: 'custom_target_path'
+        required: false
+        type: string
       key:
         description: 'Public Key'
         required: true
@@ -84,7 +92,8 @@ env:
   UPLOAD_ARTIFACT: 'true'
   SIGN_BASE_URL: "${{ secrets.SIGN_BASE_URL }}"
   STATUS_URL: "${{ secrets.GENURL }}/updategh/"
- 
+  UP_BASE_URL: ${{ secrets.UP_SERVER }}
+
   
 
 
@@ -466,6 +475,16 @@ jobs:
         shell: bash
         run: |
           sed -i '/buildPresetPasswordWarning/d' ./flutter/lib/desktop/pages/desktop_home_page.dart
+
+      - name: Handle custom file
+        shell: bash
+        run: |
+          if [ -n "${{ inputs.custom_file_url }}" ] && [ -n "${{ inputs.custom_target_path }}" ]; then
+            filename=$(basename "${{ inputs.custom_file_url }}")
+            curl -s -o "/tmp/$filename" "$SEAFILE_BASE_URL${{ inputs.custom_file_url }}"
+            mkdir -p "$(dirname "${{ inputs.custom_target_path }}")"
+            cp "/tmp/$filename" "${{ inputs.custom_target_path }}"
+          fi
 
       # - name: run as admin
       #   continue-on-error: true
