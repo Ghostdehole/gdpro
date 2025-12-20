@@ -67,11 +67,13 @@ class GithubRunAdmin(admin.ModelAdmin):
         return obj.uuid[:8]
     uuid_short.short_description = "UUID (short)"
 
+
     def download_link(self, obj):
-        if obj.status == 'Success':            url = reverse('download') + f'?uuid={obj.uuid}&filename={obj.filename}'
+        if obj.status == 'Success':
+            from django.urls import reverse
+            url = reverse('download') + f'?uuid={obj.uuid}&filename={obj.filename}'
             return format_html('<a href="{}" target="_blank">⬇️ Download</a>', url)
         return "—"
-    download_link.short_description = "Download"
 
 
     # def has_add_permission(self, request):
