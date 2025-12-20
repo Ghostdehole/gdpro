@@ -9,7 +9,7 @@ UP_TOKEN = os.getenv('UP_TOKEN')
 UP_REPO_ID = os.getenv('UP_REPO_ID')
 UP_UPLOAD_DIR = os.getenv('UP_UPLOAD_DIR', '/uploads/')
 
-def upload_to_seafile(file_obj, filename: str) -> str | None:
+def upload_to_server(file_obj, filename: str) -> str | None:
 
     if not UP_SERVER or not UP_TOKEN or not UP_REPO_ID:
         logger.error("UP_SERVER, UP_TOKEN, or UP_REPO_ID is not set. Please check the environment variables")
