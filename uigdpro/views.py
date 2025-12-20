@@ -251,7 +251,7 @@ def generator_view(request):
             'verification-method': 'use-permanent-password' if hidecm else 'use-both-passwords',
             'approve-mode': passApproveMode,
             'allow-hide-cm': 'Y' if hidecm else 'N',
-            'allow-remove-wallpaper': 'Y' if removeWallpaper else 'N',
+            'allow-remove-wallpaper': 'Y' if cd['removeWallpaper'] else 'N',
             'direct-server': 'Y' if enableDirectIP else 'N',
         })
         for key_name, value in bool_flags.items():
