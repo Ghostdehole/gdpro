@@ -26,7 +26,7 @@ if not SECRET_KEY:
     raise RuntimeError("SECRET_KEY environment variable not set!")
 GHUSER = os.environ.get("GHUSER", '')
 GHBEARER = os.environ.get("GHBEARER", '')
-GENURL = os.environ.get("GENURL", '')
+#GENURL = os.environ.get("GENURL", '')
 PROTOCOL = os.environ.get("PROTOCOL", 'https')
 REPONAME = os.environ.get("REPONAME", 'gdpro')
 
