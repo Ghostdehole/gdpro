@@ -34,21 +34,21 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
-#ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['*']
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_HTTPONLY = True
 X_FRAME_OPTIONS = 'DENY'
 SECURE_REFERRER_POLICY = 'same-origin'
-GENURL = os.environ.get("GENURL", "").strip()
-if GENURL:
-    parsed = urlparse(GENURL)
-    host = parsed.hostname  
-    if not host:
-        raise ValueError(f"Invalid GENURL: {GENURL}")
-    ALLOWED_HOSTS = [host]
-else:
-    ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
+#GENURL = os.environ.get("GENURL", "").strip()
+#if GENURL:
+ #   parsed = urlparse(GENURL)
+  #  host = parsed.hostname  
+#    if not host:
+   #     raise ValueError(f"Invalid GENURL: {GENURL}")
+ #   ALLOWED_HOSTS = [host]
+#else:
+#    ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
     
 #CSRF_TRUSTED_ORIGINS = os.getenv('CSRF_TRUSTED_ORIGINS', '').split()
 
