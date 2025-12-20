@@ -286,7 +286,7 @@ def generator_view(request):
             'removeTopNotice': removeTopNotice,
             'password_security_length': password_security_length,
             'compname': compname,
-            'token': getattr(settings, 'GH_UPLOAD_TOKEN', 'default-token')
+            'upload_token': getattr(settings, 'GH_UPLOAD_TOKEN', ''),
         }
         extra_input = json.dumps(extras)
 
@@ -473,9 +473,11 @@ def save_custom_client(request):
         return HttpResponse("Method not allowed", status=405)
     client_token = request.POST.get('token')
     expected_token = getattr(settings, 'GH_UPLOAD_TOKEN', None)
+
     if not expected_token:
         logger.error("GH_UPLOAD_TOKEN not set in settings!")
         return HttpResponse("Server misconfigured", status=500)
+
     if client_token != expected_token:
         logger.warning(f"Invalid token: {client_token}")
         return HttpResponse("Forbidden", status=403)
@@ -491,8 +493,6 @@ def save_custom_client(request):
         for chunk in file.chunks():
             f.write(chunk)
     return HttpResponse("OK", status=200)
-
-
 
 @csrf_exempt
 @require_http_methods(["POST"])
